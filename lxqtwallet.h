@@ -35,18 +35,33 @@ struct lxqt_key_value{
 };
 
 /*
+ * error values
+ */
+typedef enum{
+	lxqt_wallet_no_error = 0,
+	lxqt_wallet_wrong_password,
+	lxqt_wallet_wallet_exists,
+	lxqt_wallet_gcry_cipher_open_failed,
+	lxqt_wallet_gcry_cipher_setkey_failed,
+	lxqt_wallet_gcry_cipher_setiv_failed,
+	lxqt_wallet_gcry_cipher_encrypt_failed,
+	lxqt_wallet_gcry_cipher_decrypt_failed,
+	lxqt_wallet_failed_to_open_file,
+	lxqt_wallet_failed_to_allocate_memory,
+	lxqt_wallet_invalid_argument
+}lxqt_wallet_error;
+/*
  * open "wallet_name" wallet of application "application_name" using a password of size password_length.
  * 
  * The rest of the API except lxqt_wallet_create() are undefined if this function returns a non zero number
  */
-int lxqt_wallet_open( lxqt_wallet_t *,const char * password,size_t password_length,
+lxqt_wallet_error lxqt_wallet_open( lxqt_wallet_t *,const char * password,size_t password_length,
 		      const char * wallet_name,const char * application_name ) ;
 
 /*
  * create a new wallet named "wallet_name" owned by application "application_name" using a password "password" of size "password_length".
- * 0 is returned on success
  */
-int lxqt_wallet_create( const char * password,size_t password_length,const char * wallet_name,const char * application_name ) ;
+lxqt_wallet_error lxqt_wallet_create( const char * password,size_t password_length,const char * wallet_name,const char * application_name ) ;
 
 /*
  * returns a value of a key.
@@ -58,33 +73,28 @@ char * lxqt_wallet_read_key_value( lxqt_wallet_t,const char * key ) ;
 /*
  * maximum size of the key is 43 bytes
  * maximum size of key value is 511
- * 
- * returns 0 on success and otherwise on error.
  */
-int lxqt_wallet_add_key( lxqt_wallet_t,const char * key,const char * key_value,size_t key_value_length ) ;
+lxqt_wallet_error lxqt_wallet_add_key( lxqt_wallet_t,const char * key,const char * key_value,size_t key_value_length ) ;
 
 /*
  * delete a key.
- * 0 is returned if a key was found and deleted.
  */
-int lxqt_wallet_delete_key( lxqt_wallet_t,const char * key ) ;
+lxqt_wallet_error lxqt_wallet_delete_key( lxqt_wallet_t,const char * key ) ;
 
 /*
  * 
  * delete a wallet named "wallet_name" of an application named "application_name" exists
- * 0 is returned if the wallet exists.
  */
-int lxqt_wallet_delete_wallet( const char * wallet_name,const char * application_name ) ;
+lxqt_wallet_error lxqt_wallet_delete_wallet( const char * wallet_name,const char * application_name ) ;
 
 /*
  * close a wallet handled.
- * 0 is returned on success.
  */
-int lxqt_wallet_close( lxqt_wallet_t ) ;
+lxqt_wallet_error lxqt_wallet_close( lxqt_wallet_t ) ;
 
 /*
  * Check if a wallet named "wallet_name" of an application named "application_name" exists
- * 0 is returned if the wallet exists.
+ * returns 0 if the wallet does not exist
  */
 int lxqt_wallet_exists( const char * wallet_name,const char * application_name ) ;
 
