@@ -22,7 +22,7 @@ int lxqt_wallet_delete_key( lxqt_wallet_t,const char * key ) ;
 
 int lxqt_wallet_delete_wallet( const char * wallet_name,const char * application_name ) ;
 
-void lxqt_wallet_close( lxqt_wallet_t ) ;
+int lxqt_wallet_close( lxqt_wallet_t ) ;
 
 int lxqt_wallet_exists( const char * wallet_name,const char * application_name ) ;
 
