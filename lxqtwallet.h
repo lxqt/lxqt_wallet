@@ -39,7 +39,6 @@ struct lxqt_key_value{
  * 
  * The rest of the API except lxqt_wallet_create() are undefined if this function returns a non zero number
  */
-
 int lxqt_wallet_open( lxqt_wallet_t *,const char * password,size_t password_length,
 		      const char * wallet_name,const char * application_name ) ;
 
