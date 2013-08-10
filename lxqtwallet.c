@@ -75,6 +75,9 @@ lxqt_wallet_error lxqt_wallet_create( const char * password,size_t password_leng
 	
 	gcry_cipher_hd_t gcry_cipher_handle ;
 		
+	if( password == NULL || wallet_name == NULL || application_name == NULL ){
+		return lxqt_wallet_invalid_argument ;
+	}
 	if( lxqt_wallet_exists( wallet_name,application_name ) == 0 ){
 		return lxqt_wallet_wallet_exists ;
 	}else{
@@ -312,19 +315,16 @@ char * lxqt_wallet_read_key_value( lxqt_wallet_t wallet,const char * key )
 	struct lxqt_key_value * k ;
 	struct lxqt_key_value * j = i + wallet->wallet_data_size ;
 	
-	size_t len ;
 	char * value ;
 	
 	if( key == NULL || wallet == NULL ){
 		return NULL ;
 	}
 	
-	len = strlen( key ) ;
-	
 	while( i != j ){
 		k = i ;
 		i++ ;
-		if( strncmp( key,k->key,len ) == 0 ){
+		if( strcmp( key,k->key ) == 0 ){
 			value = malloc( k->value_size ) ;
 			memcpy( value,k->value,k->value_size ) ;
 			return value ;
@@ -404,7 +404,7 @@ lxqt_wallet_error lxqt_wallet_delete_key( lxqt_wallet_t wallet,const char * key 
 				wallet->wallet_data_size-- ;					
 				wallet->wallet_data = realloc( wallet->wallet_data,wallet->wallet_data_size * sizeof( struct lxqt_key_value ) ) ;
 			}
-			return lxqt_wallet_no_error ;
+			break ;
 		}
 	}
 		
