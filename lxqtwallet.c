@@ -16,14 +16,6 @@
 #define PASSWORD_SIZE 16
 #define BLOCK_SIZE 16 
 
-#define KEY_SIZE   32 
-#define VALUE_SIZE 512
-
-struct lxqt_key_value{
-	char key[ KEY_SIZE ] ;
-	char value[ VALUE_SIZE ] ;
-};
-
 struct lxqt_wallet_struct{
 	char * application_name ;
 	char * wallet_name ;
@@ -42,18 +34,16 @@ static int _get_iv_from_wallet_header( char iv[ IV_SIZE ],const char * wallet_na
 
 static int _get_magic_string_from_header( char magic_string[ MAGIN_STRING_SIZE ],const char * wallet_path ) ;
 
-static void _get_iv( char iv[ IV_SIZE ] )
+static void _get_iv( char iv[ IV_SIZE ] ) ;
+
+int lxqt_wallet_wallet_size( lxqt_wallet_t wallet ) 
 {
-	int fd ;
-	fd = open( "/dev/urandom",O_RDONLY ) ;
-	read( fd,iv,IV_SIZE ) ;
-	close( fd ) ;
+	return wallet->wallet_data_size ;
 }
 
-char ** lxqt_wallet_read_all_key_values( lxqt_wallet_t wallet ) 
+const struct lxqt_key_value * lxqt_wallet_read_all_key_values( lxqt_wallet_t wallet ) 
 {
-	if( wallet ){;}
-	return NULL ;
+	return wallet->wallet_data ;
 }
 
 int lxqt_wallet_create( const char * password,size_t password_length,const char * wallet_name,const char * application_name )
@@ -265,8 +255,9 @@ int lxqt_wallet_open( lxqt_wallet_t * wallet,const char * password,size_t passwo
 	strncpy( magic_string_1,MAGIC_STRING,MAGIN_STRING_SIZE ) ;
 	
 	if( memcmp( magic_string,magic_string_1,MAGIN_STRING_SIZE ) == 0 ){
-		printf( "correct password,magic string is: %s\n",magic_string ) ;
-		
+		/*
+		 * correct password
+		 */
 		stat( path,&st ) ;
 		if( st.st_size <= IV_SIZE + MAGIN_STRING_SIZE ){
 			/*
@@ -332,8 +323,8 @@ char * lxqt_wallet_read_key_value( lxqt_wallet_t wallet,const char * key )
 		k = i ;
 		i++ ;
 		if( strncmp( key,k->key,len ) == 0 ){
-			value = malloc( VALUE_SIZE ) ;
-			memcpy( value,k->value,VALUE_SIZE ) ;
+			value = malloc( k->value_size ) ;
+			memcpy( value,k->value,k->value_size ) ;
 			return value ;
 		}
 	}
@@ -350,7 +341,7 @@ int lxqt_wallet_add_key( lxqt_wallet_t wallet,const char * key,const char * valu
 		return 1 ;
 	}
 	
-	if( key_value_length == 0 || key_value_length > VALUE_SIZE ){
+	if( key_value_length == 0 || key_value_length >= VALUE_SIZE ){
 		return 1 ;
 	}
 	
@@ -360,6 +351,8 @@ int lxqt_wallet_add_key( lxqt_wallet_t wallet,const char * key,const char * valu
 			strncpy( ( char *)&key_value->key,key,KEY_SIZE ) ;
 			memset( &key_value->value,'\0',VALUE_SIZE ) ;
 			memcpy( &key_value->value,value,key_value_length ) ;
+			key_value->value[ key_value_length ] = '\0' ;
+			key_value->value_size = key_value_length + 1 ;
 			wallet->wallet_data = key_value ;
 			wallet->wallet_data_size++ ;
 			return 0 ;
@@ -367,13 +360,14 @@ int lxqt_wallet_add_key( lxqt_wallet_t wallet,const char * key,const char * valu
 			return 1 ;
 		}
 	}else{
-		key_value = realloc( wallet->wallet_data,sizeof( struct lxqt_key_value ) + ( wallet->wallet_data_size + 1 ) ) ;
+		key_value = realloc( wallet->wallet_data,sizeof( struct lxqt_key_value ) * ( wallet->wallet_data_size + 1 ) ) ;
 		if( key_value != NULL ){
 			key_value_1 = key_value + wallet->wallet_data_size ;
 			strncpy( ( char *)&key_value_1->key,key,KEY_SIZE ) ;
 			memset( &key_value_1->value,'\0',VALUE_SIZE ) ;
 			memcpy( &key_value_1->value,key_value,key_value_length ) ;
-			
+			key_value_1->value[ key_value_length ] = '\0' ;
+			key_value_1->value_size = key_value_length + 1 ;
 			wallet->wallet_data = key_value ;
 			wallet->wallet_data_size++ ;
 			return 0 ;
@@ -392,8 +386,9 @@ int lxqt_wallet_delete_key( lxqt_wallet_t wallet,const char * key )
 
 int lxqt_wallet_delete_wallet( const char * wallet_name,const char * application_name ) 
 {
-	if( wallet_name ){;}
-	if( application_name ){;}
+	char path[ PATH_MAX ] ;
+	_wallet_full_path( path,PATH_MAX,wallet_name,application_name ) ;
+	unlink( path ) ;
 	return 0 ;
 }
 
@@ -565,5 +560,13 @@ int _get_magic_string_from_header( char magic_string[ MAGIN_STRING_SIZE ],const 
 		close( fd ) ;
 		return 1 ;
 	}
+}
+
+static void _get_iv( char iv[ IV_SIZE ] )
+{
+	int fd ;
+	fd = open( "/dev/urandom",O_RDONLY ) ;
+	read( fd,iv,IV_SIZE ) ;
+	close( fd ) ;
 }
 
