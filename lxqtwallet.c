@@ -1,4 +1,22 @@
 
+/***********************************************************************************
+ *   Copyright 2013 by mhogomchungu <mhogomchungu@gmail.com>		           *
+ *                                                                                 *
+ *                                                                                 *
+ *   This library is free software; you can redistribute it and/or                 *
+ *   modify it under the terms of the GNU Lesser General Public                    *
+ *   License as published by the Free Software Foundation; either                  *
+ *   version 2.1 of the License, or (at your option) any later version.            *
+ *                                                                                 *
+ *   This library is distributed in the hope that it will be useful,               *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of                *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             *
+ *   Lesser General Public License for more details.                               *
+ *                                                                                 *
+ *   You should have received a copy of the GNU Lesser General Public              *
+ *   License along with this library.  If not, see <http://www.gnu.org/licenses/>. *
+ ***********************************************************************************/
+
 #include "lxqtwallet.h"
 
 #include <sys/types.h>
@@ -58,7 +76,7 @@ int lxqt_wallet_create( const char * password,size_t password_length,const char 
 	
 	gcry_cipher_hd_t gcry_cipher_handle ;
 		
-	if( lxqt_wallet_exists( wallet_name,application_name ) ){
+	if( lxqt_wallet_exists( wallet_name,application_name ) == 0 ){
 		puts( "ERROR: wallet exists" ) ;
 		return 1 ;
 	}else{
@@ -213,7 +231,7 @@ int lxqt_wallet_open( lxqt_wallet_t * wallet,const char * password,size_t passwo
 	if( _get_iv_from_wallet_header( iv,wallet_name,application_name ) ){
 		;
 	}else{
-		fprintf( stderr,"failed to read iv from wallet header" ) ;
+		fprintf( stderr,"failed to read iv from wallet header\n" ) ;
 		return 2 ;
 	}
 		
@@ -237,7 +255,7 @@ int lxqt_wallet_open( lxqt_wallet_t * wallet,const char * password,size_t passwo
 		free( w->wallet_name ) ;
 		free( w->application_name ) ;
 		free( w ) ;
-		fprintf( stderr,"failed to read magic string from wallet header" ) ;
+		fprintf( stderr,"failed to read magic string from wallet header\n" ) ;
 		return 2 ;
 	}
 	
@@ -351,7 +369,6 @@ int lxqt_wallet_add_key( lxqt_wallet_t wallet,const char * key,const char * valu
 			strncpy( ( char *)&key_value->key,key,KEY_SIZE ) ;
 			memset( &key_value->value,'\0',VALUE_SIZE ) ;
 			memcpy( &key_value->value,value,key_value_length ) ;
-			key_value->value[ key_value_length ] = '\0' ;
 			key_value->value_size = key_value_length + 1 ;
 			wallet->wallet_data = key_value ;
 			wallet->wallet_data_size++ ;
@@ -366,7 +383,6 @@ int lxqt_wallet_add_key( lxqt_wallet_t wallet,const char * key,const char * valu
 			strncpy( ( char *)&key_value_1->key,key,KEY_SIZE ) ;
 			memset( &key_value_1->value,'\0',VALUE_SIZE ) ;
 			memcpy( &key_value_1->value,key_value,key_value_length ) ;
-			key_value_1->value[ key_value_length ] = '\0' ;
 			key_value_1->value_size = key_value_length + 1 ;
 			wallet->wallet_data = key_value ;
 			wallet->wallet_data_size++ ;
@@ -379,9 +395,36 @@ int lxqt_wallet_add_key( lxqt_wallet_t wallet,const char * key,const char * valu
 
 int lxqt_wallet_delete_key( lxqt_wallet_t wallet,const char * key )
 {
-	if( wallet ){;}
-	if( key ){;}
-	return 0 ;
+	size_t size = wallet->wallet_data_size ;
+	size_t k = 0 ;
+	struct lxqt_key_value * start = wallet->wallet_data ;
+	struct lxqt_key_value * end = start + size ;
+	struct lxqt_key_value * it = start ;
+	
+	if( key == NULL ){
+		return 1 ;
+	}
+	
+	for( it = start ; it != end ; it++ ){
+		k++ ;
+		if( strcmp( key,it->key ) == 0 ){
+			if( size == 1 ){
+				wallet->wallet_data_size = 0 ;
+				free( wallet->wallet_data ) ;
+				wallet->wallet_data = NULL ;
+			}else if( k == size ){
+				wallet->wallet_data_size-- ;
+				wallet->wallet_data = realloc( wallet->wallet_data,wallet->wallet_data_size * sizeof( struct lxqt_key_value ) ) ;
+			}else{
+				memmove( it,it + 1,( size - 1 - k ) *  wallet->wallet_data_size * sizeof( struct lxqt_key_value ) ) ;
+				wallet->wallet_data_size-- ;					
+				wallet->wallet_data = realloc( wallet->wallet_data,wallet->wallet_data_size * sizeof( struct lxqt_key_value ) ) ;
+			}
+			return 0 ;
+		}
+	}
+		
+	return 1 ;
 }
 
 int lxqt_wallet_delete_wallet( const char * wallet_name,const char * application_name ) 
@@ -485,7 +528,7 @@ int lxqt_wallet_exists( const char * wallet_name,const char * application_name )
 	char path[ PATH_MAX ] ;
 	struct stat st ;
 	_wallet_full_path( path,PATH_MAX,wallet_name,application_name ) ;
-	return stat( path,&st ) == 0 ;
+	return stat( path,&st ) ;
 }
 
 void lxqt_wallet_application_wallet_path( char * path,size_t path_buffer_size,const char * application_name )
@@ -535,7 +578,7 @@ static int _get_iv_from_wallet_header( char iv[ IV_SIZE ],const char * wallet_na
 {
 	int fd ;
 	char path[ PATH_MAX ] ;
-	if( lxqt_wallet_exists( wallet_name,application_name ) ){
+	if( lxqt_wallet_exists( wallet_name,application_name ) == 0 ){
 		_wallet_full_path( path,PATH_MAX,wallet_name,application_name ) ;
 		fd = open( path,O_RDONLY ) ;
 		if( fd == -1 ){

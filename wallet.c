@@ -80,6 +80,21 @@ int main( int argc,char * argv[] )
 			for( k = 0 ; k < j ; k ++ ){
 				printf( "key=%s:value=%s\n",values[ k ].key,values[ k ].value ) ;
 			}
+			
+			lxqt_wallet_close( wallet ) ;
+		}
+	}else if( strcmp( argv[ 1 ],"delete" ) == 0 ){
+		if( argc < 3 ){
+			r = 20 ;
+		}else{
+			f = argv[ 2 ] ;
+			r = lxqt_wallet_open( &wallet,f,strlen( f ),"wallet_name","application_name" ) ;
+		}
+		
+		if( r == 0 ){
+			f = argv[ 3 ] ;
+			r = lxqt_wallet_delete_key( wallet,f ) ;
+			lxqt_wallet_close( wallet ) ;
 		}
 	}
 	
