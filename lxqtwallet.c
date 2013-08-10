@@ -41,7 +41,7 @@ static void _get_iv( char iv[ IV_SIZE ] )
 	close( fd ) ;
 }
 
-char ** lxqt_wallet_read_all_passwords( lxqt_wallet_t wallet ) 
+char ** lxqt_wallet_read_all_key_values( lxqt_wallet_t wallet ) 
 {
 	if( wallet ){;}
 	return NULL ;
@@ -263,19 +263,33 @@ int lxqt_wallet_open( lxqt_wallet_t * wallet,const char * password,size_t passwo
 	}
 }
 
-char * lxqt_wallet_read_password( lxqt_wallet_t wallet,const char * key )
+char * lxqt_wallet_read_key_value( lxqt_wallet_t wallet,const char * key )
 {
 	if( wallet ){;}
 	if( key ){;}
 	return NULL ;
 }
 
-int lxqt_wallet_t_write_password( lxqt_wallet_t wallet,const char * key,const char * password,size_t password_length ) 
+int lxqt_wallet_add_key( lxqt_wallet_t wallet,const char * key,const char * key_value,size_t key_value_length ) 
 {
 	if( wallet ){;}
 	if( key ){;}
-	if( password ){;}
-	if( password_length ){;}
+	if( key_value ){;}
+	if( key_value_length ){;}
+	return 0 ;
+}
+
+int lxqt_wallet_delete_key( lxqt_wallet_t wallet,const char * key )
+{
+	if( wallet ){;}
+	if( key ){;}
+	return 0 ;
+}
+
+int lxqt_wallet_delete_wallet( const char * wallet_name,const char * application_name ) 
+{
+	if( wallet_name ){;}
+	if( application_name ){;}
 	return 0 ;
 }
 
