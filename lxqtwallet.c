@@ -277,16 +277,18 @@ lxqt_wallet_error lxqt_wallet_open( lxqt_wallet_t * wallet,const char * password
 	}
 	
 	if( memcmp( magic_string,MAGIC_STRING,MAGIC_STRING_SIZE ) == 0 ){
+		
+		/*
+		 * correct password and wallet is opened
+		 */
+		
 		memcpy( version_buffer,magic_string + MAGIC_STRING_SIZE,VERSION_SIZE ) ;
 		version_buffer[ VERSION_SIZE ] = '\0' ;
-		if( _wallet_is_not_compatible( version_buffer ) == lxqt_wallet_incompatible_wallet ){
+		if( _wallet_is_not_compatible( version_buffer ) ){
 			gcry_cipher_close( gcry_cipher_handle ) ;
 			return _free_open( lxqt_wallet_incompatible_wallet,w ) ;
 		}
 		
-		/*
-		 * correct password
-		 */
 		stat( path,&st ) ;
 		if( st.st_size <= IV_SIZE + MAGIC_STRING_BUFFER_SIZE ){
 			/*
@@ -668,5 +670,5 @@ static void _create_magic_string_header( char magic_string[ MAGIC_STRING_BUFFER_
 static int _wallet_is_not_compatible( char version_buffer[ VERSION_SIZE + 1 ] ) 
 {
 	if( version_buffer ){;}
-	return lxqt_wallet_no_error ;
+	return 0 ;
 }
