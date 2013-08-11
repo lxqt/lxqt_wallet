@@ -158,7 +158,7 @@ lxqt_wallet_error lxqt_wallet_create( const char * password,size_t password_leng
 	}
 }
 
-static lxqt_wallet_error _open_exit( int st,struct lxqt_wallet_struct * w,gcry_cipher_hd_t gcry_cipher_handle )
+static lxqt_wallet_error _open_exit( lxqt_wallet_error st,struct lxqt_wallet_struct * w,gcry_cipher_hd_t gcry_cipher_handle )
 {
 	if( gcry_cipher_handle != 0 ){
 		gcry_cipher_close( gcry_cipher_handle ) ;
@@ -211,7 +211,9 @@ lxqt_wallet_error lxqt_wallet_open( lxqt_wallet_t * wallet,const char * password
 	memset( w,'\0',sizeof( struct lxqt_wallet_struct ) ) ;
 	
 	len = strlen( wallet_name ) ;
+	
 	w->wallet_name = malloc( sizeof( char ) * ( len + 1 ) ) ;
+	
 	if( w->wallet_name == NULL ){
 		return _open_exit( lxqt_wallet_failed_to_allocate_memory,w,0 ) ;
 	}else{
@@ -219,7 +221,9 @@ lxqt_wallet_error lxqt_wallet_open( lxqt_wallet_t * wallet,const char * password
 	}
 	
 	len = strlen( application_name ) ;
+	
 	w->application_name = malloc( sizeof( char ) * ( len + 1 ) ) ;
+	
 	if( w->application_name == NULL ){
 		return _open_exit( lxqt_wallet_failed_to_allocate_memory,w,0 ) ;
 	}else{
@@ -309,7 +313,6 @@ lxqt_wallet_error lxqt_wallet_open( lxqt_wallet_t * wallet,const char * password
 					return _open_exit( lxqt_wallet_no_error,NULL,gcry_cipher_handle ) ;
 				}else{
 					close( fd ) ;
-					gcry_cipher_close( gcry_cipher_handle ) ;
 					return _open_exit( lxqt_wallet_failed_to_allocate_memory,w,gcry_cipher_handle ) ;
 				}
 			}else{
@@ -331,19 +334,18 @@ char * lxqt_wallet_read_key_value( lxqt_wallet_t wallet,const char * key )
 	
 	if( key == NULL || wallet == NULL ){
 		return NULL ;
-	}
-	
-	while( i != j ){
-		k = i ;
-		i++ ;
-		if( strcmp( key,k->key ) == 0 ){
-			value = malloc( k->value_size ) ;
-			memcpy( value,k->value,k->value_size ) ;
-			return value ;
+	}else{
+		while( i != j ){
+			k = i ;
+			i++ ;
+			if( strcmp( key,k->key ) == 0 ){
+				value = malloc( k->value_size ) ;
+				memcpy( value,k->value,k->value_size ) ;
+				return value ;
+			}
 		}
+		return NULL ;
 	}
-	
-	return NULL ;
 }
 
 lxqt_wallet_error lxqt_wallet_add_key( lxqt_wallet_t wallet,const char * key,const char * value,size_t key_value_length ) 
@@ -355,42 +357,27 @@ lxqt_wallet_error lxqt_wallet_add_key( lxqt_wallet_t wallet,const char * key,con
 	
 	if( key == NULL || value == NULL || wallet == NULL ){
 		return lxqt_wallet_invalid_argument ;
-	}
-	
-	len = strlen( key ) ;
-	
-	if( key_value_length == 0 || key_value_length >= LXQT_WALLET_VALUE_SIZE || len >= LXQT_WALLET_KEY_SIZE ){
-		return lxqt_wallet_invalid_argument ;
-	}
-	
-	if( wallet->wallet_data_size == 0 ){
-		key_value = malloc( sizeof( struct lxqt_key_value ) ) ;
-		if( key_value != NULL ){
-			strncpy( ( char *)&key_value->key,key,LXQT_WALLET_KEY_SIZE ) ;
-			memcpy( &key_value->value,value,key_value_length ) ;
-			key_value->value[ key_value_length ] = '\0' ;
-			key_value->value_size = key_value_length + 1 ;
-			wallet->wallet_data = key_value ;
-			wallet->wallet_data_size++ ;
-			wallet->wallet_modified = 1 ;
-			return lxqt_wallet_no_error ;
-		}else{
-			return lxqt_wallet_failed_to_allocate_memory ;
-		}
 	}else{
-		key_value = realloc( wallet->wallet_data,sizeof( struct lxqt_key_value ) * ( wallet->wallet_data_size + 1 ) ) ;
-		if( key_value != NULL ){
-			key_value_1 = key_value + wallet->wallet_data_size ;
-			strncpy( ( char *)&key_value_1->key,key,LXQT_WALLET_KEY_SIZE ) ;
-			memcpy( &key_value_1->value,value,key_value_length ) ;
-			key_value_1->value[ key_value_length ] = '\0' ;
-			key_value_1->value_size = key_value_length + 1 ;
-			wallet->wallet_data = key_value ;
-			wallet->wallet_data_size++ ;
-			wallet->wallet_modified = 1 ;
-			return lxqt_wallet_no_error ;
+		len = strlen( key ) ;
+		if( len >= LXQT_WALLET_KEY_SIZE || len == 0 || 
+			key_value_length >= LXQT_WALLET_VALUE_SIZE || key_value_length == 0 ){
+			return lxqt_wallet_invalid_argument ;
 		}else{
-			return lxqt_wallet_failed_to_allocate_memory ;
+			len = sizeof( struct lxqt_key_value ) * ( wallet->wallet_data_size + 1 ) ;
+			key_value = realloc( wallet->wallet_data,len ) ;
+			if( key_value != NULL ){
+				key_value_1 = key_value + wallet->wallet_data_size ;
+				strncpy( ( char *)&key_value_1->key,key,LXQT_WALLET_KEY_SIZE ) ;
+				memcpy( &key_value_1->value,value,key_value_length ) ;
+				key_value_1->value[ key_value_length ] = '\0' ;
+				key_value_1->value_size = key_value_length + 1 ;
+				wallet->wallet_data = key_value ;
+				wallet->wallet_data_size++ ;
+				wallet->wallet_modified = 1 ;
+				return lxqt_wallet_no_error ;
+			}else{
+				return lxqt_wallet_failed_to_allocate_memory ;
+			}
 		}
 	}
 }
@@ -413,11 +400,18 @@ lxqt_wallet_error lxqt_wallet_delete_key( lxqt_wallet_t wallet,const char * key 
 	
 	for( i = 0 ; i < j ; i++ ){
 		if( strcmp( key,k[ i ].key ) == 0 ){
-			memmove( k + i,k + i + 1,( j - 1 - i ) * sizeof( struct lxqt_key_value ) ) ;
-			wallet->wallet_data_size-- ;
-			e = wallet->wallet_data_size * sizeof( struct lxqt_key_value ) ;
-			wallet->wallet_data = realloc( wallet->wallet_data,e ) ;
-			wallet->wallet_modified = 1 ;
+			if( j == 1 ){
+				free( wallet->wallet_data ) ;
+				wallet->wallet_data = NULL ;
+				wallet->wallet_data_size = 0 ;
+				wallet->wallet_modified = 1 ;
+			}else{
+				memmove( k + i,k + i + 1,( j - 1 - i ) * sizeof( struct lxqt_key_value ) ) ;
+				wallet->wallet_data_size-- ;
+				e = wallet->wallet_data_size * sizeof( struct lxqt_key_value ) ;
+				wallet->wallet_data = realloc( wallet->wallet_data,e ) ;
+				wallet->wallet_modified = 1 ;
+			}
 			break ;
 		}
 	}
