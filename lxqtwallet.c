@@ -48,6 +48,7 @@ struct lxqt_wallet_struct{
 	char key[ PASSWORD_SIZE ] ;
 	struct lxqt_key_value * wallet_data ;
 	size_t wallet_data_size ;
+	int wallet_modified ;
 };
 
 static char * _wallet_full_path( char * path_buffer,size_t path_buffer_size,const char * wallet_name,const char * application_name ) ;
@@ -310,7 +311,7 @@ lxqt_wallet_error lxqt_wallet_open( lxqt_wallet_t * wallet,const char * password
 				
 				e = malloc( sizeof( char ) * ( st.st_size - ( IV_SIZE + MAGIC_STRING_BUFFER_SIZE ) ) ) ;
 				if( e != NULL ){
-					lseek( fd, IV_SIZE + MAGIC_STRING_BUFFER_SIZE,SEEK_SET ) ;
+					lseek( fd,IV_SIZE + MAGIC_STRING_BUFFER_SIZE,SEEK_SET ) ;
 				
 					for( i = 0 ; i < j ; i++ ){
 						read( fd,buffer,BLOCK_SIZE ) ;
@@ -390,6 +391,7 @@ lxqt_wallet_error lxqt_wallet_add_key( lxqt_wallet_t wallet,const char * key,con
 			key_value->value_size = key_value_length + 1 ;
 			wallet->wallet_data = key_value ;
 			wallet->wallet_data_size++ ;
+			wallet->wallet_modified = 1 ;
 			return lxqt_wallet_no_error ;
 		}else{
 			return lxqt_wallet_failed_to_allocate_memory ;
@@ -404,6 +406,7 @@ lxqt_wallet_error lxqt_wallet_add_key( lxqt_wallet_t wallet,const char * key,con
 			key_value_1->value_size = key_value_length + 1 ;
 			wallet->wallet_data = key_value ;
 			wallet->wallet_data_size++ ;
+			wallet->wallet_modified = 1 ;
 			return lxqt_wallet_no_error ;
 		}else{
 			return lxqt_wallet_failed_to_allocate_memory ;
@@ -430,13 +433,16 @@ lxqt_wallet_error lxqt_wallet_delete_key( lxqt_wallet_t wallet,const char * key 
 				wallet->wallet_data_size = 0 ;
 				free( wallet->wallet_data ) ;
 				wallet->wallet_data = NULL ;
+				wallet->wallet_modified = 1 ;
 			}else if( k == size ){
 				wallet->wallet_data_size-- ;
 				wallet->wallet_data = realloc( wallet->wallet_data,wallet->wallet_data_size * sizeof( struct lxqt_key_value ) ) ;
+				wallet->wallet_modified = 1 ;
 			}else{
 				memmove( it,it + 1,( size - 1 - k ) *  wallet->wallet_data_size * sizeof( struct lxqt_key_value ) ) ;
 				wallet->wallet_data_size-- ;					
 				wallet->wallet_data = realloc( wallet->wallet_data,wallet->wallet_data_size * sizeof( struct lxqt_key_value ) ) ;
+				wallet->wallet_modified = 1 ;
 			}
 			break ;
 		}
@@ -475,6 +481,10 @@ lxqt_wallet_error lxqt_wallet_close( lxqt_wallet_t wallet )
 	
 	if( wallet == NULL ){
 		return lxqt_wallet_invalid_argument ;
+	}
+	
+	if( wallet->wallet_modified == 0 ){
+		return _close_exit( lxqt_wallet_no_error,wallet ) ;
 	}
 	
 	r = gcry_cipher_open( &gcry_cipher_handle,GCRY_CIPHER_AES128,GCRY_CIPHER_MODE_CBC,0 ) ;
@@ -548,9 +558,10 @@ int lxqt_wallet_exists( const char * wallet_name,const char * application_name )
 	char path[ PATH_MAX ] ;
 	if( wallet_name == NULL || application_name == NULL ){
 		return lxqt_wallet_invalid_argument ;
+	}else{
+		_wallet_full_path( path,PATH_MAX,wallet_name,application_name ) ;
+		return stat( path,&st ) ;
 	}
-	_wallet_full_path( path,PATH_MAX,wallet_name,application_name ) ;
-	return stat( path,&st ) ;
 }
 
 void lxqt_wallet_application_wallet_path( char * path,size_t path_buffer_size,const char * application_name )
