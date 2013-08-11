@@ -25,6 +25,9 @@
 
 typedef struct lxqt_wallet_struct * lxqt_wallet_t ;
 
+/*
+ * Below structures are exposed to be used with lxqt_wallet_read_all_key_values() function
+ */
 #define KEY_SIZE 44 
 #define VALUE_SIZE 512
 
@@ -48,7 +51,9 @@ typedef enum{
 	lxqt_wallet_gcry_cipher_decrypt_failed,
 	lxqt_wallet_failed_to_open_file,
 	lxqt_wallet_failed_to_allocate_memory,
-	lxqt_wallet_invalid_argument
+	lxqt_wallet_invalid_argument,
+	lxqt_wallet_incompatible_wallet,
+	lxqt_wallet_failed_to_create_key_hash
 }lxqt_wallet_error;
 /*
  * open "wallet_name" wallet of application "application_name" using a password of size password_length.
@@ -72,7 +77,8 @@ char * lxqt_wallet_read_key_value( lxqt_wallet_t,const char * key ) ;
 
 /*
  * maximum size of the key is 43 bytes
- * maximum size of key value is 511
+ * maximum size of key value is 511 bytes
+ * Larger argument sizes will result in "lxqt_wallet_invalid_argument" error.
  */
 lxqt_wallet_error lxqt_wallet_add_key( lxqt_wallet_t,const char * key,const char * key_value,size_t key_value_length ) ;
 
