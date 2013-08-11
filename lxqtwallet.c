@@ -77,7 +77,8 @@ const struct lxqt_key_value * lxqt_wallet_read_all_key_values( lxqt_wallet_t wal
 	return wallet->wallet_data ;
 }
 
-lxqt_wallet_error lxqt_wallet_create( const char * password,size_t password_length,const char * wallet_name,const char * application_name )
+lxqt_wallet_error lxqt_wallet_create( const char * password,size_t password_length,
+				      const char * wallet_name,const char * application_name )
 {
 	int fd ;
 	char path[ PATH_MAX ] ;
@@ -158,7 +159,8 @@ lxqt_wallet_error lxqt_wallet_create( const char * password,size_t password_leng
 	}
 }
 
-static lxqt_wallet_error _open_exit( lxqt_wallet_error st,struct lxqt_wallet_struct * w,gcry_cipher_hd_t gcry_cipher_handle )
+static lxqt_wallet_error _open_exit( lxqt_wallet_error st,
+				     struct lxqt_wallet_struct * w,gcry_cipher_hd_t gcry_cipher_handle )
 {
 	if( gcry_cipher_handle != 0 ){
 		gcry_cipher_close( gcry_cipher_handle ) ;
@@ -348,7 +350,8 @@ char * lxqt_wallet_read_key_value( lxqt_wallet_t wallet,const char * key )
 	}
 }
 
-lxqt_wallet_error lxqt_wallet_add_key( lxqt_wallet_t wallet,const char * key,const char * value,size_t key_value_length ) 
+lxqt_wallet_error lxqt_wallet_add_key( lxqt_wallet_t wallet,const char * key,
+				       const char * value,size_t key_value_length ) 
 {
 	struct lxqt_key_value * key_value ;
 	struct lxqt_key_value * key_value_1 ;
