@@ -500,6 +500,7 @@ lxqt_wallet_error lxqt_wallet_close( lxqt_wallet_t wallet )
 		
 	if( r != GPG_ERR_NO_ERROR ){
 		unlink( path_1 ) ;
+		close( fd ) ;
 		return _close_exit( lxqt_wallet_gcry_cipher_encrypt_failed,wallet,gcry_cipher_handle ) ;
 	}
 	
@@ -510,15 +511,14 @@ lxqt_wallet_error lxqt_wallet_close( lxqt_wallet_t wallet )
 	
 	if( r != GPG_ERR_NO_ERROR ){
 		unlink( path_1 ) ;
+		close( fd ) ;
 		return _close_exit( lxqt_wallet_gcry_cipher_encrypt_failed,wallet,gcry_cipher_handle ) ;
+	}else{
+		write( fd,wallet->wallet_data,wallet->wallet_data_size * sizeof( struct lxqt_key_value ) ) ;
+		close( fd ) ;
+		rename( path_1,path ) ;
+		return _close_exit( lxqt_wallet_no_error,wallet,gcry_cipher_handle ) ;
 	}
-	
-	write( fd,wallet->wallet_data,wallet->wallet_data_size * sizeof( struct lxqt_key_value ) ) ;
-	
-	close( fd ) ;
-	
-	rename( path_1,path ) ;
-	return _close_exit( lxqt_wallet_no_error,wallet,gcry_cipher_handle ) ;
 }
 
 int lxqt_wallet_exists( const char * wallet_name,const char * application_name ) 
