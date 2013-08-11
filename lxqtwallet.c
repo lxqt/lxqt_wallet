@@ -593,16 +593,18 @@ static void _create_application_wallet_path( const char * application_name )
 static gcry_error_t _create_key( char output_key[ PASSWORD_SIZE ],const char * input_key,size_t input_key_length )
 {
 	gcry_md_hd_t md ;
-	gcry_error_t r ;
+	unsigned char * digest ;
 	
-	r = gcry_md_open( &md,GCRY_MD_SHA1,GCRY_MD_FLAG_HMAC ) ;
+	gcry_error_t r = gcry_md_open( &md,GCRY_MD_SHA1,GCRY_MD_FLAG_SECURE ) ;
 	
 	if( r == GPG_ERR_NO_ERROR ){
-		r = gcry_md_setkey( md,input_key,input_key_length ) ;
-		if( r == GPG_ERR_NO_ERROR ){
-			gcry_md_write( md,output_key,PASSWORD_SIZE ) ;
+		gcry_md_write( md,input_key,input_key_length ) ;
+		gcry_md_final( md ) ;
+		digest = gcry_md_read( md,0 ) ;
+		if( digest == NULL ){
+			r = !GPG_ERR_NO_ERROR ;
 		}else{
-			;
+			memcpy( output_key,digest,PASSWORD_SIZE ) ;
 		}
 		gcry_md_close( md ) ;
 	}else{
