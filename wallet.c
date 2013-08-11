@@ -9,6 +9,8 @@
 static const char * wallet_name    = "wallet_name" ;
 static const char * application_name = "application_name" ;
 
+#define stringsAreEqual( x,y ) strcmp( x,y ) == 0
+
 int main( int argc,char * argv[] )
 {
 	lxqt_wallet_t wallet ;
@@ -17,23 +19,36 @@ int main( int argc,char * argv[] )
 	char * e = NULL ;
 	const char * f ;
 	const char * z ;
-	
+	const char * command ;
 	const struct lxqt_key_value * values ;
 	int j ;
 	int k ;
+	
 	if( argc  < 2 ){
 		printf( "wrong number of arguments\n" ) ;
 		return lxqt_wallet_invalid_argument ;
 	}
-	if( strcmp( argv[ 1 ],"create" ) == 0 ){
+	
+	command = argv[ 1 ] ;
+	
+	if( stringsAreEqual( command,"create" ) ){
+		/*
+		 * create a new wallet
+		 * additional arguments: password
+		 * eg ./wallet create xxx 
+		 */
 		if( argc < 3 ){
 			r = lxqt_wallet_invalid_argument ;
 		}else{
 			f = argv[ 2 ] ;
 			r = lxqt_wallet_create( f,strlen( f ),wallet_name,application_name ) ;
 		}
-	}else if( strcmp( argv[ 1 ],"add" ) == 0 ){
-		
+	}else if( stringsAreEqual( command,"add" ) ){
+		/*
+		 * add an entry to the wallet
+		 * additional arguments: password key key_value
+		 * eg ./wallet add xxx alicia abc
+		 */
 		if( argc < 3 ){
 			r = lxqt_wallet_invalid_argument ;
 		}else{
@@ -54,7 +69,12 @@ int main( int argc,char * argv[] )
 			
 			lxqt_wallet_close( wallet ) ;
 		}
-	}else if( strcmp( argv[ 1 ],"read" ) == 0 ){
+	}else if( stringsAreEqual( command,"read" ) ){
+		/*
+		 * read an value in a wallet through its key
+		 * additional arguments: password key key_value
+		 * eg ./wallet read xxx alicia
+		 */
 		if( argc < 3 ){
 			r = lxqt_wallet_invalid_argument ;
 		}else{
@@ -81,7 +101,12 @@ int main( int argc,char * argv[] )
 			
 			lxqt_wallet_close( wallet ) ;
 		}
-	}else if( strcmp( argv[ 1 ],"print" ) == 0 ){
+	}else if( stringsAreEqual( command,"print" ) ){
+		/*
+		 * print all entries in the wallet
+		 * additional arguments: password
+		 * eg ./wallet print xxx alicia
+		 */
 		if( argc < 3 ){
 			r = lxqt_wallet_invalid_argument ;
 		}else{
@@ -105,7 +130,12 @@ int main( int argc,char * argv[] )
 				puts( "general error has occured" ) ;
 			}
 		}
-	}else if( strcmp( argv[ 1 ],"delete" ) == 0 ){
+	}else if( stringsAreEqual( command,"delete" ) ){
+		/*
+		 * delete a key from a wallet
+		 * additional arguments: password key
+		 * eg ./wallet delete xxx alicia
+		 */
 		if( argc < 3 ){
 			r = lxqt_wallet_invalid_argument ;
 		}else{
