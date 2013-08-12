@@ -541,9 +541,7 @@ int lxqt_wallet_exists( const char * wallet_name,const char * application_name )
 void lxqt_wallet_application_wallet_path( char * path,size_t path_buffer_size,const char * application_name )
 {
 	struct passwd * pass = getpwuid( getuid() ) ;
-	if( application_name != NULL && path != NULL ){
-		snprintf( path,path_buffer_size,"%s/.config/lxqt/wallets/%s/",pass->pw_dir,application_name ) ;
-	}
+	snprintf( path,path_buffer_size,"%s/.config/lxqt/wallets/%s/",pass->pw_dir,application_name ) ;
 }
 
 char * _wallet_full_path( char * path_buffer,size_t path_buffer_size,const char * wallet_name,const char * application_name )
@@ -551,7 +549,6 @@ char * _wallet_full_path( char * path_buffer,size_t path_buffer_size,const char 
 	char path_1[ PATH_MAX ] ;
 	lxqt_wallet_application_wallet_path( path_1,PATH_MAX,application_name ) ;
 	snprintf( path_buffer,path_buffer_size,"%s/%s.lwt",path_1,wallet_name ) ;
-	
 	return path_buffer ;
 }
 
