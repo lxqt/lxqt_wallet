@@ -23,6 +23,7 @@ int main( int argc,char * argv[] )
 	const struct lxqt_key_value * values ;
 	int j ;
 	int k ;
+	size_t q ;
 	
 	if( argc  < 2 ){
 		printf( "wrong number of arguments\n" ) ;
@@ -67,7 +68,7 @@ int main( int argc,char * argv[] )
 			z = argv[ 4 ] ;
 			r = lxqt_wallet_add_key( wallet,f,z,strlen( z ) ) ; 
 			
-			lxqt_wallet_close( wallet ) ;
+			lxqt_wallet_close( &wallet ) ;
 		}
 	}else if( stringsAreEqual( command,"read" ) ){
 		/*
@@ -90,7 +91,8 @@ int main( int argc,char * argv[] )
 			}
 		}else{
 			f = argv[ 3 ] ;
-			e = lxqt_wallet_read_key_value( wallet,f ) ;
+			e = NULL ;
+			lxqt_wallet_read_key_value( wallet,f,&e,&q ) ;
 			
 			if( e ){
 				printf( "key=%s:value=%s\n",f,e ) ;
@@ -99,7 +101,7 @@ int main( int argc,char * argv[] )
 				printf( "key=%s:value=(NULL)\n",f ) ;
 			}
 			
-			lxqt_wallet_close( wallet ) ;
+			lxqt_wallet_close( &wallet ) ;
 		}
 	}else if( stringsAreEqual( command,"print" ) ){
 		/*
@@ -122,7 +124,7 @@ int main( int argc,char * argv[] )
 				printf( "key=%s: value=%s\n",values[ k ].key,values[ k ].value ) ;
 			}
 			
-			lxqt_wallet_close( wallet ) ;
+			lxqt_wallet_close( &wallet ) ;
 		}else{
 			if( r == lxqt_wallet_wrong_password ){
 				puts( "wrong password" ) ;
@@ -146,7 +148,7 @@ int main( int argc,char * argv[] )
 		if( r == lxqt_wallet_no_error ){
 			f = argv[ 3 ] ;
 			r = lxqt_wallet_delete_key( wallet,f ) ;
-			lxqt_wallet_close( wallet ) ;
+			lxqt_wallet_close( &wallet ) ;
 		}else{
 			if( r == lxqt_wallet_wrong_password ){
 				puts( "wrong password" ) ;

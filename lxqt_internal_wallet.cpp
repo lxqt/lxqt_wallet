@@ -1,52 +1,158 @@
 #include "lxqt_internal_wallet.h"
 
+lxqt::Wallet::internalWallet::internalWallet() : m_wallet( 0 )
+{
+}
+
+lxqt::Wallet::internalWallet::~internalWallet()
+{
+	lxqt_wallet_close( &m_wallet ) ;
+}
+
 bool lxqt::Wallet::internalWallet::addKey( const QString& key,const QByteArray& value )
 {
-	Q_UNUSED( key ) ;
-	Q_UNUSED( value ) ;
-
+	lxqt_wallet_add_key( m_wallet,key.toAscii().constData(),value.constData(),value.size() ) ;
 	return true ;
 }
 
-bool lxqt::Wallet::internalWallet::open( const QString& walletName,const QString applicationName )
+bool lxqt::Wallet::internalWallet::openWallet()
 {
-	Q_UNUSED( walletName ) ;
-	Q_UNUSED( applicationName ) ;
-	return true ;
+	lxqt_wallet_error r = lxqt_wallet_open( &m_wallet,m_password.toAscii().constData(),m_password.size(),
+		      m_walletName.toAscii().constData(),m_applicationName.toAscii().constData() ) ;
+	return r == lxqt_wallet_no_error ;
+}
+
+bool lxqt::Wallet::internalWallet::openWallet( QString password )
+{
+	lxqt_wallet_error r = lxqt_wallet_open( &m_wallet,password.toAscii().constData(),password.size(),
+		      m_walletName.toAscii().constData(),m_applicationName.toAscii().constData() ) ;
+
+	bool z = ( r == lxqt_wallet_no_error ) ;
+	emit walletIsOpen( z ) ;
+	emit passwordIsCorrect( z ) ;
+	return z ;
+}
+
+void lxqt::Wallet::internalWallet::cancelled()
+{
+	emit walletIsOpen( false ) ;
+}
+
+bool lxqt::Wallet::internalWallet::open( const QString& walletName,const QString& applicationName,const QString& password )
+{
+	m_walletName        = walletName ;
+	m_applicationName   = applicationName ;
+	m_password          = password ;
+
+	if( m_password.isEmpty() ){
+		password_dialog * p = new password_dialog() ;
+		connect( p,SIGNAL( password( QString ) ),this,SLOT( openWallet( QString ) ) ) ;
+		connect( this,SIGNAL( passwordIsCorrect( bool ) ),p,SLOT( passwordIsCorrect( bool ) ) ) ;
+		connect( p,SIGNAL( cancelled() ),this,SLOT( cancelled() ) ) ;
+		p->ShowUI( m_walletName,m_applicationName ) ;
+		return false ;
+	}else{
+		return this->openWallet() ;
+	}
 }
 
 QByteArray lxqt::Wallet::internalWallet::readValue( const QString& key )
 {
-	Q_UNUSED( key ) ;
-	QByteArray b ;
-	return b ;
+	char * cvalue = NULL ;
+	size_t value_size ;
+	lxqt_wallet_read_key_value( m_wallet,key.toAscii().constData(),&cvalue,&value_size ) ;
+	if( cvalue != NULL ){
+		return QByteArray( cvalue,value_size ) ;
+	}else{
+		QByteArray b ;
+		return b ;
+	}
 }
 
 QVector<lxqt::Wallet::walletKeyValues> lxqt::Wallet::internalWallet::readAllKeyValues( void )
 {
+	const struct lxqt_key_value * r = lxqt_wallet_read_all_key_values( m_wallet ) ;
+	
 	QVector<walletKeyValues> w ;
-	return w ;
+
+	if( r == 0 ){
+		return w ;
+	}else{
+		size_t j = lxqt_wallet_wallet_size( m_wallet ) ;
+		walletKeyValues s ;
+		for( size_t i = 0 ; i < j ; i++ ){
+			s.key = QString( r[ i ].key ) ;
+			s.value = QByteArray( r[ i ].value,r[ i ].value_size - 1 ) ;
+			w.append( s ) ;
+		}
+		return w ;
+	}
+}
+
+QStringList lxqt::Wallet::internalWallet::readAllKeys()
+{
+	const struct lxqt_key_value * r = lxqt_wallet_read_all_key_values( m_wallet ) ;
+
+	QStringList l ;
+	if( r == 0 ){
+		return l ;
+	}else{
+		size_t j = lxqt_wallet_wallet_size( m_wallet ) ;
+		walletKeyValues s ;
+		for( size_t i = 0 ; i < j ; i++ ){
+			l.append( QString( r[ i ].key ) ) ;
+		}
+		return l ;
+	}
 }
 
 void lxqt::Wallet::internalWallet::deleteKey( const QString& key )
 {
-	Q_UNUSED( key ) ;
+	lxqt_wallet_delete_key( m_wallet,key.toAscii().constData() ) ;
 }
 
-void lxqt::Wallet::internalWallet::deleteWallet( const QString& walletName,const QString& applicationName )
+void lxqt::Wallet::internalWallet::deleteWallet( void )
 {
-	Q_UNUSED( walletName ) ;
-	Q_UNUSED( applicationName ) ;
+	lxqt_wallet_delete_wallet( m_walletName.toAscii().constData(),m_applicationName.toAscii().constData() ) ;
 }
 
 bool lxqt::Wallet::internalWallet::walletExists( const QString& walletName,const QString& applicationName )
 {
-	Q_UNUSED( walletName ) ;
-	Q_UNUSED( applicationName ) ;
-	return false ;
+	return lxqt_wallet_exists( walletName.toAscii().constData(),applicationName.toAscii().constData() ) == 0 ;
 }
 
 int lxqt::Wallet::internalWallet::walletSize( void )
 {
-	return 4 ;
+	return lxqt_wallet_wallet_size( m_wallet ) ;
 }
+
+void lxqt::Wallet::internalWallet::close()
+{
+	lxqt_wallet_close( &m_wallet ) ;
+}
+
+lxqt::Wallet::walletBackEnd lxqt::Wallet::internalWallet::backEnd()
+{
+	return lxqt::Wallet::internal ;
+}
+
+bool lxqt::Wallet::internalWallet::walletIsOpened()
+{
+	return m_wallet != 0 ;
+}
+
+void lxqt::Wallet::internalWallet::setAParent( QWidget * parent )
+{
+	if( parent ){
+		this->setParent( parent ) ;
+		connect( this,SIGNAL( walletIsOpen( bool ) ),parent,SLOT( walletIsOpen( bool ) ) ) ;
+	}
+}
+
+QObject * lxqt::Wallet::internalWallet::qObject()
+{
+	return static_cast< QObject *>( this ) ;
+}
+
+
+
