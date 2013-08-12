@@ -16,17 +16,19 @@ SOURCES += main.cpp lxqtwallet.c \
     lxqt_wallet_interface.cpp \
     lxqt_internal_wallet.cpp \
     password_dialog.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    lxqt_kwallet.cpp
 
 INCLUDEPATH += /home/local/KDE4/include /usr/include
 
-LIBS += -lgcrypt
+LIBS += -lgcrypt -lkwalletbackend -L/home/local/KDE4/lib
 
 HEADERS += \
     lxqt_wallet_interface.h \
     lxqt_internal_wallet.h \
     password_dialog.h \
-    mainwindow.h
+    mainwindow.h \
+    lxqt_kwallet.h
 
 FORMS += \
     password_dialog.ui \

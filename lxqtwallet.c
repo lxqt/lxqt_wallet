@@ -541,40 +541,38 @@ int lxqt_wallet_exists( const char * wallet_name,const char * application_name )
 void lxqt_wallet_application_wallet_path( char * path,size_t path_buffer_size,const char * application_name )
 {
 	struct passwd * pass = getpwuid( getuid() ) ;
-
-	char path_1[ PATH_MAX ] ;
-
 	if( application_name != NULL && path != NULL ){
-		snprintf( path,path_buffer_size,"%s/.config",pass->pw_dir ) ;
-
-		snprintf( path_1,path_buffer_size,"%s/%s",path,application_name )  ;
-
-		snprintf( path,path_buffer_size,"%s/wallets",path_1 ) ;
+		snprintf( path,path_buffer_size,"%s/.config/lxqt/wallets/%s/",pass->pw_dir,application_name ) ;
 	}
 }
 
 char * _wallet_full_path( char * path_buffer,size_t path_buffer_size,const char * wallet_name,const char * application_name )
 {
-	struct passwd * pass = getpwuid( getuid() ) ;
-	snprintf( path_buffer,path_buffer_size,"%s/.config/%s/wallets/%s.lwt",pass->pw_dir,application_name,wallet_name ) ;
+	char path_1[ PATH_MAX ] ;
+	lxqt_wallet_application_wallet_path( path_1,PATH_MAX,application_name ) ;
+	snprintf( path_buffer,path_buffer_size,"%s/%s.lwt",path_1,wallet_name ) ;
+	
 	return path_buffer ;
 }
 
 static void _create_application_wallet_path( const char * application_name )
 {
-	struct passwd * pass = getpwuid( getuid() ) ;
+	char path[ PATH_MAX ] ;
 
-	char path_1[ PATH_MAX ] ;
-	char path_2[ PATH_MAX ] ;
-
-	snprintf( path_1,PATH_MAX,"%s/.config",pass->pw_dir ) ;
-	mkdir( path_1,0755 ) ;
-
-	snprintf( path_2,PATH_MAX,"%s/%s",path_1,application_name )  ;
-	mkdir( path_2,0755 ) ;
-
-	snprintf( path_1,PATH_MAX,"%s/wallets",path_2 ) ;
-	mkdir( path_1,0755 ) ;
+	char * e ;
+	
+	lxqt_wallet_application_wallet_path( path,PATH_MAX,application_name ) ;
+	
+	e = path + 1 ;
+	
+	while( *e != '\0' ){
+		if( *e == '/' ){
+			*e = '\0' ;
+			mkdir( path,0755 ) ;
+			*e = '/' ;
+		}
+		e++ ;
+	}
 }
 
 static gcry_error_t _create_key( char output_key[ PASSWORD_SIZE ],const char * input_key,size_t input_key_length )

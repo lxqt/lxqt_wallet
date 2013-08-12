@@ -1,27 +1,24 @@
-#ifndef LXQT_INTERNAL_WALLET_H
-#define LXQT_INTERNAL_WALLET_H
+#ifndef LXQT_KWALLET_H
+#define LXQT_KWALLET_H
 
 #include "lxqt_wallet_interface.h"
-#include "lxqtwallet.h"
-#include "password_dialog.h"
 
 #include <QString>
 #include <QByteArray>
 #include <QDebug>
-#include <QMessageBox>
-#include "password_dialog.h"
-#include <QPushButton>
+
+#include <kwallet.h>
 
 namespace lxqt{
 
 namespace Wallet{
 
-class internalWallet : public lxqt::Wallet::Wallet
+class kwallet : public lxqt::Wallet::Wallet
 {
 	Q_OBJECT
 public:
-	internalWallet() ;
-	~internalWallet() ;
+	kwallet() ;
+	~kwallet() ;
 	bool addKey( const QString& key,const QByteArray& value ) ;
 	bool open( const QString& walletName,const QString& applicationName,const QString& password = QString() ) ;
 	QByteArray readValue( const QString& key ) ;
@@ -39,14 +36,10 @@ public:
 	QString storagePath( void ) ;
 signals:
 	void walletIsOpen( bool ) ;
-	void passwordIsCorrect( bool ) ;
 private slots:
-	bool openWallet( QString ) ;
-	void cancelled( void ) ;
+	void walletOpened( bool ) ;
 private:
-	bool createWallet( void ) ;
-	bool openWallet( void ) ;
-	lxqt_wallet_t m_wallet ;
+	KWallet::Wallet * m_kwallet ;
 	QString m_walletName ;
 	QString m_applicationName ;
 	QString m_password ;
@@ -55,4 +48,5 @@ private:
 }
 
 }
-#endif // LXQT_INTERNAL_WALLET_H
+
+#endif // LXQT_KWALLET_H

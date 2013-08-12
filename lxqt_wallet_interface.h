@@ -8,6 +8,12 @@
 #include <QVector>
 #include <QStringList>
 
+#include "storage_manager.h"
+
+#define HAS_KWALLET_SUPPORT 1
+
+#define HAS_GNOME_KEYRING_SUPPORT 0
+
 namespace lxqt{
 
 namespace Wallet{
@@ -19,9 +25,9 @@ public:
 };
 
 typedef enum{
-	internal,
-	kwallet,
-	gnomeKeyring
+	internalBackEnd,
+	kwalletBackEnd,
+	gnomeKeyringBackEnd
 }walletBackEnd;
 
 class Wallet : public QObject
@@ -35,7 +41,7 @@ public:
 	 * NULL is returned if there is no support for requested backend.
 	 * A caller is responsible for the returned object and must delete it when done with it
 	 */
-	static lxqt::Wallet::Wallet * getWalletBackend( lxqt::Wallet::walletBackEnd = lxqt::Wallet::internal ) ;
+	static lxqt::Wallet::Wallet * getWalletBackend( lxqt::Wallet::walletBackEnd = lxqt::Wallet::internalBackEnd ) ;
 
 	/*
 	 * check if there is a support for a backend and return true if the back end is supported
@@ -90,7 +96,7 @@ public:
 	/*
 	 * close the backend
 	 */
-	virtual void close( void ) = 0 ;
+	virtual void closeWallet( bool ) = 0 ;
 
 	/*
 	 * return the backend in use
@@ -116,14 +122,19 @@ public:
 	 *
 	 * The function will get the password from prompting the user with a GUI window
 	 */
-	virtual bool open( const QString& walletName,const QString& applicationName,const QString& password = QString() ) = 0 ;
+	virtual bool open( const QString& walletName,const QString& applicationName = QString(),const QString& password = QString() ) = 0 ;
 
 	/*
 	 * This function must be called with a valid object that has a slot with a signature of "void walletIsOpen( bool )" if "open()"
 	 * was called without a password.
 	 * The slot will be  called with "true" if the wallet is opened and with "false" if the wallet could not be opened.
 	 */
-	virtual void setAParent( QWidget * ) = 0 ;
+	virtual void setAParent( QObject * ) = 0 ;
+
+	/*
+	 * this method returns PasswordFolder() in kwallet backend and does not make sense in other backends
+	 */
+	virtual QString storagePath( void ) = 0 ;
 };
 
 } // namespace lxqt
