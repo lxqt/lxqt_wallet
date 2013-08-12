@@ -198,7 +198,7 @@ lxqt_wallet_error lxqt_wallet_open( lxqt_wallet_t * wallet,const char * password
 	
 	struct lxqt_wallet_struct * w ;
 	
-	if( wallet_name == NULL || application_name == NULL || wallet == NULL || wallet == NULL ){
+	if( wallet_name == NULL || application_name == NULL || wallet == NULL ){
 		return lxqt_wallet_invalid_argument ;
 	}
 	

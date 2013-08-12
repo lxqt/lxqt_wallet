@@ -1,23 +1,25 @@
-#ifndef LXQT_WALLET_MANAGER_H
-#define LXQT_WALLET_MANAGER_H
+#ifndef LXQT_INTERNAL_WALLET_H
+#define LXQT_INTERNAL_WALLET_H
 
 #include "lxqt_wallet_interface.h"
 
 namespace lxqt{
 
-class lxqtWallet : public lxqt::Wallet
+namespace Wallet{
+class internalWallet : public lxqt::Wallet::Wallet
 {
 public:
 	bool addKey( const QString& key,const QByteArray& value ) ;
 	bool open( const QString& walletName,const QString applicationName ) ;
 	QByteArray readValue( const QString& key ) ;
-	QVector<walletKeyValues> readAllValues( void ) ;
+	QVector<lxqt::Wallet::walletKeyValues> readAllKeyValues( void ) ;
 	void deleteKey( const QString& key ) ;
 	void deleteWallet( const QString& walletName,const QString& applicationName )  ;
-	void walletExists( const QString& walletName,const QString& applicationName ) ;
+	bool walletExists( const QString& walletName,const QString& applicationName ) ;
 	int walletSize( void )  ;
 };
 
 }
 
-#endif // LXQT_WALLET_MANAGER_H
+}
+#endif // LXQT_INTERNAL_WALLET_H
