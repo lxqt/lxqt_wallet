@@ -332,7 +332,7 @@ void lxqt_wallet_read_key_value( lxqt_wallet_t wallet,const char * key,char ** v
 	struct lxqt_key_value * k ;
 	struct lxqt_key_value * j = i + wallet->wallet_data_size ;
 
-	if( key == NULL || wallet == NULL ){
+	if( key == NULL || wallet == NULL || value_size == NULL ){
 		;
 	}else{
 		while( i != j ){
