@@ -555,20 +555,16 @@ char * _wallet_full_path( char * path_buffer,size_t path_buffer_size,const char 
 static void _create_application_wallet_path( const char * application_name )
 {
 	char path[ PATH_MAX ] ;
-
 	char * e ;
-	
+
 	lxqt_wallet_application_wallet_path( path,PATH_MAX,application_name ) ;
-	
-	e = path + 1 ;
-	
-	while( *e != '\0' ){
+
+	for( e = path + 1 ; *e != '\0' ; e++ ){
 		if( *e == '/' ){
 			*e = '\0' ;
 			mkdir( path,0755 ) ;
 			*e = '/' ;
 		}
-		e++ ;
 	}
 }
 

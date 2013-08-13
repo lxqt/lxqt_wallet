@@ -43,8 +43,9 @@ signals:
 private slots:
 	bool openWallet( QString ) ;
 	void cancelled( void ) ;
+	void createAWallet( bool ) ;
+	void createAWallet( QString ) ;
 private:
-	bool createWallet( void ) ;
 	bool openWallet( void ) ;
 	lxqt_wallet_t m_wallet ;
 	QString m_walletName ;

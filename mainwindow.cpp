@@ -41,5 +41,5 @@ void MainWindow::run()
 	m_wallet = lxqt::Wallet::Wallet::getWalletBackend() ;
 	m_wallet->setAParent( this ) ;
 
-	m_wallet->open( "rr" ) ;
+	m_wallet->open( "wallet_name","application_name" ) ;
 }

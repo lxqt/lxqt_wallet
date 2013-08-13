@@ -24,28 +24,13 @@ bool lxqt::Wallet::internalWallet::openWallet()
 
 bool lxqt::Wallet::internalWallet::openWallet( QString password )
 {
-	m_password = password ;
-	if( this->walletExists( m_walletName,m_applicationName ) ){
-		lxqt_wallet_error r = lxqt_wallet_open( &m_wallet,password.toAscii().constData(),password.size(),
+	lxqt_wallet_error r = lxqt_wallet_open( &m_wallet,password.toAscii().constData(),password.size(),
 			      m_walletName.toAscii().constData(),m_applicationName.toAscii().constData() ) ;
 
-		bool z = ( r == lxqt_wallet_no_error ) ;
-		emit walletIsOpen( z ) ;
-		emit passwordIsCorrect( z ) ;
-		return z ;
-	}else{
-		if( this->createWallet() ){
-			lxqt_wallet_error r = lxqt_wallet_open( &m_wallet,password.toAscii().constData(),password.size(),
-				      m_walletName.toAscii().constData(),m_applicationName.toAscii().constData() ) ;
-
-			bool z = ( r == lxqt_wallet_no_error ) ;
-			emit walletIsOpen( z ) ;
-			emit passwordIsCorrect( z ) ;
-			return z ;
-		}else{
-			return false ;
-		}
-	}
+	bool z = ( r == lxqt_wallet_no_error ) ;
+	emit walletIsOpen( z ) ;
+	emit passwordIsCorrect( z ) ;
+	return z ;
 }
 
 void lxqt::Wallet::internalWallet::cancelled()
@@ -53,25 +38,29 @@ void lxqt::Wallet::internalWallet::cancelled()
 	emit walletIsOpen( false ) ;
 }
 
-bool lxqt::Wallet::internalWallet::createWallet( void )
+void lxqt::Wallet::internalWallet::createAWallet( QString password )
 {
-	QWidget widget ;
-	QMessageBox msg( &widget ) ;
+	m_password = password ;
+	lxqt_wallet_create( m_password.toAscii().constData(),m_password.size(),
+			    m_walletName.toAscii().constData(),m_applicationName.toAscii().constData() ) ;
 
-	msg.setText( tr( "wallet \"%1\" does not exist.\nDo you want to create it?" ).arg( m_walletName ) ) ;
+	this->openWallet( m_password ) ;
+}
 
-	msg.addButton( tr( "yes" ),QMessageBox::YesRole ) ;
-	QPushButton * no_button = msg.addButton( tr( "no" ),QMessageBox::NoRole ) ;
-	msg.setDefaultButton( no_button ) ;
+void lxqt::Wallet::internalWallet::createAWallet( bool create )
+{
+	if( create ){
+		if( m_password.isEmpty() ){
+			password_dialog * p = new password_dialog() ;
+			connect( p,SIGNAL( password( QString ) ),this,SLOT( createAWallet( QString ) ) ) ;
+			p->closeUIOnKeySend() ;
+			p->ShowUI( m_walletName,m_applicationName ) ;
+		}else{
+			lxqt_wallet_create( m_password.toAscii().constData(),m_password.size(),
+					    m_walletName.toAscii().constData(),m_applicationName.toAscii().constData() ) ;
 
-	msg.exec() ;
-
-	if( msg.clickedButton() != no_button ){
-		lxqt_wallet_create( m_password.toAscii().constData(),m_password.size(),
-				    m_walletName.toAscii().constData(),m_applicationName.toAscii().constData() ) ;
-		return true ;
-	}else{
-		return false ;
+			this->openWallet( m_password ) ;
+		}
 	}
 }
 
@@ -85,24 +74,24 @@ bool lxqt::Wallet::internalWallet::open( const QString& walletName,const QString
 		m_applicationName = m_walletName ;
 	}
 
-	if( m_password.isEmpty() ){
-		password_dialog * p = new password_dialog() ;
-		connect( p,SIGNAL( password( QString ) ),this,SLOT( openWallet( QString ) ) ) ;
-		connect( this,SIGNAL( passwordIsCorrect( bool ) ),p,SLOT( passwordIsCorrect( bool ) ) ) ;
-		connect( p,SIGNAL( cancelled() ),this,SLOT( cancelled() ) ) ;
-		p->ShowUI( m_walletName,m_applicationName ) ;
-		return false ;
-	}else{
-		if( this->walletExists( m_walletName,m_applicationName ) ){
-			return this->openWallet() ;
+	if( this->walletExists( m_walletName,m_applicationName ) ){
+		if( m_password.isEmpty() ){
+			password_dialog * p = new password_dialog() ;
+			connect( p,SIGNAL( password( QString ) ),this,SLOT( openWallet( QString ) ) ) ;
+			connect( this,SIGNAL( passwordIsCorrect( bool ) ),p,SLOT( passwordIsCorrect( bool ) ) ) ;
+			connect( p,SIGNAL( cancelled() ),this,SLOT( cancelled() ) ) ;
+			p->ShowUI( m_walletName,m_applicationName ) ;
+			return false ;
 		}else{
-			if( this->createWallet() ){
-				return this->openWallet() ;
-			}else{
-				return false ;
-			}
+			return this->openWallet( password ) ;
 		}
+	}else{
+		password_dialog * p = new password_dialog() ;
+		connect( p,SIGNAL( createWallet( bool ) ),this,SLOT( createAWallet( bool ) ) ) ;
+		p->ShowUI( m_walletName ) ;
 	}
+
+	return false ;
 }
 
 QByteArray lxqt::Wallet::internalWallet::readValue( const QString& key )
