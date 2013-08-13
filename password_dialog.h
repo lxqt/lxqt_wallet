@@ -1,8 +1,8 @@
 /*
  * copyright: 2013
- * name : mhogo mchungu 
+ * name : mhogo mchungu
  * email: mhogomchungu@gmail.com
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -59,12 +59,14 @@ private slots:
 	void pbCancel( void ) ;
 	void passwordIsCorrect( bool ) ;
 	void pbOK( void ) ;
+	void pbOK_2( void ) ;
 private:
 	void HideUI( void ) ;
 	void closeEvent( QCloseEvent * ) ;
 	Ui::password_dialog * m_ui ;
 	bool m_createWallet ;
 	bool m_closeUIOnKeySend ;
+	QString m_banner ;
 };
 
 #endif // PASSWORD_DIALOG_H

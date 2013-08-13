@@ -1,8 +1,8 @@
 /*
  * copyright: 2013
- * name : mhogo mchungu 
+ * name : mhogo mchungu
  * email: mhogomchungu@gmail.com
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -58,7 +58,9 @@ bool lxqt::Wallet::internalWallet::openWallet( QString password )
 			      m_walletName.toAscii().constData(),m_applicationName.toAscii().constData() ) ;
 
 	bool z = ( r == lxqt_wallet_no_error ) ;
-	emit walletIsOpen( z ) ;
+	if( z ){
+		emit walletIsOpen( z ) ;
+	}
 	emit passwordIsCorrect( z ) ;
 	return z ;
 }
