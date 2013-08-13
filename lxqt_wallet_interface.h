@@ -40,8 +40,6 @@
 
 #include "storage_manager.h"
 
-#define HAS_KWALLET_SUPPORT 1
-
 #define HAS_GNOME_KEYRING_SUPPORT 0
 
 namespace lxqt{
@@ -145,15 +143,6 @@ public:
 	virtual QObject * qObject( void ) = 0 ;
 
 	/*
-	 * If the password field is given,then the password will be used to open a wallet.
-	 * If it is not set,then "setAParent()" must be called with a valid object and the object must
-	 * have a slot named "void walletIsOpen( bool )".This slot will be called with "false" if the wallet
-	 * could not be opened or true if the wallet is opened.
-	 *
-	 * The function will get the password from prompting the user with a GUI window
-	 */
-
-	/*
 	 * Behavior of the method according to different back ends.
 	 *
 	 * gnome keyring - backend not implemented yet
@@ -175,6 +164,7 @@ public:
 	 *
 	 * If password argument is given,the method will return true if the wallet is opened and false other wise.
 	 * If password argument is not given,a GUI window will be generated to ask the user for the password.
+	 * If password argument is not given,the return value of the method is undefined.
 	 *
 	 * This back end requires an object to be passed using "setAParent()" method of this API and the object must have a slot named
 	 * "void walletIsOpen(bool)".The slot will be called with "true" if the wallet was opened and with "false" otherwise.
