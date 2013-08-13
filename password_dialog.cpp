@@ -101,6 +101,14 @@ void password_dialog::pbSend()
 		emit createWallet( true ) ;
 		this->HideUI() ;
 	}else{
+		m_ui->textEdit->setEnabled( false ) ;
+		m_ui->labelHeader->setEnabled( true ) ;
+		m_ui->lineEditKey->setEnabled( false ) ;
+		m_ui->lineEditKey->setEnabled( false ) ;
+		m_ui->pushButtonSend->setEnabled( false ) ;
+		m_ui->pushButtonCancel->setEnabled( false ) ;
+		m_ui->pushButtonOK->setEnabled( false ) ;
+		m_ui->pushButtonOK_2->setEnabled( true ) ;
 		emit password( m_ui->lineEditKey->text() ) ;
 	}
 	if( m_closeUIOnKeySend ){
@@ -156,6 +164,14 @@ void password_dialog::pbOK_2()
 	m_ui->pushButtonOK_2->setVisible( false ) ;
 	m_ui->lineEditKey->clear() ;
 	m_ui->lineEditKey->setFocus() ;
+	m_ui->textEdit->setEnabled( true ) ;
+	m_ui->labelHeader->setEnabled( true ) ;
+	m_ui->lineEditKey->setEnabled( true ) ;
+	m_ui->lineEditKey->setEnabled( true ) ;
+	m_ui->pushButtonSend->setEnabled( true ) ;
+	m_ui->pushButtonCancel->setEnabled( true ) ;
+	m_ui->pushButtonOK->setEnabled( true ) ;
+	m_ui->pushButtonOK_2->setEnabled( true ) ;
 }
 
 void password_dialog::HideUI()

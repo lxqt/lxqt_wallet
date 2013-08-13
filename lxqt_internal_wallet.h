@@ -1,8 +1,8 @@
 /*
  * copyright: 2013
- * name : mhogo mchungu 
+ * name : mhogo mchungu
  * email: mhogomchungu@gmail.com
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -34,6 +34,7 @@
 #include "lxqt_wallet_interface.h"
 #include "lxqtwallet.h"
 #include "password_dialog.h"
+#include "open_wallet_thread.h"
 
 #include <QString>
 #include <QByteArray>
@@ -75,6 +76,7 @@ private slots:
 	void cancelled( void ) ;
 	void createAWallet( bool ) ;
 	void createAWallet( QString ) ;
+	void openWalletThreadResult( bool ) ;
 private:
 	bool openWallet( void ) ;
 	lxqt_wallet_t m_wallet ;

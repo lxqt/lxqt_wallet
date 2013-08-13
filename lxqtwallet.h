@@ -17,6 +17,8 @@
  *   License along with this library.  If not, see <http://www.gnu.org/licenses/>. *
  ***********************************************************************************/
 
+#ifndef LXQTWALLET_H
+#define LXQTWALLET_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -33,11 +35,11 @@ typedef struct lxqt_wallet_struct * lxqt_wallet_t ;
  * Below structures are exposed to be used with lxqt_wallet_read_all_key_values() function
  * The values can be changed to anything as long as the size of the resulting structure
  * is divisible by 16
- * 
+ *
  * Stored values are NULL terminated and hence the maximum allowed characters is one less of
  * the size of the variable.
  */
-#define LXQT_WALLET_KEY_SIZE 512 
+#define LXQT_WALLET_KEY_SIZE 512
 #define LXQT_WALLET_VALUE_SIZE 1036
 
 /*
@@ -74,7 +76,7 @@ lxqt_wallet_error lxqt_wallet_add_key( lxqt_wallet_t,const char * key,const char
 
 /*
  * open "wallet_name" wallet of application "application_name" using a password of size password_length.
- * 
+ *
  * The rest of the API except lxqt_wallet_create() are undefined if this function returns a non zero number
  */
 lxqt_wallet_error lxqt_wallet_open( lxqt_wallet_t *,const char * password,size_t password_length,
@@ -98,7 +100,7 @@ void lxqt_wallet_read_key_value( lxqt_wallet_t,const char * key,char ** value,si
 lxqt_wallet_error lxqt_wallet_delete_key( lxqt_wallet_t,const char * key ) ;
 
 /*
- * 
+ *
  * delete a wallet named "wallet_name" of an application named "application_name" exists
  */
 lxqt_wallet_error lxqt_wallet_delete_wallet( const char * wallet_name,const char * application_name ) ;
@@ -141,7 +143,7 @@ const struct lxqt_key_value * lxqt_wallet_read_all_key_values( lxqt_wallet_t ) ;
 #include <string.h>
 
 /*
- * This source file shows how the library can be used 
+ * This source file shows how the library can be used
  */
 
 static const char * wallet_name    = "wallet_name" ;
@@ -153,7 +155,7 @@ int main( int argc,char * argv[] )
 {
 	lxqt_wallet_t wallet ;
 	lxqt_wallet_error r = lxqt_wallet_no_error ;
-	
+
 	char * e = NULL ;
 	const char * f ;
 	const char * z ;
@@ -162,19 +164,19 @@ int main( int argc,char * argv[] )
 	int j ;
 	int k ;
 	size_t q ;
-	
+
 	if( argc  < 2 ){
 		printf( "wrong number of arguments\n" ) ;
 		return lxqt_wallet_invalid_argument ;
 	}
-	
+
 	command = argv[ 1 ] ;
-	
+
 	if( stringsAreEqual( command,"create" ) ){
 		/*
 		 * create a new wallet
 		 * additional arguments: password
-		 * eg ./wallet create xxx 
+		 * eg ./wallet create xxx
 		 */
 		if( argc < 3 ){
 			r = lxqt_wallet_invalid_argument ;
@@ -194,18 +196,18 @@ int main( int argc,char * argv[] )
 			f = argv[ 2 ] ;
 			r = lxqt_wallet_open( &wallet,f,strlen( f ),wallet_name,application_name ) ;
 		}
-				
+
 		if( r != lxqt_wallet_no_error ){
 			if( r == lxqt_wallet_wrong_password ){
 				puts( "wrong password" ) ;
 			}else{
 				puts( "general error has occured" ) ;
-			}			
+			}
 		}else{
 			f = argv[ 3 ] ;
 			z = argv[ 4 ] ;
-			r = lxqt_wallet_add_key( wallet,f,z,strlen( z ) ) ; 
-			
+			r = lxqt_wallet_add_key( wallet,f,z,strlen( z ) ) ;
+
 			lxqt_wallet_close( &wallet ) ;
 		}
 	}else if( stringsAreEqual( command,"read" ) ){
@@ -220,7 +222,7 @@ int main( int argc,char * argv[] )
 			f = argv[ 2 ] ;
 			r = lxqt_wallet_open( &wallet,f,strlen( f ),wallet_name,application_name ) ;
 		}
-		
+
 		if( r != lxqt_wallet_no_error ){
 			if( r == lxqt_wallet_wrong_password ){
 				puts( "wrong password" ) ;
@@ -231,14 +233,14 @@ int main( int argc,char * argv[] )
 			f = argv[ 3 ] ;
 			e = NULL ;
 			lxqt_wallet_read_key_value( wallet,f,&e,&q ) ;
-			
+
 			if( e ){
 				printf( "key=%s:value=%s\n",f,e ) ;
 				free( e ) ;
 			}else{
 				printf( "key=%s:value=(NULL)\n",f ) ;
 			}
-			
+
 			lxqt_wallet_close( &wallet ) ;
 		}
 	}else if( stringsAreEqual( command,"print" ) ){
@@ -257,11 +259,11 @@ int main( int argc,char * argv[] )
 		if( r == lxqt_wallet_no_error ){
 			values = lxqt_wallet_read_all_key_values( wallet ) ;
 			j = lxqt_wallet_wallet_size( wallet ) ;
-			
+
 			for( k = 0 ; k < j ; k ++ ){
 				printf( "key=%s: value=%s\n",values[ k ].key,values[ k ].value ) ;
 			}
-			
+
 			lxqt_wallet_close( &wallet ) ;
 		}else{
 			if( r == lxqt_wallet_wrong_password ){
@@ -282,7 +284,7 @@ int main( int argc,char * argv[] )
 			f = argv[ 2 ] ;
 			r = lxqt_wallet_open( &wallet,f,strlen( f ),wallet_name,application_name ) ;
 		}
-		
+
 		if( r == lxqt_wallet_no_error ){
 			f = argv[ 3 ] ;
 			r = lxqt_wallet_delete_key( wallet,f ) ;
@@ -295,13 +297,14 @@ int main( int argc,char * argv[] )
 			}
 		}
 	}
-	
+
 	return r ;
 }
-
 
 #endif
 
 #ifdef __cplusplus
 }
+#endif
+
 #endif
