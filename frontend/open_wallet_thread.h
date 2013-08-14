@@ -37,7 +37,7 @@
 #include <QString>
 #include <QStringList>
 
-#include "lxqtwallet.h"
+#include "../backend/lxqtwallet.h"
 
 class openWalletThread : public QObject,public QRunnable
 {

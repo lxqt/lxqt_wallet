@@ -8,33 +8,42 @@ QT       += core gui
 
 TARGET = wallet_manager
 
-
 TEMPLATE = app
 
-
-SOURCES += main.cpp lxqtwallet.c \
-    lxqt_wallet_interface.cpp \
-    lxqt_internal_wallet.cpp \
-    password_dialog.cpp \
-    mainwindow.cpp \
-    lxqt_kwallet.cpp \
-    open_wallet_thread.cpp \
-    changepassworddialog.cpp
-
-INCLUDEPATH += /home/local/KDE4/include /usr/include
+INCLUDEPATH += /home/local/KDE4/include /usr/include test
 
 LIBS += -lgcrypt -lkwalletbackend -L/home/local/KDE4/lib
 
+OTHER_FILES += \
+    frontend/README \
+    frontend/CMakeLists.txt \
+    backend/README \
+    backend/CMakeLists.txt \
+    test/README
+
 HEADERS += \
-    lxqt_wallet_interface.h \
-    lxqt_internal_wallet.h \
-    password_dialog.h \
-    mainwindow.h \
-    lxqt_kwallet.h \
-    open_wallet_thread.h \
-    changepassworddialog.h
+    frontend/password_dialog.h \
+    frontend/open_wallet_thread.h \
+    frontend/lxqt_wallet_interface.h \
+    frontend/lxqt_kwallet.h \
+    frontend/lxqt_internal_wallet.h \
+    frontend/changepassworddialog.h \
+    backend/lxqtwallet.h \
+    test/mainwindow.h
+
+SOURCES += \
+    frontend/password_dialog.cpp \
+    frontend/open_wallet_thread.cpp \
+    frontend/lxqt_wallet_interface.cpp \
+    frontend/lxqt_kwallet.cpp \
+    frontend/lxqt_internal_wallet.cpp \
+    frontend/changepassworddialog.cpp \
+    backend/lxqtwallet.c \
+    test/mainwindow.cpp \
+    test/main.cpp
 
 FORMS += \
-    password_dialog.ui \
-    mainwindow.ui \
-    changepassworddialog.ui
+    frontend/password_dialog.ui \
+    frontend/changepassworddialog.ui \
+    test/mainwindow.ui
+

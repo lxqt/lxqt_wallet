@@ -8,8 +8,8 @@
 #include <QCoreApplication>
 #include <QMainWindow>
 
-#include "lxqt_wallet_interface.h"
-#include "lxqtwallet.h"
+#include "../frontend/lxqt_wallet_interface.h"
+#include "../backend/lxqtwallet.h"
 #include <QDebug>
 
 namespace Ui {

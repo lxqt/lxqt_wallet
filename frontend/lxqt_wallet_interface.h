@@ -63,7 +63,7 @@ class Wallet : public QObject
 	Q_OBJECT
 public:
 	Wallet() ;
-	~Wallet() ;
+	virtual ~Wallet() ;
 	/*
 	 * get a pointer to a requested backend.
 	 * NULL is returned if there is no support for requested backend.
@@ -78,7 +78,6 @@ public:
 
 	/*
 	 * delete a wallet
-	 *
 	 */
 	static void deleteAWallet( const QString& walletName,const QString& applicationName ) ;
 
@@ -100,6 +99,7 @@ public:
 	/*
 	 * get all keys in the wallet
 	 */
+	
 	virtual QStringList readAllKeys( void ) = 0 ;
 	/*
 	 * delete a key in a wallet
@@ -185,7 +185,6 @@ public:
 
 	/*
 	 * change the wallet key to newWalletKey
-	 *
 	 */
 	virtual void changeWalletPassWord( const QString& walletName,const QString& applicationName = QString() ) = 0 ;
 };

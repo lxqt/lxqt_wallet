@@ -1,0 +1,17 @@
+
+
+This source folder gives a GUI based front end to the back end source file located at ../backend.
+
+The source folder is designed to be using by other projects by simply dropping the folder with its backend counterpart
+in the middle of the source tree and start using it.
+
+The front end is build on Qt/C++ and has an optional dependency on kwallet and gnome-keyring(support not available yet).
+
+The library provided in this source folder gives an internal storage facilities that allows secure storage of user credentials
+and GUI handlind of creating of storage file and opening them without creating required dependency on kde's kwallet or 
+gnome's gnome-keyring.
+
+The library is plugin based and it ships with support of two backends,the internal one and an an optional kwallet one.
+
+With its API,users of the library can target one API and store sensitive information either in this project storage back end system
+or in kwallet or gnome keyring.

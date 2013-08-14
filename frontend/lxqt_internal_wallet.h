@@ -32,7 +32,7 @@
 #define LXQT_INTERNAL_WALLET_H
 
 #include "lxqt_wallet_interface.h"
-#include "lxqtwallet.h"
+#include "../backend/lxqtwallet.h"
 #include "password_dialog.h"
 #include "open_wallet_thread.h"
 #include "changepassworddialog.h"
@@ -80,6 +80,7 @@ private slots:
 	void createAWallet( QString ) ;
 	void openWalletThreadResult( bool ) ;
 	void openWalletThreadResult_1( bool ) ;
+	void password( QString,bool ) ;
 private:
 	bool openWallet( void ) ;
 	lxqt_wallet_t m_wallet ;

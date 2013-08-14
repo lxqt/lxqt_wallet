@@ -36,7 +36,7 @@
 #include <QDebug>
 #include <QCloseEvent>
 
-#include "lxqtwallet.h"
+#include "../backend/lxqtwallet.h"
 #include "open_wallet_thread.h"
 
 namespace Ui {
@@ -49,12 +49,17 @@ class changePassWordDialog : public QDialog
 public:
 	explicit changePassWordDialog( QWidget * parent = 0,const QString& walletName = QString(),const QString& applicationName = QString() ) ;
 	void ShowUI( void ) ;
-	void HideUI( void )
-;	~changePassWordDialog() ;
+	void HideUI( void ) ;
+	void ShowUI_1( void ) ;
+	~changePassWordDialog() ;
+signals:
+	void password( QString,bool ) ;
 private slots:
+	void create( void ) ;
 	void change( void ) ;
 	void cancel( void ) ;
 	void ok( void ) ;
+	void ok_1( void ) ;
 	void openWalletThreadResult( bool ) ;
 private:
 	void closeEvent( QCloseEvent * ) ;

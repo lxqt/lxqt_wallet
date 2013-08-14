@@ -118,6 +118,14 @@ void lxqt::Wallet::internalWallet::openWalletThreadResult_1( bool opened )
 	}
 }
 
+void lxqt::Wallet::internalWallet::password( QString password,bool create )
+{
+	if( create ){
+		lxqt_wallet_create( password.toAscii().constData(),password.size(),
+				    m_walletName.toAscii().constData(),m_applicationName.toAscii().constData() ) ;
+	}
+}
+
 bool lxqt::Wallet::internalWallet::open( const QString& walletName,const QString& applicationName,const QString& password )
 {
 	m_walletName        = walletName ;
@@ -143,9 +151,9 @@ bool lxqt::Wallet::internalWallet::open( const QString& walletName,const QString
 			return this->openWallet() ;
 		}
 	}else{
-		password_dialog * p = new password_dialog() ;
-		connect( p,SIGNAL( createWallet( bool ) ),this,SLOT( createAWallet( bool ) ) ) ;
-		p->ShowUI( m_walletName ) ;
+		changePassWordDialog * c = new changePassWordDialog( 0,m_walletName,m_applicationName ) ;
+		connect( c,SIGNAL( password( QString,bool ) ),this,SLOT( password( QString,bool ) ) ) ;
+		c->ShowUI_1() ;
 	}
 
 	return false ;

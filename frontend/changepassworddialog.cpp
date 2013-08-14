@@ -36,19 +36,19 @@ changePassWordDialog::changePassWordDialog( QWidget * parent,const QString& wall
 	m_applicationName( applicationName )
 {
 	m_ui->setupUi( this ) ;
-	connect( m_ui->pushButtonOK,SIGNAL( clicked() ),this,SLOT( ok() ) ) ;
 	connect( m_ui->pushButtonCancel,SIGNAL( clicked() ),this,SLOT( cancel() ) ) ;
-	connect( m_ui->pushButtonChange,SIGNAL( clicked() ),this,SLOT( change() ) ) ;
-
-	m_banner = m_ui->textEdit->toHtml().arg( m_applicationName ).arg( m_walletName ) ;
-	m_ui->label->setText( m_banner ) ;
 
 	m_ui->pushButtonOK->setVisible( false ) ;
 	m_ui->textEdit->setVisible( false ) ;
+	m_ui->textEdit_2->setVisible( false ) ;
 }
 
 void changePassWordDialog::ShowUI()
 {
+	m_banner = m_ui->textEdit->toHtml().arg( m_applicationName ).arg( m_walletName ) ;
+	m_ui->label->setText( m_banner ) ;
+	connect( m_ui->pushButtonChange,SIGNAL( clicked() ),this,SLOT( change() ) ) ;
+	connect( m_ui->pushButtonOK,SIGNAL( clicked() ),this,SLOT( ok() ) ) ;
 	this->show() ;
 }
 
@@ -58,10 +58,47 @@ void changePassWordDialog::HideUI()
 	this->deleteLater() ;
 }
 
+void changePassWordDialog::ShowUI_1()
+{
+	this->setWindowTitle( tr( "create a new wallet" ) ) ;
+
+	connect( m_ui->pushButtonChange,SIGNAL( clicked() ),this,SLOT( create() ) ) ;
+	connect( m_ui->pushButtonOK,SIGNAL( clicked() ),this,SLOT( ok_1() ) ) ;
+
+	m_banner = m_ui->textEdit_2->toHtml().arg( m_applicationName ).arg( m_walletName ) ;
+	m_ui->label->setText( m_banner ) ;
+
+	m_ui->label_2->setEnabled( false ) ;
+	m_ui->lineEditCurrentPassWord->setEnabled( false ) ;
+	this->show() ;
+}
+
 changePassWordDialog::~changePassWordDialog()
 {
 	delete m_ui ;
 	lxqt_wallet_close( &m_wallet ) ;
+}
+
+void changePassWordDialog::create()
+{
+	if( m_ui->lineEditNewPassWord->text() == m_ui->lineEditNewPassWord_2->text() ){
+		emit password( m_ui->lineEditNewPassWord->text(),true ) ;
+		this->HideUI() ;
+	}else{
+		m_ui->label->setText( tr( "passwords do not match" ) ) ;
+		m_ui->pushButtonOK->setVisible( true ) ;
+		m_ui->pushButtonCancel->setVisible( false ) ;
+		m_ui->pushButtonChange->setVisible( false ) ;
+
+		m_ui->lineEditCurrentPassWord->setEnabled( false ) ;
+		m_ui->lineEditNewPassWord->setEnabled( false ) ;
+		m_ui->lineEditNewPassWord_2->setEnabled( false ) ;
+		m_ui->label->setEnabled( true ) ;
+		m_ui->label_2->setEnabled( false ) ;
+		m_ui->label_2->setEnabled( false ) ;
+		m_ui->label_3->setEnabled( false ) ;
+		m_ui->label_4->setEnabled( false ) ;
+	}
 }
 
 void changePassWordDialog::change()
@@ -82,7 +119,7 @@ void changePassWordDialog::change()
 		t->start() ;
 
 	}else{
-		m_ui->label->setText( tr( "new passwords do not match") ) ;
+		m_ui->label->setText( tr( "new passwords do not match" ) ) ;
 		m_ui->pushButtonOK->setVisible( true ) ;
 		m_ui->pushButtonCancel->setVisible( false ) ;
 		m_ui->pushButtonChange->setVisible( false ) ;
@@ -91,12 +128,29 @@ void changePassWordDialog::change()
 
 void changePassWordDialog::cancel()
 {
+	emit password( m_ui->lineEditNewPassWord->text(),false ) ;
 	this->HideUI() ;
 }
 
 void changePassWordDialog::ok()
 {
 	m_ui->lineEditCurrentPassWord->setEnabled( true ) ;
+	m_ui->lineEditNewPassWord->setEnabled( true ) ;
+	m_ui->lineEditNewPassWord_2->setEnabled( true ) ;
+	m_ui->label->setEnabled( true ) ;
+	m_ui->label_2->setEnabled( true ) ;
+	m_ui->label_2->setEnabled( true ) ;
+	m_ui->label_3->setEnabled( true ) ;
+	m_ui->label_4->setEnabled( true ) ;
+	m_ui->pushButtonOK->setVisible( false ) ;
+	m_ui->pushButtonCancel->setVisible( true ) ;
+	m_ui->pushButtonChange->setVisible( true ) ;
+	m_ui->label->setText( m_banner ) ;
+}
+
+void changePassWordDialog::ok_1()
+{
+	m_ui->lineEditCurrentPassWord->setEnabled( false ) ;
 	m_ui->lineEditNewPassWord->setEnabled( true ) ;
 	m_ui->lineEditNewPassWord_2->setEnabled( true ) ;
 	m_ui->label->setEnabled( true ) ;
@@ -133,6 +187,7 @@ void changePassWordDialog::openWalletThreadResult( bool opened )
 
 void changePassWordDialog::closeEvent( QCloseEvent * e )
 {
+	emit password( m_ui->lineEditNewPassWord->text(),false ) ;
 	e->ignore() ;
 	this->HideUI() ;
 }
