@@ -72,7 +72,7 @@ struct lxqt_key_value{
  * maximum values for key and key_value are shown and explained above.
  * Larger argument sizes will result in "lxqt_wallet_invalid_argument" error.
  */
-lxqt_wallet_error lxqt_wallet_add_key( lxqt_wallet_t,const char * key,const char * key_value,size_t key_value_length ) ;
+lxqt_wallet_error lxqt_wallet_add_key( lxqt_wallet_t,const char * key,const void * key_value,size_t key_value_length ) ;
 
 /*
  * open "wallet_name" wallet of application "application_name" using a password of size password_length.
@@ -92,7 +92,7 @@ lxqt_wallet_error lxqt_wallet_create( const char * password,size_t password_leng
  * caller of this function is responsible for the returned buffer and should free() it when done with it
  * NULL is returned if the key could not be found
  */
-void lxqt_wallet_read_key_value( lxqt_wallet_t,const char * key,char ** value,size_t * value_size ) ;
+void lxqt_wallet_read_key_value( lxqt_wallet_t,const char * key,void ** value,size_t * value_size ) ;
 
 /*
  * delete a key.
@@ -132,6 +132,17 @@ int lxqt_wallet_wallet_size( lxqt_wallet_t ) ;
  * see example below for an example use case
  */
 const struct lxqt_key_value * lxqt_wallet_read_all_key_values( lxqt_wallet_t ) ;
+
+/*
+ * search for key and if found,delete it and then put key1 and its value at the deleted place.
+ * key1 will just be added if key was not found
+ */
+void lxqt_wallet_replace_key( lxqt_wallet_t,const char * key,const char * key1,const void * value,size_t value_size ) ;
+
+/*
+ * chance the wallet password
+ */
+lxqt_wallet_error lxqt_wallet_change_wallet_password( lxqt_wallet_t,const char * new_password,size_t new_password_size ) ;
 
 /*
  * below is a complete program that tests the library functionality,it may be useful as a

@@ -17,7 +17,9 @@ SOURCES += main.cpp lxqtwallet.c \
     lxqt_internal_wallet.cpp \
     password_dialog.cpp \
     mainwindow.cpp \
-    lxqt_kwallet.cpp
+    lxqt_kwallet.cpp \
+    open_wallet_thread.cpp \
+    changepassworddialog.cpp
 
 INCLUDEPATH += /home/local/KDE4/include /usr/include
 
@@ -28,8 +30,11 @@ HEADERS += \
     lxqt_internal_wallet.h \
     password_dialog.h \
     mainwindow.h \
-    lxqt_kwallet.h
+    lxqt_kwallet.h \
+    open_wallet_thread.h \
+    changepassworddialog.h
 
 FORMS += \
     password_dialog.ui \
-    mainwindow.ui
+    mainwindow.ui \
+    changepassworddialog.ui

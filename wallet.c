@@ -185,7 +185,53 @@ int main( int argc,char * argv[] )
 				puts( "general error has occured" ) ;
 			}
 		}
+	}else if( stringsAreEqual( command,"change" ) ){
+		/*
+		 * replace wallet key 
+		 * additional arguments: old_password new_password
+		 * eg ./wallet replace xxx zzz
+		 */
+		if( argc < 3 ){
+			r = lxqt_wallet_invalid_argument ;
+		}else{
+			f = argv[ 2 ] ;
+			r = lxqt_wallet_open( &wallet,f,strlen( f ),wallet_name,application_name ) ;
+		}
+		
+		if( r == lxqt_wallet_no_error ){
+			f = argv[ 3 ] ;
+			r = lxqt_wallet_change_wallet_key( wallet,f,strlen( f ) ) ;
+			lxqt_wallet_close( &wallet ) ;
+		}else{
+			if( r == lxqt_wallet_wrong_password ){
+				puts( "wrong password" ) ;
+			}else{
+				puts( "general error has occured" ) ;
+			}
+		}
+	}else if( stringsAreEqual( command,"replace" ) ){
+		/*
+		 * delete a key and put another in its slot 
+		 * additional arguments: wallet_key old_key new_key new_key_value
+		 * eg ./wallet replace xxx rrr ttt ccc
+		 */
+		if( argc < 3 ){
+			r = lxqt_wallet_invalid_argument ;
+		}else{
+			f = argv[ 2 ] ;
+			r = lxqt_wallet_open( &wallet,f,strlen( f ),wallet_name,application_name ) ;
+		}
+			
+		if( r == lxqt_wallet_no_error ){
+			lxqt_wallet_replace_key( wallet,argv[ 3 ],argv[ 4 ],argv[ 5 ],strlen( argv[ 5 ] ) ) ;
+			lxqt_wallet_close( &wallet ) ;
+		}else{
+			if( r == lxqt_wallet_wrong_password ){
+				puts( "wrong password" ) ;
+			}else{
+				puts( "general error has occured" ) ;
+			}
+		}	
 	}
-	
 	return r ;
 }

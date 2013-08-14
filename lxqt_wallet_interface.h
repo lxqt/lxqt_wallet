@@ -1,8 +1,8 @@
 /*
  * copyright: 2013
- * name : mhogo mchungu 
+ * name : mhogo mchungu
  * email: mhogomchungu@gmail.com
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -182,6 +182,12 @@ public:
 	 * this method returns PasswordFolder() in kwallet backend and is undefined in other backends
 	 */
 	virtual QString storagePath( void ) = 0 ;
+
+	/*
+	 * change the wallet key to newWalletKey
+	 *
+	 */
+	virtual void changeWalletPassWord( const QString& walletName,const QString& applicationName = QString() ) = 0 ;
 };
 
 } // namespace lxqt

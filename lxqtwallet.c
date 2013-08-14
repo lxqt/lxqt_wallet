@@ -162,6 +162,7 @@ lxqt_wallet_error lxqt_wallet_create( const char * password,size_t password_leng
 
 	if( r != GPG_ERR_NO_ERROR ){
 		close( fd ) ;
+		unlink( path ) ;
 		return lxqt_wallet_gcry_cipher_encrypt_failed ;
 	}else{
 		write( fd,magic_string,MAGIC_STRING_BUFFER_SIZE ) ;
@@ -186,6 +187,58 @@ static lxqt_wallet_error _open_exit( lxqt_wallet_error st,
 		free( w ) ;
 	}
 	return st ;
+}
+
+void lxqt_wallet_replace_key( lxqt_wallet_t wallet,const char * key,const char * key1,const void * value1,size_t value_size1 )
+{
+	struct lxqt_key_value * i = wallet->wallet_data ;
+	struct lxqt_key_value * k ;
+	struct lxqt_key_value * j = i + wallet->wallet_data_size ;
+
+	size_t len ;
+
+	if( key == NULL || wallet == NULL || key1 == NULL || value1 == NULL ){
+		;
+	}else{
+		len = strlen( key1 ) ;
+		if( len >= LXQT_WALLET_KEY_SIZE || value_size1 >= LXQT_WALLET_VALUE_SIZE ){
+			;
+		}else{
+			while( i != j ){
+				k = i ;
+				i++ ;
+				if( strcmp( key,k->key ) == 0 ){
+					memcpy( k->key,key1,len + 1 ) ;
+					memcpy( k->value,value1,value_size1 ) ;
+					k->value[ value_size1 ] = '\0' ;
+					k->value_size = value_size1 + 1 ;
+					wallet->wallet_modified = 1 ;
+					return ;
+				}
+			}
+
+			lxqt_wallet_add_key( wallet,key1,value1,value_size1 ) ;
+		}
+	}
+}
+
+lxqt_wallet_error lxqt_wallet_change_wallet_password( lxqt_wallet_t wallet,const char * new_key,size_t new_key_size )
+{
+	char key[ PASSWORD_SIZE ] ;
+	gcry_error_t r ;
+
+	if( wallet == NULL || new_key == NULL ){
+		return lxqt_wallet_invalid_argument ;
+	}else{
+		r = _create_key( key,new_key,new_key_size ) ;
+		if( r != GPG_ERR_NO_ERROR ){
+			return lxqt_wallet_failed_to_create_key_hash ;
+		}else{
+			memcpy( wallet->key,key,PASSWORD_SIZE ) ;
+			wallet->wallet_modified = 1 ;
+			return lxqt_wallet_no_error ;
+		}
+	}
 }
 
 lxqt_wallet_error lxqt_wallet_open( lxqt_wallet_t * wallet,const char * password,size_t password_length,
@@ -307,7 +360,6 @@ lxqt_wallet_error lxqt_wallet_open( lxqt_wallet_t * wallet,const char * password
 			/*
 			 * wallet is empty
 			 */
-			w->wallet_data_size = 0 ;
 			*wallet = w ;
 			return _open_exit( lxqt_wallet_no_error,NULL,gcry_cipher_handle ) ;
 		}else{
@@ -337,7 +389,7 @@ lxqt_wallet_error lxqt_wallet_open( lxqt_wallet_t * wallet,const char * password
 	}
 }
 
-void lxqt_wallet_read_key_value( lxqt_wallet_t wallet,const char * key,char ** value,size_t * value_size )
+void lxqt_wallet_read_key_value( lxqt_wallet_t wallet,const char * key,void ** value,size_t * value_size )
 {
 	struct lxqt_key_value * i = wallet->wallet_data ;
 	struct lxqt_key_value * k ;
@@ -359,7 +411,7 @@ void lxqt_wallet_read_key_value( lxqt_wallet_t wallet,const char * key,char ** v
 }
 
 lxqt_wallet_error lxqt_wallet_add_key( lxqt_wallet_t wallet,const char * key,
-				       const char * value,size_t key_value_length )
+				       const void * value,size_t key_value_length )
 {
 	struct lxqt_key_value * key_value ;
 	struct lxqt_key_value * key_value_1 ;

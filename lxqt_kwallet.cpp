@@ -1,8 +1,8 @@
 /*
  * copyright: 2013
- * name : mhogo mchungu 
+ * name : mhogo mchungu
  * email: mhogomchungu@gmail.com
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -156,4 +156,10 @@ QObject * lxqt::Wallet::kwallet::qObject( void )
 QString lxqt::Wallet::kwallet::storagePath()
 {
 	return m_kwallet->PasswordFolder() ;
+}
+
+void lxqt::Wallet::kwallet::changeWalletPassWord( const QString& walletName,const QString& applicationName )
+{
+	Q_UNUSED( applicationName ) ;
+	m_kwallet->changePassword( walletName,0 ) ;
 }
