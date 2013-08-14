@@ -36,6 +36,9 @@ changePassWordDialog::changePassWordDialog( QWidget * parent,const QString& wall
 	m_applicationName( applicationName )
 {
 	m_ui->setupUi( this ) ;
+	
+	this->setFixedSize( this->size() ) ;
+	
 	connect( m_ui->pushButtonCancel,SIGNAL( clicked() ),this,SLOT( cancel() ) ) ;
 
 	m_ui->pushButtonOK->setVisible( false ) ;

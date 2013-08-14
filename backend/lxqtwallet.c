@@ -405,6 +405,7 @@ void lxqt_wallet_read_key_value( lxqt_wallet_t wallet,const char * key,void ** v
 				*value = malloc( k->value_size ) ;
 				memcpy( *value,k->value,k->value_size ) ;
 				*value_size = k->value_size - 1 ;
+				break ;
 			}
 		}
 	}
