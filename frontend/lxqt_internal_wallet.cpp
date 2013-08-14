@@ -121,8 +121,13 @@ void lxqt::Wallet::internalWallet::openWalletThreadResult_1( bool opened )
 void lxqt::Wallet::internalWallet::password( QString password,bool create )
 {
 	if( create ){
-		lxqt_wallet_create( password.toAscii().constData(),password.size(),
+		lxqt_wallet_error r = lxqt_wallet_create( password.toAscii().constData(),password.size(),
 				    m_walletName.toAscii().constData(),m_applicationName.toAscii().constData() ) ;
+		if( r != lxqt_wallet_no_error ){
+			this->openWalletThreadResult( false ) ;
+		}else{
+			this->openWallet( password ) ;
+		}
 	}
 }
 
