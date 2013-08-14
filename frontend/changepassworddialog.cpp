@@ -64,7 +64,9 @@ void changePassWordDialog::HideUI()
 void changePassWordDialog::ShowUI_1()
 {
 	this->setWindowTitle( tr( "create a new wallet" ) ) ;
-
+	
+	m_ui->pushButtonChange->setText( tr( "create" ) ) ;
+	
 	connect( m_ui->pushButtonChange,SIGNAL( clicked() ),this,SLOT( create() ) ) ;
 	connect( m_ui->pushButtonOK,SIGNAL( clicked() ),this,SLOT( ok_1() ) ) ;
 

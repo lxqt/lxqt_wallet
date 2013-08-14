@@ -637,7 +637,7 @@ static gcry_error_t _create_key( char output_key[ PASSWORD_SIZE ],const char * i
 	gcry_md_hd_t md ;
 	unsigned char * digest ;
 
-	gcry_error_t r = gcry_md_open( &md,GCRY_MD_SHA1,GCRY_MD_FLAG_SECURE ) ;
+	gcry_error_t r = gcry_md_open( &md,GCRY_MD_SHA256,GCRY_MD_FLAG_SECURE ) ;
 
 	if( r == GPG_ERR_NO_ERROR ){
 		gcry_md_write( md,input_key,input_key_length ) ;
