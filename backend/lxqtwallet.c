@@ -110,7 +110,10 @@ lxqt_wallet_error lxqt_wallet_create( const char * password,size_t password_leng
 		;
 	}
 
-	gcry_check_version( NULL ) ;
+	if( gcry_check_version( GCRYPT_VERSION ) == NULL ){
+		return lxqt_wallet_libgcrypt_version_mismatch ;
+	}
+	
 	gcry_control( GCRYCTL_INITIALIZATION_FINISHED,0 ) ;
 
 	r = gcry_cipher_open( &gcry_cipher_handle,GCRY_CIPHER_AES128,GCRY_CIPHER_MODE_CBC,0 ) ;
@@ -265,7 +268,13 @@ lxqt_wallet_error lxqt_wallet_open( lxqt_wallet_t * wallet,const char * password
 	if( wallet_name == NULL || application_name == NULL || wallet == NULL ){
 		return lxqt_wallet_invalid_argument ;
 	}
-
+	
+	if( gcry_check_version( GCRYPT_VERSION ) == NULL ){
+		return lxqt_wallet_libgcrypt_version_mismatch ;
+	}
+	
+	gcry_control( GCRYCTL_INITIALIZATION_FINISHED,0 ) ;
+	
 	*wallet = NULL ;
 
 	w = malloc( sizeof( struct lxqt_wallet_struct ) ) ;
@@ -295,9 +304,6 @@ lxqt_wallet_error lxqt_wallet_open( lxqt_wallet_t * wallet,const char * password
 	}else{
 		memcpy( w->application_name,application_name,len + 1 ) ;
 	}
-
-	gcry_check_version( NULL ) ;
-	gcry_control( GCRYCTL_INITIALIZATION_FINISHED,0 ) ;
 
 	r = gcry_cipher_open( &gcry_cipher_handle,GCRY_CIPHER_AES128,GCRY_CIPHER_MODE_CBC,0 ) ;
 
@@ -524,7 +530,13 @@ lxqt_wallet_error lxqt_wallet_close( lxqt_wallet_t * w )
 	if( w == NULL || *w == NULL ){
 		return lxqt_wallet_invalid_argument ;
 	}
-
+	
+	if( gcry_check_version( GCRYPT_VERSION ) == NULL ){
+		return lxqt_wallet_libgcrypt_version_mismatch ;
+	}
+	
+	gcry_control( GCRYCTL_INITIALIZATION_FINISHED,0 ) ;
+	
 	wallet = *w ;
 
 	if( wallet->wallet_modified == 0 ){

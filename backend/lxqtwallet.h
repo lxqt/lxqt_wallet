@@ -58,7 +58,8 @@ typedef enum{
 	lxqt_wallet_failed_to_allocate_memory,
 	lxqt_wallet_invalid_argument,
 	lxqt_wallet_incompatible_wallet,
-	lxqt_wallet_failed_to_create_key_hash
+	lxqt_wallet_failed_to_create_key_hash,
+	lxqt_wallet_libgcrypt_version_mismatch
 }lxqt_wallet_error;
 
 
