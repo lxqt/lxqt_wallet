@@ -30,6 +30,7 @@ private:
 	lxqt::Wallet::Wallet * m_wallet ;
 private:
 	Ui::MainWindow * m_ui ;
+	void testWallet( void ) ;
 };
 
 #endif // MAINWINDOW_H

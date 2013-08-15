@@ -66,8 +66,14 @@ Q_DECL_EXPORT bool backEndIsSupported( lxqt::Wallet::walletBackEnd ) ;
 
 /*
  * delete a wallet
+ * KWallet backend does not use the applicationName argument
  */
-Q_DECL_EXPORT void deleteAWallet( const QString& walletName,const QString& applicationName ) ;
+Q_DECL_EXPORT bool deleteWallet( lxqt::Wallet::walletBackEnd,const QString& walletName,const QString& applicationName = QString() ) ;
+
+/*
+ * check if a particular wallet exists
+ */
+Q_DECL_EXPORT bool walletExists( lxqt::Wallet::walletBackEnd,const QString& walletName,const QString& applicationName = QString() ) ;
 
 /*
  * get a pointer to a requested backend to be used to gain access to the API.It is advised to call
@@ -118,11 +124,6 @@ public:
 	virtual void deleteWallet( void ) = 0 ;
 
 	/*
-	 * check if a particular wallet exists
-	 */
-	virtual bool walletExists( const QString& walletName,const QString& applicationName ) = 0 ;
-
-	/*
 	 * if the backend is opened,return the number of entries in the wallet
 	 */
 	virtual int walletSize( void ) = 0 ;
@@ -138,7 +139,7 @@ public:
 	virtual lxqt::Wallet::walletBackEnd backEnd( void ) = 0 ;
 
 	/*
-	 * check if a valid is opened or not
+	 * check if a wallet is opened or not
 	 */
 	virtual bool walletIsOpened( void ) = 0 ;
 
@@ -203,4 +204,49 @@ public:
 } // namespace wallet
 
 #endif // LXQT_WALLET_INTERFACE_H
+
+/*
+ * An example use of the API that opens a wallet and then prints all keys and their respective values
+ */
+
+#if 0
+void TestClass::walletIsOpen( bool walletIsOpen )
+{
+	if( walletIsOpen ){
+		QVector<lxqt::Wallet::walletKeyValues> s = m_wallet->readAllKeyValues() ;
+		size_t j = s.size() ;
+		for( size_t i = 0 ; i < j ; i++ ){
+			qDebug() << "key=" << s.at( i ).key << ":value=" << s.at( i ).value ;
+		}
+		m_wallet->closeWallet( false ) ;
+	}else{
+		qDebug() << "failed to open wallet" ;
+	}
+
+	/*
+	 * Delete the wallet object when done with it
+	 */
+	m_wallet->deleteLater() ;
+}
+
+void TestClass::testWallet()
+{
+	/*
+	 * open a default backend( internal one )
+	 */
+	m_wallet = lxqt::Wallet::getWalletBackend() ;
+
+	/*
+	 * set the QObject with "walletIsOpen(bool)" slot
+	 */
+	m_wallet->setInterfaceObject( this ) ;
+
+	/*
+	 * open a wallet.
+	 * This method will return the result of the attempt though a slot on an object set above.
+	 */
+	m_wallet->open( "test_wallet_name","test_application_name" ) ;
+}
+
+#endif
 

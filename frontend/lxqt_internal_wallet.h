@@ -61,7 +61,6 @@ public:
 	QStringList readAllKeys( void ) ;
 	void deleteKey( const QString& key ) ;
 	void deleteWallet( void )  ;
-	bool walletExists( const QString& walletName,const QString& applicationName ) ;
 	int walletSize( void )  ;
 	void closeWallet( bool ) ;
 	lxqt::Wallet::walletBackEnd backEnd( void ) ;

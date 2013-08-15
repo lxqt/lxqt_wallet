@@ -142,7 +142,7 @@ bool lxqt::Wallet::internalWallet::open( const QString& walletName,const QString
 		m_applicationName = m_walletName ;
 	}
 
-	if( this->walletExists( m_walletName,m_applicationName ) ){
+	if( lxqt::Wallet::walletExists(lxqt::Wallet::internalBackEnd,m_walletName,m_applicationName ) ){
 		if( m_password.isEmpty() ){
 			/*
 			 * to prevent an unnecessary prompt,try to open a wallet without a password and then
@@ -223,11 +223,6 @@ void lxqt::Wallet::internalWallet::deleteKey( const QString& key )
 void lxqt::Wallet::internalWallet::deleteWallet( void )
 {
 	lxqt_wallet_delete_wallet( m_walletName.toAscii().constData(),m_applicationName.toAscii().constData() ) ;
-}
-
-bool lxqt::Wallet::internalWallet::walletExists( const QString& walletName,const QString& applicationName )
-{
-	return lxqt_wallet_exists( walletName.toAscii().constData(),applicationName.toAscii().constData() ) == 0 ;
 }
 
 int lxqt::Wallet::internalWallet::walletSize( void )

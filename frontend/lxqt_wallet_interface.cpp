@@ -30,6 +30,7 @@
 
 #include "lxqt_wallet_interface.h"
 #include "lxqt_internal_wallet.h"
+#include "../backend/lxqtwallet.h"
 
 /*
  * This header file is generated at configure time by a routine that checks if kwallet and gnome keyrings are to be supported
@@ -105,10 +106,67 @@ bool lxqt::Wallet::backEndIsSupported( lxqt::Wallet::walletBackEnd bk )
 	return false ;
 }
 
-void lxqt::Wallet::deleteAWallet( const QString& walletName,const QString& applicationName )
+bool lxqt::Wallet::deleteWallet( lxqt::Wallet::walletBackEnd bk,const QString& walletName,const QString& applicationName )
 {
-	lxqt_wallet_delete_wallet( walletName.toAscii().constData(),applicationName.toAscii().constData() ) ;
+	QString appName ;
+	if( applicationName.isEmpty() ){
+		appName = walletName ;
+	}else{
+		appName = applicationName ;
+	}
+
+	if( bk == lxqt::Wallet::internalBackEnd ){
+		return lxqt_wallet_delete_wallet( walletName.toAscii().constData(),appName.toAscii().constData() ) == lxqt_wallet_no_error ;
+	}
+
+	if( bk == lxqt::Wallet::kwalletBackEnd ){
+		#if HAS_KWALLET_SUPPORT
+			return KWallet::Wallet::deleteWallet( walletName ) == 0 ;
+		#else
+			return false ;
+		#endif
+	}
+
+	if( bk == lxqt::Wallet::gnomeKeyringBackEnd ){
+		#if HAS_GNOME_KEYRING_SUPPORT
+			return false ;
+		#else
+			return false ;
+		#endif
+	}
+
+	return false ;
 }
 
+bool lxqt::Wallet::walletExists( lxqt::Wallet::walletBackEnd bk,const QString& walletName,const QString& applicationName )
+{
+	QString appName ;
+	if( applicationName.isEmpty() ){
+		appName = walletName ;
+	}else{
+		appName = applicationName ;
+	}
 
+	if( bk == lxqt::Wallet::internalBackEnd ){
+		return lxqt_wallet_exists( walletName.toAscii().constData(),appName.toAscii().constData() ) ;
+	}
+
+	if( bk == lxqt::Wallet::kwalletBackEnd ){
+		#if HAS_KWALLET_SUPPORT
+			return !KWallet::Wallet::folderDoesNotExist( walletName,appName ) ;
+		#else
+			return false ;
+		#endif
+	}
+
+	if( bk == lxqt::Wallet::gnomeKeyringBackEnd ){
+		#if HAS_GNOME_KEYRING_SUPPORT
+			return false ;
+		#else
+			return false ;
+		#endif
+	}
+
+	return false ;
+}
 

@@ -1,5 +1,7 @@
 
 
+The public interface to is in a file named "lxqt_wallet_interface.h".
+
 This source folder gives a GUI based front end to the back end source file located at ../backend.
 
 The source folder is designed to be using by other projects by simply dropping the folder with its backend counterpart

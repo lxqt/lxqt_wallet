@@ -112,13 +112,6 @@ void lxqt::Wallet::kwallet::deleteWallet( void )
 	m_kwallet->deleteWallet( m_walletName ) ;
 }
 
-bool lxqt::Wallet::kwallet::walletExists( const QString& walletName,const QString& applicationName )
-{
-	Q_UNUSED( walletName ) ;
-	Q_UNUSED( applicationName ) ;
-	return false ;
-}
-
 int lxqt::Wallet::kwallet::walletSize( void )
 {
 	QStringList l = m_kwallet->entryList() ;

@@ -22,24 +22,29 @@ void MainWindow::walletIsOpen( bool walletIsOpen )
 {
 	if( walletIsOpen ){
 		QVector<lxqt::Wallet::walletKeyValues> s = m_wallet->readAllKeyValues() ;
-		qDebug() << "list size" << s.size() ;
 		size_t j = s.size() ;
 		for( size_t i = 0 ; i < j ; i++ ){
 			qDebug() << "key=" << s.at( i ).key << ":value=" << s.at( i ).value ;
 		}
-		QStringList l = m_wallet->readAllKeys() ;
-		qDebug() << l ;
 		m_wallet->closeWallet( false ) ;
 	}else{
 		qDebug() << "failed to open wallet" ;
 	}
+
+	m_wallet->deleteLater() ;
 }
+
+void MainWindow::testWallet()
+{
+	m_wallet = lxqt::Wallet::getWalletBackend() ;
+	m_wallet->setInterfaceObject( this ) ;
+
+	m_wallet->open( "wallet_name","application_name" ) ;
+}
+
 
 void MainWindow::run()
 {
 	this->show() ;
-	m_wallet = lxqt::Wallet::Wallet::getWalletBackend() ;
-	m_wallet->setInterfaceObject( this ) ;
-
-	m_wallet->open( "wallet_name","application_name" ) ;
+	this->testWallet() ;
 }
