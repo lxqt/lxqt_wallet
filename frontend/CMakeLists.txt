@@ -50,7 +50,9 @@ INCLUDE_DIRECTORIES( ${CMAKE_BINARY_DIR} )
 #
 # TODO creating a dynamic library fails to link,look it up why
 #
-add_library( lxqtwallet STATIC ${UI} ${MOC} ${SRC} )
+add_library( lxqtwallet STATIC ${UI} ${SRC} ${MOC} )
+set_target_properties( lxqtwallet PROPERTIES COMPILE_FLAGS "-D_FILE_OFFSET_BITS=64 -Wextra -Wall -s -fPIC -pthread -pedantic " )
+set_target_properties( lxqtwallet PROPERTIES SOVERSION "1.0.0" )
 
 if( NOKDESUPPORT ) 
 	SET( KDE_SUPPORT "false" )

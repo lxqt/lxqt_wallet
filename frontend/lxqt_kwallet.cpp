@@ -55,14 +55,13 @@ bool lxqt::Wallet::kwallet::open( const QString& walletName,const QString& appli
 	m_kwallet = KWallet::Wallet::openWallet( m_walletName,0,KWallet::Wallet::Asynchronous ) ;
 
 	connect( m_kwallet,SIGNAL( walletOpened( bool ) ),this,SLOT( walletOpened( bool ) ) ) ;
+	connect( m_kwallet,SIGNAL( walletOpened( bool ) ),m_interfaceObject,SLOT( walletIsOpen( bool ) ) ) ;
 
 	return false ;
 }
 
 void lxqt::Wallet::kwallet::walletOpened( bool opened )
 {
-	connect( this,SIGNAL( walletIsOpen( bool ) ),this->parent(),SLOT( walletIsOpen( bool ) ) ) ;
-
 	if( opened ){
 		if( m_applicationName.isEmpty() ){
 			m_kwallet->createFolder( m_kwallet->PasswordFolder() ) ;
@@ -72,8 +71,6 @@ void lxqt::Wallet::kwallet::walletOpened( bool opened )
 			m_kwallet->setFolder( m_applicationName ) ;
 		}
 	}
-
-	emit walletIsOpen( opened ) ;
 }
 
 QByteArray lxqt::Wallet::kwallet::readValue( const QString& key )
@@ -143,9 +140,10 @@ bool lxqt::Wallet::kwallet::walletIsOpened( void )
 	return m_kwallet->isOpen() ;
 }
 
-void lxqt::Wallet::kwallet::setAParent( QObject * parent )
+void lxqt::Wallet::kwallet::setInterfaceObject( QObject * interfaceObject )
 {
-	this->setParent( parent ) ;
+	m_interfaceObject = interfaceObject ;
+	connect( this,SIGNAL( walletIsOpen( bool ) ),interfaceObject,SLOT( walletIsOpen( bool ) ) ) ;
 }
 
 QObject * lxqt::Wallet::kwallet::qObject( void )

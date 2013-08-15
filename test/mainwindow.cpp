@@ -39,7 +39,7 @@ void MainWindow::run()
 {
 	this->show() ;
 	m_wallet = lxqt::Wallet::Wallet::getWalletBackend() ;
-	m_wallet->setAParent( this ) ;
+	m_wallet->setInterfaceObject( this ) ;
 
 	m_wallet->open( "wallet_name","application_name" ) ;
 }

@@ -1,8 +1,8 @@
 /*
  * copyright: 2013
- * name : mhogo mchungu 
+ * name : mhogo mchungu
  * email: mhogomchungu@gmail.com
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -31,9 +31,19 @@
 #include "lxqt_wallet_interface.h"
 #include "lxqt_internal_wallet.h"
 
+/*
+ * This header file is generated at configure time by a routine that checks if kwallet and gnome keyrings are to be supported
+ */
+#include "storage_manager.h"
+
 #if HAS_KWALLET_SUPPORT
 #include "lxqt_kwallet.h"
 #endif
+
+/*
+ * No support for this backend for now
+ */
+#define HAS_GNOME_KEYRING_SUPPORT 0
 
 lxqt::Wallet::Wallet::Wallet()
 {
@@ -45,7 +55,7 @@ lxqt::Wallet::Wallet::~Wallet()
 
 }
 
-lxqt::Wallet::Wallet * lxqt::Wallet::Wallet::getWalletBackend( lxqt::Wallet::walletBackEnd bk )
+lxqt::Wallet::Wallet * lxqt::Wallet::getWalletBackend( lxqt::Wallet::walletBackEnd bk )
 {
 	if( bk == lxqt::Wallet::internalBackEnd ){
 		return new lxqt::Wallet::internalWallet() ;
@@ -70,7 +80,7 @@ lxqt::Wallet::Wallet * lxqt::Wallet::Wallet::getWalletBackend( lxqt::Wallet::wal
 	return NULL ;
 }
 
-bool lxqt::Wallet::Wallet::backEndIsSupported( lxqt::Wallet::walletBackEnd bk )
+bool lxqt::Wallet::backEndIsSupported( lxqt::Wallet::walletBackEnd bk )
 {
 	if( bk == lxqt::Wallet::internalBackEnd ){
 		return true ;
@@ -95,7 +105,7 @@ bool lxqt::Wallet::Wallet::backEndIsSupported( lxqt::Wallet::walletBackEnd bk )
 	return false ;
 }
 
-void lxqt::Wallet::Wallet::deleteAWallet( const QString& walletName,const QString& applicationName )
+void lxqt::Wallet::deleteAWallet( const QString& walletName,const QString& applicationName )
 {
 	lxqt_wallet_delete_wallet( walletName.toAscii().constData(),applicationName.toAscii().constData() ) ;
 }

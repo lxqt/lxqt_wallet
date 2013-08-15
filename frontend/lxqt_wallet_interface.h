@@ -38,10 +38,6 @@
 #include <QVector>
 #include <QStringList>
 
-#include "storage_manager.h"
-
-#define HAS_GNOME_KEYRING_SUPPORT 0
-
 namespace lxqt{
 
 namespace Wallet{
@@ -58,28 +54,39 @@ typedef enum{
 	gnomeKeyringBackEnd
 }walletBackEnd;
 
+/*
+ * forward declare the Wallet class
+ */
+class Wallet ;
+
+/*
+ * check if there is a support for a backend and return true if the back end is supported
+ */
+bool backEndIsSupported( lxqt::Wallet::walletBackEnd ) ;
+
+/*
+ * delete a wallet
+ */
+void deleteAWallet( const QString& walletName,const QString& applicationName ) ;
+
+/*
+ * get a pointer to a requested backend to be used to gain access to the API.It is advised to call
+ * backEndIsSupported() to check if a backed is supported before calling this function.
+ * 0 is returned if there is no support for requested backend.
+ * A caller is responsible for the returned object and must delete it when done with it
+ */
+lxqt::Wallet::Wallet * getWalletBackend( lxqt::Wallet::walletBackEnd = lxqt::Wallet::internalBackEnd ) ;
+
+/*
+ * Below class is the interface that implements various backends.
+ */
+
 class Wallet : public QObject
 {
 	Q_OBJECT
 public:
 	Wallet() ;
 	virtual ~Wallet() ;
-	/*
-	 * get a pointer to a requested backend.
-	 * NULL is returned if there is no support for requested backend.
-	 * A caller is responsible for the returned object and must delete it when done with it
-	 */
-	static lxqt::Wallet::Wallet * getWalletBackend( lxqt::Wallet::walletBackEnd = lxqt::Wallet::internalBackEnd ) ;
-
-	/*
-	 * check if there is a support for a backend and return true if the back end is supported
-	 */
-	static bool backEndIsSupported( lxqt::Wallet::walletBackEnd ) ;
-
-	/*
-	 * delete a wallet
-	 */
-	static void deleteAWallet( const QString& walletName,const QString& applicationName ) ;
 
 	/*
 	 * add an entry to the wallet
@@ -99,8 +106,8 @@ public:
 	/*
 	 * get all keys in the wallet
 	 */
-	
 	virtual QStringList readAllKeys( void ) = 0 ;
+
 	/*
 	 * delete a key in a wallet
 	 */
@@ -137,8 +144,8 @@ public:
 	virtual bool walletIsOpened( void ) = 0 ;
 
 	/*
-	 * return QObject pointer of the backend,this can be used as a hacky way to get to additional functionality of backends
-	 * not supported through the public interface published here.
+	 * return QObject pointer of the backend,not sure why you would want this as communication btw a backend and a user of the
+	 * API is done through setInterfaceObject() method.
 	 */
 	virtual QObject * qObject( void ) = 0 ;
 
@@ -152,9 +159,10 @@ public:
 	 * applicationName argument corresponds to password folder in KWallet API,default value will set passwordFolder to KDE's default.
 	 * password argument is not used
 	 *
-	 * This back end requires an object to be passed using "setAParent()" method of this API and the object must have a slot named
+	 * This back end requires an object to be passed using "setInterfaceObject()" method of this API and the object must have a slot named
 	 * "void walletIsOpen(bool)".The slot will be called with "true" if the wallet was opened and with "false" otherwise.
-	 * Calling this function will generate a KWallet GUI prompt for a password.
+	 *
+	 * Calling this open() method will generate a KWallet GUI prompt for a password.
 	 *
 	 * The return value of this method with KWallet backend is undefined
 	 *
@@ -162,21 +170,23 @@ public:
 	 * walletName argument is the name of the wallet to open.
 	 * applicationName argument is the name of the program that owns the wallet.
 	 *
-	 * If password argument is given,the method will return true if the wallet is opened and false other wise.
+	 * If password argument is given,the method will return true if the wallet is opened and false other wise."walletIsOpen" signal will not
+	 * be generated.
 	 * If password argument is not given,a GUI window will be generated to ask the user for the password.
 	 * If password argument is not given,the return value of the method is undefined.
 	 *
-	 * This back end requires an object to be passed using "setAParent()" method of this API and the object must have a slot named
+	 * This back end requires an object to be passed using "setInterfaceObject()" method of this API and the object must have a slot named
 	 * "void walletIsOpen(bool)".The slot will be called with "true" if the wallet was opened and with "false" otherwise.
+	 *
+	 * Calling this open() method without a password will generate a GUI prompt for a password
 	 */
 	virtual bool open( const QString& walletName,const QString& applicationName = QString(),const QString& password = QString() ) = 0 ;
 
 	/*
-	 * This function must be called with a valid object that has a slot with a signature of "void walletIsOpen( bool )" if "open()"
-	 * was called without a password.
-	 * The slot will be  called with "true" if the wallet is opened and with "false" if the wallet could not be opened.
+	 * This method is used as a mean of communication between the backend and the user of the library.see open() method documentation above
+	 * for a use case of this API
 	 */
-	virtual void setAParent( QObject * ) = 0 ;
+	virtual void setInterfaceObject( QObject * ) = 0 ;
 
 	/*
 	 * this method returns PasswordFolder() in kwallet backend and is undefined in other backends

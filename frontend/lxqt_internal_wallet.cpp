@@ -49,7 +49,8 @@ bool lxqt::Wallet::internalWallet::openWallet()
 {
 	lxqt_wallet_error r = lxqt_wallet_open( &m_wallet,m_password.toAscii().constData(),m_password.size(),
 		      m_walletName.toAscii().constData(),m_applicationName.toAscii().constData() ) ;
-	return r == lxqt_wallet_no_error ;
+	bool q = ( r == lxqt_wallet_no_error ) ;
+	return q ;
 }
 
 void lxqt::Wallet::internalWallet::openWalletThreadResult( bool opened )
@@ -250,12 +251,10 @@ bool lxqt::Wallet::internalWallet::walletIsOpened()
 	return m_wallet != 0 ;
 }
 
-void lxqt::Wallet::internalWallet::setAParent( QObject * parent )
+void lxqt::Wallet::internalWallet::setInterfaceObject( QObject * interfaceObject )
 {
-	if( parent ){
-		this->setParent( parent ) ;
-		connect( this,SIGNAL( walletIsOpen( bool ) ),parent,SLOT( walletIsOpen( bool ) ) ) ;
-	}
+	m_interfaceObject = interfaceObject ;
+	connect( this,SIGNAL( walletIsOpen( bool ) ),m_interfaceObject,SLOT( walletIsOpen( bool ) ) ) ;
 }
 
 QObject * lxqt::Wallet::internalWallet::qObject()

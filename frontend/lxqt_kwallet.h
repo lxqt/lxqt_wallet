@@ -61,12 +61,10 @@ public:
 	void closeWallet( bool ) ;
 	lxqt::Wallet::walletBackEnd backEnd( void ) ;
 	bool walletIsOpened( void ) ;
-	void setAParent( QObject * parent ) ;
+	void setInterfaceObject( QObject * parent ) ;
 	QObject * qObject( void ) ;
 	QString storagePath( void ) ;
 	void changeWalletPassWord( const QString& walletName,const QString& applicationName = QString() ) ;
-signals:
-	void walletIsOpen( bool ) ;
 private slots:
 	void walletOpened( bool ) ;
 private:
@@ -74,6 +72,7 @@ private:
 	QString m_walletName ;
 	QString m_applicationName ;
 	QString m_password ;
+	QObject * m_interfaceObject ;
 };
 
 }
