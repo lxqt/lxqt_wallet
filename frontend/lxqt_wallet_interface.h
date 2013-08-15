@@ -81,7 +81,7 @@ Q_DECL_EXPORT lxqt::Wallet::Wallet * getWalletBackend( lxqt::Wallet::walletBackE
  * Below class is the interface that implements various backends.
  */
 
-class Wallet : public QObject
+class Q_DECL_EXPORT Wallet : public QObject
 {
 public:
 	Wallet() ;
