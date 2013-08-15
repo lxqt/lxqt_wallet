@@ -119,12 +119,7 @@ public:
 	virtual void deleteKey( const QString& key ) = 0 ;
 
 	/*
-	 * delete a wallet
-	 */
-	virtual void deleteWallet( void ) = 0 ;
-
-	/*
-	 * if the backend is opened,return the number of entries in the wallet
+	 * return the number of entries in the wallet
 	 */
 	virtual int walletSize( void ) = 0 ;
 

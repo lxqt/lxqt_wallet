@@ -220,11 +220,6 @@ void lxqt::Wallet::internalWallet::deleteKey( const QString& key )
 	lxqt_wallet_delete_key( m_wallet,key.toAscii().constData() ) ;
 }
 
-void lxqt::Wallet::internalWallet::deleteWallet( void )
-{
-	lxqt_wallet_delete_wallet( m_walletName.toAscii().constData(),m_applicationName.toAscii().constData() ) ;
-}
-
 int lxqt::Wallet::internalWallet::walletSize( void )
 {
 	return lxqt_wallet_wallet_size( m_wallet ) ;

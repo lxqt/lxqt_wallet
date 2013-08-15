@@ -107,11 +107,6 @@ void lxqt::Wallet::kwallet::deleteKey( const QString& key )
 	m_kwallet->removeEntry( key ) ;
 }
 
-void lxqt::Wallet::kwallet::deleteWallet( void )
-{
-	m_kwallet->deleteWallet( m_walletName ) ;
-}
-
 int lxqt::Wallet::kwallet::walletSize( void )
 {
 	QStringList l = m_kwallet->entryList() ;
