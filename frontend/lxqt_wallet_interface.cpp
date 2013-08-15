@@ -148,7 +148,7 @@ bool lxqt::Wallet::walletExists( lxqt::Wallet::walletBackEnd bk,const QString& w
 	}
 
 	if( bk == lxqt::Wallet::internalBackEnd ){
-		return lxqt_wallet_exists( walletName.toAscii().constData(),appName.toAscii().constData() ) ;
+		return lxqt_wallet_exists( walletName.toAscii().constData(),appName.toAscii().constData() ) == 0 ;
 	}
 
 	if( bk == lxqt::Wallet::kwalletBackEnd ){

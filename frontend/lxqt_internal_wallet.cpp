@@ -142,7 +142,7 @@ bool lxqt::Wallet::internalWallet::open( const QString& walletName,const QString
 		m_applicationName = m_walletName ;
 	}
 
-	if( lxqt::Wallet::walletExists(lxqt::Wallet::internalBackEnd,m_walletName,m_applicationName ) ){
+	if( lxqt::Wallet::walletExists( lxqt::Wallet::internalBackEnd,m_walletName,m_applicationName ) ){
 		if( m_password.isEmpty() ){
 			/*
 			 * to prevent an unnecessary prompt,try to open a wallet without a password and then
