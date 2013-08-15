@@ -121,7 +121,7 @@ int main( int argc,char * argv[] )
 		}else{
 			f = argv[ 3 ] ;
 			e = NULL ;
-			lxqt_wallet_read_key_value( wallet,f,&e,&q ) ;
+			lxqt_wallet_read_key_value( wallet,f,(void**)&e,&q ) ;
 			
 			if( e ){
 				printf( "key=%s:value=%s\n",f,e ) ;
@@ -200,7 +200,7 @@ int main( int argc,char * argv[] )
 		
 		if( r == lxqt_wallet_no_error ){
 			f = argv[ 3 ] ;
-			r = lxqt_wallet_change_wallet_key( wallet,f,strlen( f ) ) ;
+			r = lxqt_wallet_change_wallet_password( wallet,f,strlen( f ) ) ;
 			lxqt_wallet_close( &wallet ) ;
 		}else{
 			if( r == lxqt_wallet_wrong_password ){
