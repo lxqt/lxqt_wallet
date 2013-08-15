@@ -77,32 +77,6 @@ void lxqt::Wallet::internalWallet::cancelled()
 	emit walletIsOpen( false ) ;
 }
 
-void lxqt::Wallet::internalWallet::createAWallet( QString password )
-{
-	m_password = password ;
-	lxqt_wallet_create( m_password.toAscii().constData(),m_password.size(),
-			    m_walletName.toAscii().constData(),m_applicationName.toAscii().constData() ) ;
-
-	this->openWallet() ;
-}
-
-void lxqt::Wallet::internalWallet::createAWallet( bool create )
-{
-	if( create ){
-		if( m_password.isEmpty() ){
-			password_dialog * p = new password_dialog() ;
-			connect( p,SIGNAL( password( QString ) ),this,SLOT( createAWallet( QString ) ) ) ;
-			p->closeUIOnKeySend() ;
-			p->ShowUI( m_walletName,m_applicationName ) ;
-		}else{
-			lxqt_wallet_create( m_password.toAscii().constData(),m_password.size(),
-					    m_walletName.toAscii().constData(),m_applicationName.toAscii().constData() ) ;
-
-			this->openWallet( m_password ) ;
-		}
-	}
-}
-
 void lxqt::Wallet::internalWallet::openWalletThreadResult_1( bool opened )
 {
 	if( opened ){

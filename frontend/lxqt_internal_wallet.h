@@ -74,8 +74,6 @@ signals:
 private slots:
 	bool openWallet( QString ) ;
 	void cancelled( void ) ;
-	void createAWallet( bool ) ;
-	void createAWallet( QString ) ;
 	void openWalletThreadResult( bool ) ;
 	void openWalletThreadResult_1( bool ) ;
 	void password( QString,bool ) ;
