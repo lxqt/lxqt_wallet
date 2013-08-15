@@ -467,12 +467,14 @@ lxqt_wallet_error lxqt_wallet_delete_key( lxqt_wallet_t wallet,const char * key 
 	for( i = 0 ; i < j ; i++ ){
 		if( strcmp( key,k[ i ].key ) == 0 ){
 			if( j == 1 ){
+				memset( wallet->wallet_data,'\0',sizeof( struct lxqt_key_value ) ) ;
 				free( wallet->wallet_data ) ;
 				wallet->wallet_data = NULL ;
 				wallet->wallet_data_size = 0 ;
 				wallet->wallet_modified = 1 ;
 			}else{
 				memmove( k + i,k + i + 1,( j - 1 - i ) * sizeof( struct lxqt_key_value ) ) ;
+				memset( wallet->wallet_data + j - 1,'\0',sizeof( struct lxqt_key_value ) ) ;
 				wallet->wallet_data_size-- ;
 				e = wallet->wallet_data_size * sizeof( struct lxqt_key_value ) ;
 				wallet->wallet_data = realloc( wallet->wallet_data,e ) ;
@@ -495,12 +497,18 @@ lxqt_wallet_error lxqt_wallet_delete_wallet( const char * wallet_name,const char
 
 static lxqt_wallet_error _close_exit( lxqt_wallet_error err,lxqt_wallet_t * w,gcry_cipher_hd_t gcry_cipher_handle )
 {
+	size_t wallet_size ;
+	
 	lxqt_wallet_t wallet = *w ;
 	*w = NULL ;
+	
 	if( gcry_cipher_handle != 0 ){
 		gcry_cipher_close( gcry_cipher_handle ) ;
 	}
-	if( wallet->wallet_data_size > 0 ){
+	
+	wallet_size = wallet->wallet_data_size ;
+	if( wallet_size > 0 ){
+		memset( wallet->wallet_data,'\0',wallet_size * sizeof( struct lxqt_key_value ) ) ;
 		free( wallet->wallet_data ) ;
 	}
 	free( wallet->wallet_name ) ;
