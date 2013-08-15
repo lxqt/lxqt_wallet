@@ -2,7 +2,7 @@ lxqt_wallet
 ===========
 
 This projects seeks to create a secure storage of sensitive information that can be represented in key-pair values
-without creating dependencies on kde with its kwallet secure storage facilities or gnome with its gnome-keyring storage facilities.
+without creating dependencies on kde with its kwallet secure storage facilities or gnome with its gnome-keyring secure storage facilities.
 
 The project is divided into two parts.
 
@@ -15,7 +15,7 @@ a yet to be developed gnome-keyring.
 
 This plugin architecture allows users of the library to target only one API and securely store information in different wallet systems.
 
-The front end and its backend counter part is build specifically to be easily intergrated in other projects simply by dropping the folder
+The front end and its backend counter part are build specifically to be easily intergrated in other projects simply by dropping the folder
 in the middle of the source tree and start using it.
 
 This project is designed with small time independent developers who want to store their user's sensitive information but do not want to
