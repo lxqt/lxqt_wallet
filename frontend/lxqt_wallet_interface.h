@@ -62,12 +62,12 @@ class Wallet ;
 /*
  * check if there is a support for a backend and return true if the back end is supported
  */
-bool backEndIsSupported( lxqt::Wallet::walletBackEnd ) ;
+Q_DECL_EXPORT bool backEndIsSupported( lxqt::Wallet::walletBackEnd ) ;
 
 /*
  * delete a wallet
  */
-void deleteAWallet( const QString& walletName,const QString& applicationName ) ;
+Q_DECL_EXPORT void deleteAWallet( const QString& walletName,const QString& applicationName ) ;
 
 /*
  * get a pointer to a requested backend to be used to gain access to the API.It is advised to call
@@ -75,7 +75,7 @@ void deleteAWallet( const QString& walletName,const QString& applicationName ) ;
  * 0 is returned if there is no support for requested backend.
  * A caller is responsible for the returned object and must delete it when done with it
  */
-lxqt::Wallet::Wallet * getWalletBackend( lxqt::Wallet::walletBackEnd = lxqt::Wallet::internalBackEnd ) ;
+Q_DECL_EXPORT lxqt::Wallet::Wallet * getWalletBackend( lxqt::Wallet::walletBackEnd = lxqt::Wallet::internalBackEnd ) ;
 
 /*
  * Below class is the interface that implements various backends.
@@ -83,7 +83,6 @@ lxqt::Wallet::Wallet * getWalletBackend( lxqt::Wallet::walletBackEnd = lxqt::Wal
 
 class Wallet : public QObject
 {
-	Q_OBJECT
 public:
 	Wallet() ;
 	virtual ~Wallet() ;

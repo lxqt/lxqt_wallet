@@ -15,7 +15,6 @@ set( UI_FILES 	changepassworddialog.ui
 set( MOC_FILES 	changepassworddialog.h 
 		lxqt_internal_wallet.h 
 		lxqt_kwallet.h 
-		lxqt_wallet_interface.h
 		open_wallet_thread.h
 		password_dialog.h )
 
@@ -47,12 +46,11 @@ QT4_WRAP_CPP( MOC ${MOC_FILES} )
 
 INCLUDE_DIRECTORIES( ${CMAKE_BINARY_DIR} )
 
-#
-# TODO creating a dynamic library fails to link,look it up why
-#
-add_library( lxqtwallet STATIC ${UI} ${SRC} ${MOC} )
-set_target_properties( lxqtwallet PROPERTIES COMPILE_FLAGS "-D_FILE_OFFSET_BITS=64 -Wextra -Wall -s -fPIC -pthread -pedantic " )
-set_target_properties( lxqtwallet PROPERTIES SOVERSION "1.0.0" )
+add_library( lxqtwallet SHARED ${UI} ${SRC} ${MOC} )
+set_target_properties( lxqtwallet PROPERTIES COMPILE_FLAGS "-D_FILE_OFFSET_BITS=64 -Wextra -Wall -s -fPIC -pedantic " )
+set_target_properties( lxqtwallet PROPERTIES SOVERSION "${LIBRARY_VERSION}" )
+
+install( TARGETS lxqtwallet LIBRARY DESTINATION lib )
 
 if( NOKDESUPPORT ) 
 	SET( KDE_SUPPORT "false" )
