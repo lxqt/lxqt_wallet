@@ -160,16 +160,34 @@ QVector<lxqt::Wallet::walletKeyValues> lxqt::Wallet::internalWallet::readAllKeyV
 
 	if( r == 0 ){
 		return w ;
-	}else{
-		size_t j = lxqt_wallet_wallet_size( m_wallet ) ;
-		walletKeyValues s ;
-		for( size_t i = 0 ; i < j ; i++ ){
-			s.key = QString( r[ i ].key ) ;
-			s.value = QByteArray( r[ i ].value,r[ i ].value_size - 1 ) ;
-			w.append( s ) ;
-		}
-		return w ;
 	}
+
+	walletKeyValues s ;
+
+	struct lxqt_key_value * x ;
+
+	size_t k ;
+	size_t i ;
+
+	char * e ;
+
+	k = lxqt_wallet_wallet_size( m_wallet ) ;
+	i = 0 ;
+	e = ( char * ) r ;
+
+	while( i < k ){
+		x = ( struct lxqt_key_value * ) e ;
+
+		s.key = QString( x->key ) ;
+		s.value = QByteArray( e + sizeof( struct lxqt_key_value ),x->value_size ) ;
+
+		i += x->value_size + sizeof( struct lxqt_key_value ) ;
+		e += i ;
+
+		w.append( s ) ;
+	}
+
+	return w ;
 }
 
 QStringList lxqt::Wallet::internalWallet::readAllKeys()
