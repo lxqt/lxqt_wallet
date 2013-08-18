@@ -10,7 +10,7 @@ TARGET = wallet_manager
 
 TEMPLATE = app
 
-INCLUDEPATH += /home/local/KDE4/include /usr/include test
+INCLUDEPATH += /home/local/KDE4/include /usr/include /home/ink/src/build-lxde-wallet /home/ink/src/wallet_manager
 
 LIBS += -lgcrypt -lkwalletbackend -L/home/local/KDE4/lib
 
@@ -29,7 +29,7 @@ HEADERS += \
     frontend/lxqt_internal_wallet.h \
     frontend/changepassworddialog.h \
     backend/lxqtwallet.h \
-    test/mainwindow.h
+    /home/ink/src/build-lxde-wallet/mainwindow.h
 
 SOURCES += \
     frontend/password_dialog.cpp \
@@ -39,11 +39,11 @@ SOURCES += \
     frontend/lxqt_internal_wallet.cpp \
     frontend/changepassworddialog.cpp \
     backend/lxqtwallet.c \
-    test/mainwindow.cpp \
-    test/main.cpp
+    /home/ink/src/build-lxde-wallet/mainwindow.cpp \
+    /home/ink/src/build-lxde-wallet/main.cpp
 
 FORMS += \
     frontend/password_dialog.ui \
     frontend/changepassworddialog.ui \
-    test/mainwindow.ui
+    /home/ink/src/build-lxde-wallet/mainwindow.ui
 
