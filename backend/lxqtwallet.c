@@ -37,6 +37,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <limits.h>
+#include <sys/mman.h>
 
 /*
  * below string MUST BE 5 bytes long
@@ -355,7 +356,9 @@ lxqt_wallet_error lxqt_wallet_open( lxqt_wallet_t * wallet,const char * password
 				len = st.st_size - ( IV_SIZE + MAGIC_STRING_BUFFER_SIZE + BLOCK_SIZE ) ;
 
 				e = malloc( len ) ;
+				
 				if( e != NULL ){
+					mlock( e,len ) ;
 					read( fd,e,len ) ;
 					gcry_cipher_decrypt( gcry_cipher_handle,e,len,NULL,0 ) ;
 					w->wallet_data = e ;
@@ -397,6 +400,7 @@ void lxqt_wallet_read_key_value( lxqt_wallet_t wallet,const char * key,void ** v
 		key_len_1 = strlen( key ) ;
 		
 		while( i < k ){
+			
 			memcpy( &key_len,e,sizeof( u_int32_t ) ) ;
 			memcpy( &key_value_len,e + sizeof( u_int32_t ) + key_len,sizeof( u_int32_t ) ) ;
 			
@@ -442,6 +446,7 @@ lxqt_wallet_error lxqt_wallet_add_key( lxqt_wallet_t wallet,const char * key,
 
 			if( f != NULL ){
 				
+				mlock( f,wallet->wallet_data_size + len ) ;
 				e = f + wallet->wallet_data_size ;
 				
 				memcpy( e,&key_len,sizeof( u_int32_t ) ) ;
@@ -490,6 +495,7 @@ lxqt_wallet_key_values_t * lxqt_wallet_read_all_keys( lxqt_wallet_t wallet )
 			memset( entries,'\0',sizeof( lxqt_wallet_key_values_t ) * wallet->wallet_data_entry_count ) ;
 			
 			while( q < k ){
+				
 				memcpy( &key_len,e,sizeof( u_int32_t ) ) ;
 				memcpy( &key_value_len,e + sizeof( u_int32_t ) + key_len,sizeof( u_int32_t ) ) ;
 				
@@ -534,6 +540,7 @@ lxqt_wallet_key_values_t * lxqt_wallet_read_all_key_values( lxqt_wallet_t wallet
 			k = wallet->wallet_data_entry_count ;
 			
 			while( q < k ){
+				
 				memcpy( &key_len,e,sizeof( u_int32_t ) ) ;
 				memcpy( &key_value_len,e + sizeof( u_int32_t ) + key_len,sizeof( u_int32_t ) ) ;
 				
@@ -631,6 +638,7 @@ static lxqt_wallet_error _close_exit( lxqt_wallet_error err,lxqt_wallet_t * w,gc
 
 	if( wallet->wallet_data_size > 0 ){
 		memset( wallet->wallet_data,'\0',wallet->wallet_data_size ) ;
+		munlock( wallet->wallet_data,wallet->wallet_data_size ) ;
 		free( wallet->wallet_data ) ;
 	}
 	free( wallet->wallet_name ) ;

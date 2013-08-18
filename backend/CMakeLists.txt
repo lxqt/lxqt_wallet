@@ -20,6 +20,6 @@ else()
 endif()
 
 add_library( lxqtwallet-backend STATIC lxqtwallet.c )
-set_target_properties( lxqtwallet-backend PROPERTIES COMPILE_FLAGS "-D_FILE_OFFSET_BITS=64 -Wall -s -fPIC -pthread -pedantic " ) 
+set_target_properties( lxqtwallet-backend PROPERTIES COMPILE_FLAGS "-D_FILE_OFFSET_BITS=64 -Wall -s -fPIC -pedantic " ) 
 set_target_properties( lxqtwallet-backend PROPERTIES LINK_FLAGS "-pie" )
 TARGET_LINK_LIBRARIES( lxqtwallet-backend "${GCRYPT_LIBRARY}" ) 
