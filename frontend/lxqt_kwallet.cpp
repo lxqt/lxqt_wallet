@@ -149,3 +149,9 @@ void lxqt::Wallet::kwallet::changeWalletPassWord( const QString& walletName,cons
 	Q_UNUSED( applicationName ) ;
 	m_kwallet->changePassword( walletName,0 ) ;
 }
+
+QStringList lxqt::Wallet::kwallet::managedWalletList()
+{
+	return m_kwallet->walletList() ;
+}
+

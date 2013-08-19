@@ -43,6 +43,7 @@
 #include <QMessageBox>
 #include "password_dialog.h"
 #include <QPushButton>
+#include <QDir>
 
 namespace lxqt{
 
@@ -68,6 +69,7 @@ public:
 	QObject * qObject( void ) ;
 	QString storagePath( void ) ;
 	void changeWalletPassWord( const QString& walletName,const QString& applicationName = QString() ) ;
+	QStringList managedWalletList( void ) ;
 signals:
 	void walletIsOpen( bool ) ;
 	void passwordIsCorrect( bool ) ;

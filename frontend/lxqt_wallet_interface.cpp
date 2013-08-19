@@ -170,3 +170,25 @@ bool lxqt::Wallet::walletExists( lxqt::Wallet::walletBackEnd bk,const QString& w
 	return false ;
 }
 
+QStringList lxqt::Wallet::walletList( lxqt::Wallet::walletBackEnd bk )
+{
+	if( bk == lxqt::Wallet::internalBackEnd ){
+		char path[ 4096 ] ;
+		lxqt_wallet_application_wallet_path( path,4096,"" ) ;
+		QDir d( path ) ;
+		QStringList l = d.entryList() ;
+		l.removeOne( "." ) ;
+		l.removeOne( ".." ) ;
+		return l ;
+	}else if( bk == lxqt::Wallet::kwalletBackEnd ){
+		#if HAS_KWALLET_SUPPORT
+			return KWallet::Wallet::walletList() ;
+		#else
+			return QStringList() ;
+		#endif
+	}else if( bk == lxqt::Wallet::gnomeKeyringBackEnd ){
+		return QStringList() ;
+	}else{
+		return QStringList() ;
+	}
+}

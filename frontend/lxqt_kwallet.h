@@ -63,6 +63,7 @@ public:
 	QObject * qObject( void ) ;
 	QString storagePath( void ) ;
 	void changeWalletPassWord( const QString& walletName,const QString& applicationName = QString() ) ;
+	QStringList managedWalletList( void ) ;
 private slots:
 	void walletOpened( bool ) ;
 private:

@@ -37,6 +37,7 @@
 #include <QByteArray>
 #include <QVector>
 #include <QStringList>
+#include <QDir>
 
 namespace lxqt{
 
@@ -84,7 +85,14 @@ Q_DECL_EXPORT bool walletExists( lxqt::Wallet::walletBackEnd,const QString& wall
 Q_DECL_EXPORT lxqt::Wallet::Wallet * getWalletBackend( lxqt::Wallet::walletBackEnd = lxqt::Wallet::internalBackEnd ) ;
 
 /*
+ * return a list of all wallets
+ * returned value is undefined if the backend is not supported
+ */
+QStringList walletList( lxqt::Wallet::walletBackEnd ) ;
+
+/*
  * Below class is the interface that implements various backends.
+ * See example at the end of this header file to see an example of how to use the interface.
  */
 
 class Q_DECL_EXPORT Wallet : public QObject
@@ -192,6 +200,12 @@ public:
 	 * change the wallet key to newWalletKey
 	 */
 	virtual void changeWalletPassWord( const QString& walletName,const QString& applicationName = QString() ) = 0 ;
+
+	/*
+	 * list all wallets managed by an application.
+	 * This method is equivalent to kwallet's "folderList()"
+	 */
+	virtual QStringList managedWalletList( void ) = 0 ;
 };
 
 } // namespace lxqt

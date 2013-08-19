@@ -180,7 +180,7 @@ QVector<lxqt::Wallet::walletKeyValues> lxqt::Wallet::internalWallet::readAllKeyV
 
 			s.key   = QByteArray( e + header_size,key_len ) ;
 			s.value = QByteArray( e + header_size + key_len,key_value_len ) ;
-			
+
 			i = i + header_size + key_len + key_value_len ;
 			e = z + i ;
 
@@ -272,3 +272,22 @@ void lxqt::Wallet::internalWallet::changeWalletPassWord( const QString& walletNa
 	c->ShowUI() ;
 }
 
+QStringList lxqt::Wallet::internalWallet::managedWalletList()
+{
+	char path[ 4096 ] ;
+	lxqt_wallet_application_wallet_path( path,4096,m_applicationName.toAscii().constData() ) ;
+	QDir d( path ) ;
+	QStringList l = d.entryList() ;
+	l.removeOne( "." ) ;
+	l.removeOne( ".." ) ;
+
+	if( l.size() > 0 ){
+		/*
+		 * remove the extension part of a file name
+		 */
+		const QString& q = l.at( 0 ) ;
+		l.replaceInStrings( q.mid( q.indexOf( "." ) ),"" ) ;
+	}
+
+	return l ;
+}
