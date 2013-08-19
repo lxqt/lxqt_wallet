@@ -55,6 +55,8 @@
 #define BLOCK_SIZE 16
 #define IV_SIZE 16
 
+#define NODE_HEADER_SIZE ( 2 * sizeof( u_int32_t ) )
+
 #define WALLET_EXTENSION ".lwt"
 
 struct lxqt_wallet_struct{
@@ -66,6 +68,44 @@ struct lxqt_wallet_struct{
 	size_t wallet_data_entry_count ;
 	int wallet_modified ;
 };
+
+/*
+ * Encrypted file documentation.
+ * 
+ * An empty file takes 48 bytes
+ * 
+ * The first 16 bytes are Initialization Vector block.
+ * The IV is read from "/dev/urandom".
+ * The IV is stored unencrypted.
+ * 
+ * Everything from 16th byte onward is store encrypted.
+ * 
+ * The second 16 bytes are "magic string bytes".
+ * The first 11 bytes are used to check if the decryption key is correct or not.
+ * The remaining 5 bytes are used to store file version number.
+ * 
+ * The third 16 bytes are used to store information about the contents of the load.
+ * The first 4 bytes are a u_int32_t data type and are used to store the load size
+ * The second 4 bytes are a u_int32_t data type and are used to store the number of entries in the wallet.
+ * The remaining 8 bytes are currently unused.
+ * 
+ * The load starts at offset 48
+ * 
+ * The file size maybe bigger than the sum of all headers + load account for CBC mode of 128 bit AES
+ * demanding data to be in multiple of 16
+ * 
+ * Key-pair entries are stored as a singly linked list in an array.
+ * 
+ * A node has 4 properties.
+ * First 4 bytes are a u_int32_t data type and are used to store the size of the key.
+ * Second 4 bytes are a u_int32_t data type and used to stores the size of the value.
+ * The 8th byte will be the beginning of the key.
+ * The beginning of the key value will be at the 8th byte plus the size of the key.
+ *  
+ * The sum of these two 4 bytes plus the length of the key plus the length of the value will
+ * point to the next node in the list
+ * 
+ */
 
 static char * _wallet_full_path( char * path_buffer,size_t path_buffer_size,const char * wallet_name,const char * application_name ) ;
 
@@ -331,6 +371,7 @@ lxqt_wallet_error lxqt_wallet_open( lxqt_wallet_t * wallet,const char * password
 		 */
 		memcpy( version_buffer,magic_string + MAGIC_STRING_SIZE,VERSION_SIZE ) ;
 		version_buffer[ VERSION_SIZE ] = '\0' ;
+		
 		if( _wallet_is_not_compatible( version_buffer ) ){
 			return _open_exit( lxqt_wallet_incompatible_wallet,w,gcry_cipher_handle ) ;
 		}
@@ -405,20 +446,20 @@ void lxqt_wallet_read_key_value( lxqt_wallet_t wallet,const char * key,void ** v
 		while( i < k ){
 			
 			key_len       = *( u_int32_t * ) e ;
-			key_value_p   = e + sizeof( u_int32_t ) + key_len ; 
+			key_value_p   = e + sizeof( u_int32_t ) ; 
 			key_value_len = *( u_int32_t * ) key_value_p ;
 						
-			if( strncmp( key,e + sizeof( u_int32_t ),key_len_1 ) == 0 ){
+			if( strncmp( key,e + NODE_HEADER_SIZE,key_len_1 ) == 0 ){
 				r = malloc( key_value_len + 1 ) ;
 				if( r != NULL ){
-					memcpy( r,e + sizeof( u_int32_t ) + key_len + sizeof( u_int32_t ),key_value_len ) ;
+					memcpy( r,e + NODE_HEADER_SIZE + key_len,key_value_len ) ;
 					*( r + key_value_len ) = '\0' ;
 					*value = r ;
 					*value_size = key_value_len ;
 					break ;
 				}
 			}else{
-				i = i + sizeof( u_int32_t ) + key_len + sizeof( u_int32_t ) + key_value_len ;
+				i = i + NODE_HEADER_SIZE + key_len + key_value_len ;
 				e = z + i ;
 			}
 		}
@@ -449,13 +490,13 @@ int lxqt_wallet_wallet_has_key( lxqt_wallet_t wallet,const char * key )
 		while( i < k ){
 			
 			key_len       = *( u_int32_t * ) e ;
-			key_value_p   = e + sizeof( u_int32_t ) + key_len ; 
+			key_value_p   = e + sizeof( u_int32_t ) ; 
 			key_value_len = *( u_int32_t * ) key_value_p ;
 			
-			if( strncmp( key,e + sizeof( u_int32_t ),key_len_1 ) == 0 ){
+			if( strncmp( key,e + NODE_HEADER_SIZE,key_len_1 ) == 0 ){
 				return 1 ;
 			}else{
-				i = i + sizeof( u_int32_t ) + key_len + sizeof( u_int32_t ) + key_value_len ;
+				i = i + NODE_HEADER_SIZE + key_len + key_value_len ;
 				e = z + i ;
 			}
 		}
@@ -468,7 +509,6 @@ int lxqt_wallet_wallet_has_value( lxqt_wallet_t wallet,char ** key,const void * 
 {
 	const char * e ;
 	const char * z ;
-	const char * q ;
 	const char * key_value_p ;
 	
 	char * r ;
@@ -489,7 +529,7 @@ int lxqt_wallet_wallet_has_value( lxqt_wallet_t wallet,char ** key,const void * 
 		while( i < k ){
 			
 			key_len       = *( u_int32_t * ) e ;
-			key_value_p   = e + sizeof( u_int32_t ) + key_len ; 
+			key_value_p   = e + sizeof( u_int32_t ) ; 
 			key_value_len = *( u_int32_t * ) key_value_p ;
 			
 			if( i + value_size > k ){
@@ -498,13 +538,12 @@ int lxqt_wallet_wallet_has_value( lxqt_wallet_t wallet,char ** key,const void * 
 				 */
 				return 0 ;
 			}else{
-				q = e + sizeof( u_int32_t ) + key_len + sizeof( u_int32_t ) ;
-				if( memcmp( value,q,value_size ) == 0 ){
+				if( memcmp( value,e + NODE_HEADER_SIZE + key_len,value_size ) == 0 ){
 					if( key != NULL ){
 						r = malloc( key_len + 1 ) ;
 						if( r != NULL ){
 							r = malloc( key_len + 1 ) ;
-							memcpy( r,e + sizeof( u_int32_t ),key_len ) ;
+							memcpy( r,e + NODE_HEADER_SIZE,key_len ) ;
 							*( r + key_len ) = '\0' ;
 							*key = r ;
 						}
@@ -514,7 +553,7 @@ int lxqt_wallet_wallet_has_value( lxqt_wallet_t wallet,char ** key,const void * 
 				}
 			}
 			
-			i = i + sizeof( u_int32_t ) + key_len + sizeof( u_int32_t ) + key_value_len ;
+			i = i + NODE_HEADER_SIZE + key_len + key_value_len ;
 			e = z + i ;
 		}
 		
@@ -527,6 +566,7 @@ lxqt_wallet_error lxqt_wallet_add_key( lxqt_wallet_t wallet,const char * key,
 {
 	char * e ;
 	char * f ;
+	
 	size_t len ;
 	u_int32_t key_len ;
 	
@@ -542,7 +582,7 @@ lxqt_wallet_error lxqt_wallet_add_key( lxqt_wallet_t wallet,const char * key,
 				value = "" ;
 			}
 			
-			len = sizeof( u_int32_t ) + key_len + sizeof( u_int32_t ) + key_value_length ;
+			len = NODE_HEADER_SIZE + key_len + key_value_length ;
 			f = realloc( wallet->wallet_data,wallet->wallet_data_size + len ) ;
 
 			if( f != NULL ){
@@ -551,9 +591,9 @@ lxqt_wallet_error lxqt_wallet_add_key( lxqt_wallet_t wallet,const char * key,
 				e = f + wallet->wallet_data_size ;
 				
 				memcpy( e,&key_len,sizeof( u_int32_t ) ) ;
-				memcpy( e + sizeof( u_int32_t ),key,key_len ) ;
-				memcpy( e + sizeof( u_int32_t ) + key_len,&key_value_length,sizeof( u_int32_t ) ) ;
-				memcpy( e + sizeof( u_int32_t ) + key_len + sizeof( u_int32_t ),value,key_value_length ) ;
+				memcpy( e + sizeof( u_int32_t ),&key_value_length,sizeof( u_int32_t ) ) ;
+				memcpy( e + NODE_HEADER_SIZE,key,key_len ) ;
+				memcpy( e + NODE_HEADER_SIZE + key_len,value,key_value_length ) ;
 				
 				wallet->wallet_data_size += len ;
 				wallet->wallet_modified = 1 ;
@@ -599,15 +639,17 @@ lxqt_wallet_key_values_t * lxqt_wallet_read_all_keys( lxqt_wallet_t wallet )
 			while( q < k ){
 				
 				key_len       = *( u_int32_t * ) e ;
-				key_value_p   = e + sizeof( u_int32_t ) + key_len ; 
+				key_value_p   = e + sizeof( u_int32_t ) ; 
 				key_value_len = *( u_int32_t * ) key_value_p ;
 				
 				entries[ q ].key = malloc( key_len + 1 ) ;
-				memcpy( entries[ q ].key,e + sizeof( u_int32_t ),key_len ) ;
-				entries[ q ].key[ key_len ] = '\0' ;
-				entries[ q ].key_size = key_len ;
+				if( entries[ q ].key != NULL ){
+					memcpy( entries[ q ].key,e + NODE_HEADER_SIZE,key_len ) ;
+					entries[ q ].key[ key_len ] = '\0' ;
+					entries[ q ].key_size = key_len ;
+				}
 								
-				i = i + sizeof( u_int32_t ) + key_len + sizeof( u_int32_t ) + key_value_len ;
+				i = i + NODE_HEADER_SIZE + key_len + key_value_len ;
 				e = z + i ;
 				q++ ;
 			}
@@ -646,20 +688,31 @@ lxqt_wallet_key_values_t * lxqt_wallet_read_all_key_values( lxqt_wallet_t wallet
 			while( q < k ){
 				
 				key_len       = *( u_int32_t * ) e ;
-				key_value_p   = e + sizeof( u_int32_t ) + key_len ; 
+				key_value_p   = e + sizeof( u_int32_t ) ; 
 				key_value_len = *( u_int32_t * ) key_value_p ;
 				
 				entries[ q ].key = malloc( key_len + 1 ) ;
-				memcpy( entries[ q ].key,e + sizeof( u_int32_t ),key_len ) ;
-				entries[ q ].key[ key_len ] = '\0' ;
-				entries[ q ].key_size = key_len ;
 				
-				entries[ q ].key_value = malloc( key_value_len + 1 ) ;
-				memcpy( entries[ q ].key_value,e + sizeof( u_int32_t ) + key_len + sizeof( u_int32_t ),key_value_len ) ;
-				entries[ q ].key_value[ key_value_len ] = '\0' ;
-				entries[ q ].key_value_size = key_value_len ;
+				if( entries[ q ].key != NULL ){
+					
+					memcpy( entries[ q ].key,e + NODE_HEADER_SIZE,key_len ) ;
+					entries[ q ].key[ key_len ] = '\0' ;
+					entries[ q ].key_size = key_len ;
 				
-				i = i + sizeof( u_int32_t ) + key_len + sizeof( u_int32_t ) + key_value_len ;
+					entries[ q ].key_value = malloc( key_value_len + 1 ) ;
+					if( entries[ q ].key_value != NULL ){
+						memcpy( entries[ q ].key_value,e + NODE_HEADER_SIZE + key_len,key_value_len ) ;
+						entries[ q ].key_value[ key_value_len ] = '\0' ;
+						entries[ q ].key_value_size = key_value_len ;
+					}else{
+						free( entries[ q ].key ) ;
+						memset( &entries[ q ],'\0',sizeof( lxqt_wallet_key_values_t ) ) ;
+					}
+				}else{
+					memset( &entries[ q ],'\0',sizeof( lxqt_wallet_key_values_t ) ) ;
+				}
+				
+				i = i + NODE_HEADER_SIZE + key_len + key_value_len ;
 				e = z + i ;
 				q++ ;
 			}
@@ -695,10 +748,10 @@ lxqt_wallet_error lxqt_wallet_delete_key( lxqt_wallet_t wallet,const char * key 
 		while( i < k ){
 			
 			key_len       = *( u_int32_t * ) e ;
-			key_value_p   = e + sizeof( u_int32_t ) + key_len ; 
+			key_value_p   = e + sizeof( u_int32_t ) ; 
 			key_value_len = *( u_int32_t * ) key_value_p ;
 			
-			if( strncmp( key,e + sizeof( u_int32_t ),key_len_1 ) == 0 ){
+			if( strncmp( key,e + NODE_HEADER_SIZE,key_len_1 ) == 0 ){
 				if( wallet->wallet_data_entry_count == 1 ){
 					free( wallet->wallet_data ) ;
 					wallet->wallet_data_size = 0 ;
@@ -706,7 +759,7 @@ lxqt_wallet_error lxqt_wallet_delete_key( lxqt_wallet_t wallet,const char * key 
 					wallet->wallet_data = NULL ;
 					wallet->wallet_data_entry_count = 0 ;
 				}else{
-					block_size = key_len + sizeof( u_int32_t ) + key_value_len + sizeof( u_int32_t ) ;
+					block_size = NODE_HEADER_SIZE + key_len + key_value_len ;
 				
 					memmove( e,e + block_size,wallet->wallet_data_size - ( i + block_size ) ) ;
 				
@@ -717,7 +770,7 @@ lxqt_wallet_error lxqt_wallet_delete_key( lxqt_wallet_t wallet,const char * key 
 				
 				break ;
 			}else{
-				i = i + sizeof( u_int32_t ) + key_len + sizeof( u_int32_t ) + key_value_len ;
+				i = i + NODE_HEADER_SIZE + key_len + key_value_len ;
 				e = z + i ;
 			}
 		}
@@ -833,8 +886,8 @@ lxqt_wallet_error lxqt_wallet_close( lxqt_wallet_t * w )
 	r = gcry_cipher_encrypt( gcry_cipher_handle,load_header,BLOCK_SIZE,NULL,0 ) ;
 
 	write( fd,load_header,BLOCK_SIZE ) ;
-
-	k = wallet->wallet_data_size + BLOCK_SIZE ;
+	
+	k = wallet->wallet_data_size ;
 
 	while( k % 16 != 0 ){
 		k++ ;
@@ -890,11 +943,13 @@ char ** lxqt_wallet_wallet_list( const char * application_name,int * size )
 					result_1 = realloc( result,sizeof( char * ) * ( count + 1 ) ) ;
 					if( result_1 != NULL ){
 						e = malloc( len + 1 ) ;
-						memcpy( e,entry->d_name,len ) ;
-						*( e + len ) = '\0' ;
-						result_1[ count ] = e ;
-						result = result_1 ;
-						count++ ;
+						if( e!= NULL ){
+							memcpy( e,entry->d_name,len ) ;
+							*( e + len ) = '\0' ;
+							result_1[ count ] = e ;
+							result = result_1 ;
+							count++ ;
+						}
 					}
 				}
 			}
