@@ -174,6 +174,11 @@ lxqt_wallet_key_values_t * lxqt_wallet_read_all_keys( lxqt_wallet_t ) ;
 lxqt_wallet_error lxqt_wallet_change_wallet_password( lxqt_wallet_t,const char * new_password,size_t new_password_size ) ;
 
 /*
+ * undocumented API
+ */
+char * _lxqt_wallet_get_wallet_data( lxqt_wallet_t wallet ) ;
+
+/*
  * below is a complete program that tests the library functionality,it may be useful as a
  * source of how the use the API
  */

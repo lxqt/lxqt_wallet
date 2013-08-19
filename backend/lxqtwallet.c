@@ -125,6 +125,11 @@ static void _create_magic_string_header( char magic_string[ MAGIC_STRING_BUFFER_
 
 static int _wallet_is_not_compatible( char version_buffer[ VERSION_SIZE + 1 ] ) ;
 
+char * _lxqt_wallet_get_wallet_data( lxqt_wallet_t wallet )
+{
+	return wallet->wallet_data ;
+}
+
 static inline u_int32_t _get_first_header_component( const char * str )
 {
 	return *( u_int32_t * ) str ;

@@ -156,42 +156,70 @@ QVector<lxqt::Wallet::walletKeyValues> lxqt::Wallet::internalWallet::readAllKeyV
 {
 	QVector<lxqt::Wallet::walletKeyValues> w ;
 
-	int k = lxqt_wallet_wallet_entry_count( m_wallet ) ;
-	lxqt_wallet_key_values_t * values = lxqt_wallet_read_all_key_values( m_wallet ) ;
-	if( values != NULL ){
+	const char * e = _lxqt_wallet_get_wallet_data( m_wallet ) ;
+	if( e == NULL ){
+		return w ;
+	}else{
+		u_int32_t key_len ;
+		u_int32_t key_value_len ;
+		u_int32_t header_size = 2 * sizeof( u_int32_t ) ;
+
+		const char * z = e ;
+		const char * f ;
+
+		size_t k = lxqt_wallet_wallet_size( m_wallet ) ;
+		size_t i = 0 ;
+
 		walletKeyValues s ;
-		int i = 0 ;
+
 		while( i < k ){
-			s.key = QByteArray( values[ i ].key,values[ i ].key_size ) ;
-			s.value = QByteArray( values[ i ].key_value,values[ i ].key_value_size ) ;
-			free( values[ i ].key ) ;
-			free( values[ i ].key_value ) ;
-			i++ ;
+
+			f = e + sizeof( u_int32_t ) ;
+			key_len       = *( u_int32_t * ) e ;
+			key_value_len = *( u_int32_t * ) f ;
+
+			s.key   = QByteArray( e + header_size,key_len ) ;
+			s.value = QByteArray( e + header_size + key_len,key_value_len ) ;
+			
+			i = i + header_size + key_len + key_value_len ;
+			e = z + i ;
+
 			w.append( s ) ;
 		}
-		free( values ) ;
+		return w ;
 	}
-
-	return w ;
 }
 
 QStringList lxqt::Wallet::internalWallet::readAllKeys()
 {
-	lxqt_wallet_key_values_t * values = lxqt_wallet_read_all_keys( m_wallet ) ;
-
 	QStringList l ;
-	if( values == NULL ){
+
+	const char * e = _lxqt_wallet_get_wallet_data( m_wallet ) ;
+	if( e == NULL ){
 		return l ;
 	}else{
-		int k = lxqt_wallet_wallet_entry_count( m_wallet ) ;
-		walletKeyValues s ;
-		int i = 0 ;
+		u_int32_t key_len ;
+		u_int32_t key_value_len ;
+		u_int32_t header_size = 2 * sizeof( u_int32_t ) ;
+
+		const char * z = e ;
+		const char * f ;
+
+		size_t k = lxqt_wallet_wallet_size( m_wallet ) ;
+		size_t i = 0 ;
+
 		while( i < k ){
-			l.append( QByteArray( values[ i ].key,values[ i ].key_size ) ) ;
-			free( values[ i ].key ) ;
-			i++ ;
+
+			f = e + sizeof( u_int32_t ) ;
+			key_len       = *( u_int32_t * ) e ;
+			key_value_len = *( u_int32_t * ) f ;
+
+			l.append( QByteArray( e + header_size,key_len ) ) ;
+
+			i = i + header_size + key_len + key_value_len ;
+			e = z + i ;
 		}
-		free( values ) ;
+
 		return l ;
 	}
 }
