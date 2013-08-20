@@ -72,8 +72,8 @@ struct lxqt_wallet_struct{
 /*
  * Encrypted file documentation.
  * 
- * An empty file takes 48 bytes
- * A newly created file takes 32 bytes
+ * An empty file takes 48 bytes.
+ * A newly created file takes 32 bytes.
  * 
  * The first 16 bytes are used to store Initialization Vector.
  * The IV is initially obtained from "/dev/urandom".
@@ -91,22 +91,22 @@ struct lxqt_wallet_struct{
  * The second 4 bytes are a u_int32_t data type and are used to store the number of entries in the wallet.
  * The remaining 8 bytes are currently unused.
  * 
- * The load starts at offset 48
+ * The load starts at 48th byte.
  * 
- * The file size may be bigger than the sum of all headers + load account for CBC mode of 128 bit AES
- * demanding data to be in multiple of 16
+ * The file is encrypted using CBC mode of 128 bit AES and hence may be padded to a file size larger than file contents to
+ * accomodate CBC mode demanding data sizes that are divisible by 16.
  * 
- * Key-pair entries are stored as a singly linked list nodes in an array.
+ * Key-Pair entries are stored as singly linked list nodes in an array.
+ * Interesting video on why traditional linked lists are bad: http://www.youtube.com/watch?v=YQs6IC-vgmo
  * 
- * A node has 4 properties.
- * First 4 bytes are a u_int32_t data type and are used to store the size of the key.
- * Second 4 bytes are a u_int32_t data type and used to stores the size of the value.
- * The 8th byte will be the beginning of the key.
- * The beginning of the key value will be at the 8th byte plus the size of the key.
+ * A node of a linked list has 4 properties.
+ * First 4 bytes of the node are a u_int32_t data type and are used to store the size of the key.
+ * Second 4 bytes of the node are a u_int32_t data type and used to stores the size of the value.
+ * The 8th byte of the node will be the beginning of the key.
+ * The 8th byte of the node plus the size of the key will be the beginning of the value.
  *  
- * The sum of these two 4 bytes plus the length of the key plus the length of the value will
+ * The sum of the two 4 bytes plus the length of the key plus the length of the value will
  * point to the next node in the list.
- * 
  */
 
 static char * _wallet_full_path( char * path_buffer,size_t path_buffer_size,const char * wallet_name,const char * application_name ) ;
