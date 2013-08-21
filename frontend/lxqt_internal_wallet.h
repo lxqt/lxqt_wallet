@@ -73,6 +73,7 @@ public:
 signals:
 	void walletIsOpen( bool ) ;
 	void passwordIsCorrect( bool ) ;
+	void walletpassWordChanged( bool ) ;
 private slots:
 	bool openWallet( QString ) ;
 	void cancelled( void ) ;

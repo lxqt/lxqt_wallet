@@ -54,6 +54,7 @@ public:
 	~changePassWordDialog() ;
 signals:
 	void password( QString,bool ) ;
+	void walletpassWordChanged( bool ) ;
 private slots:
 	void create( void ) ;
 	void change( void ) ;
@@ -68,6 +69,7 @@ private:
 	QString m_walletName ;
 	QString m_applicationName ;
 	QString m_banner ;
+	bool m_walletPassWordChanged ;
 };
 
 #endif // CHANGEPASSWORDDIALOG_H

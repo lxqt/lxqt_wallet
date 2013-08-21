@@ -36,14 +36,16 @@ changePassWordDialog::changePassWordDialog( QWidget * parent,const QString& wall
 	m_applicationName( applicationName )
 {
 	m_ui->setupUi( this ) ;
-	
+
 	this->setFixedSize( this->size() ) ;
-	
+
 	connect( m_ui->pushButtonCancel,SIGNAL( clicked() ),this,SLOT( cancel() ) ) ;
 
 	m_ui->pushButtonOK->setVisible( false ) ;
 	m_ui->textEdit->setVisible( false ) ;
 	m_ui->textEdit_2->setVisible( false ) ;
+
+	m_walletPassWordChanged = false ;
 }
 
 void changePassWordDialog::ShowUI()
@@ -57,6 +59,7 @@ void changePassWordDialog::ShowUI()
 
 void changePassWordDialog::HideUI()
 {
+	emit walletpassWordChanged( m_walletPassWordChanged ) ;
 	this->hide() ;
 	this->deleteLater() ;
 }
@@ -64,9 +67,9 @@ void changePassWordDialog::HideUI()
 void changePassWordDialog::ShowUI_1()
 {
 	this->setWindowTitle( tr( "create a new wallet" ) ) ;
-	
+
 	m_ui->pushButtonChange->setText( tr( "create" ) ) ;
-	
+
 	connect( m_ui->pushButtonChange,SIGNAL( clicked() ),this,SLOT( create() ) ) ;
 	connect( m_ui->pushButtonOK,SIGNAL( clicked() ),this,SLOT( ok_1() ) ) ;
 
@@ -175,6 +178,7 @@ void changePassWordDialog::openWalletThreadResult( bool opened )
 		QString new_password = m_ui->lineEditNewPassWord->text() ;
 		lxqt_wallet_error r = lxqt_wallet_change_wallet_password( m_wallet,new_password.toAscii().constData(),new_password.size() ) ;
 		if( r == lxqt_wallet_no_error ){
+			m_walletPassWordChanged = true ;
 			this->HideUI() ;
 		}else{
 			m_ui->label->setText( tr( "wallet password could not be changed" ) ) ;

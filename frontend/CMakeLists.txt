@@ -9,23 +9,6 @@ SET( QT_USE_QTGUI TRUE )
 
 find_package( Qt4 COMPONENTS REQUIRED )
 
-set( UI_FILES 	changepassworddialog.ui
-		password_dialog.ui )
-
-set( MOC_FILES 	changepassworddialog.h 
-		lxqt_internal_wallet.h 
-		lxqt_kwallet.h 
-		open_wallet_thread.h
-		password_dialog.h )
-
-set( SRC 	changepassworddialog.cpp
-		lxqt_kwallet.cpp
-		password_dialog.cpp
-		lxqt_internal_wallet.cpp
-		lxqt_wallet_interface.cpp
-		open_wallet_thread.cpp )
-
-
 find_package( KDE4 )
 include (KDE4Defaults)
 include_directories(${KDE4_INCLUDES})
@@ -40,17 +23,7 @@ INCLUDE_DIRECTORIES( ${CMAKE_BINARY_DIR} )
 
 INCLUDE( ${QT_USE_FILE} )
 
-QT4_WRAP_UI( UI ${UI_FILES} )
-
-QT4_WRAP_CPP( MOC ${MOC_FILES} )
-
 INCLUDE_DIRECTORIES( ${CMAKE_BINARY_DIR} )
-
-add_library( lxqtwallet SHARED ${UI} ${SRC} ${MOC} )
-set_target_properties( lxqtwallet PROPERTIES COMPILE_FLAGS "-D_FILE_OFFSET_BITS=64 -Wextra -Wall -s -fPIC -pedantic " )
-set_target_properties( lxqtwallet PROPERTIES SOVERSION "${LIBRARY_VERSION}" )
-
-install( TARGETS lxqtwallet LIBRARY DESTINATION lib )
 
 if( NOKDESUPPORT ) 
 	SET( KDE_SUPPORT "false" )
@@ -128,15 +101,33 @@ else()
 	#message( STATUS "-----------------------------------------------------------------------" )
 endif()
 
+set( UI_FILES 	 changepassworddialog.ui password_dialog.ui )
+set( MOC_FILES 	 changepassworddialog.h lxqt_internal_wallet.h open_wallet_thread.h password_dialog.h )
+set( MOC_FILES_1 changepassworddialog.h lxqt_internal_wallet.h open_wallet_thread.h password_dialog.h lxqt_kwallet.h )
+
+set( SRC 	changepassworddialog.cpp password_dialog.cpp lxqt_internal_wallet.cpp lxqt_wallet_interface.cpp open_wallet_thread.cpp )
+set( SRC_1 	changepassworddialog.cpp password_dialog.cpp lxqt_internal_wallet.cpp lxqt_wallet_interface.cpp open_wallet_thread.cpp lxqt_kwallet.cpp )
+
+QT4_WRAP_UI( UI ${UI_FILES} )
+
 if( KDE_SUPPORT )
 	if( KWALLET_SUPPORT )
-		TARGET_LINK_LIBRARIES( lxqtwallet -L${KDE4_LIB_DIR} -L${QT_LIBRARY_DIR} ${LIBKDEUI} ${LIBKDECORE} ${LIBKWALLETBACKEND} -lQtCore -lQtGui lxqtwallet-backend ) 
+		QT4_WRAP_CPP( MOC ${MOC_FILES_1} )
+		add_library( lxqtwallet SHARED ${UI} ${SRC_1} ${MOC} )
+		set( link_libraries "-L${KDE4_LIB_DIR} -L${QT_LIBRARY_DIR} ${LIBKDEUI} ${LIBKDECORE} ${LIBKWALLETBACKEND}" )
 	else()
-		TARGET_LINK_LIBRARIES( lxqtwallet -L${KDE4_LIB_DIR} -L${QT_LIBRARY_DIR} ${LIBKDEUI} ${LIBKDECORE} -lQtCore -lQtGui lxqtwallet-backend ) 
+		QT4_WRAP_CPP( MOC ${MOC_FILES} )
+		add_library( lxqtwallet SHARED ${UI} ${SRC} ${MOC} )
+		set( link_libraries "-L${KDE4_LIB_DIR} -L${QT_LIBRARY_DIR} ${LIBKDEUI} ${LIBKDECORE}" )
 	endif()	
 else()
-	TARGET_LINK_LIBRARIES( lxqtwallet lxqtwallet-backend )
+	QT4_WRAP_CPP( MOC ${MOC_FILES} )
+	add_library( lxqtwallet SHARED ${UI} ${SRC} ${MOC} )
 endif()	
 
+set_target_properties( lxqtwallet PROPERTIES COMPILE_FLAGS "-D_FILE_OFFSET_BITS=64 -Wextra -Wall -s -fPIC -pedantic " )
+set_target_properties( lxqtwallet PROPERTIES SOVERSION "${LIBRARY_VERSION}" )
+install( TARGETS lxqtwallet LIBRARY DESTINATION lib )
+TARGET_LINK_LIBRARIES( lxqtwallet "${link_libraries}" lxqtwallet-backend -lQtCore -lQtGui )
 
 

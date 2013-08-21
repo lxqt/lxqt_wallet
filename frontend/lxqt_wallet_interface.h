@@ -198,6 +198,7 @@ public:
 
 	/*
 	 * change the wallet key to newWalletKey
+	 * internal backend will emit "walletpassWordChanged(bool)" to notify if the password was changed or not
 	 */
 	virtual void changeWalletPassWord( const QString& walletName,const QString& applicationName = QString() ) = 0 ;
 

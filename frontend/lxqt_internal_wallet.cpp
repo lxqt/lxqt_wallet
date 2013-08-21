@@ -269,6 +269,7 @@ QString lxqt::Wallet::internalWallet::storagePath()
 void lxqt::Wallet::internalWallet::changeWalletPassWord( const QString& walletName,const QString& applicationName )
 {
 	changePassWordDialog * c = new changePassWordDialog( 0,walletName,applicationName ) ;
+	connect( c,SIGNAL( walletpassWordChanged( bool ) ),m_interfaceObject,SLOT( walletpassWordChanged( bool ) ) ) ;
 	c->ShowUI() ;
 }
 
