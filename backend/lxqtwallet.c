@@ -467,11 +467,10 @@ void lxqt_wallet_read_key_value( lxqt_wallet_t wallet,const char * key,u_int32_t
 				/*
 				 * remaining entries are not big enough to hold the searched
 				 * item and hence it must not exist.
-				 * Check is important to make sure memcmp doesnt go off the cliff
+				 * the check is important to make sure memcmp doesnt go off the cliff
 				 */
 				break ;
-			}
-			if( memcmp( key,e + NODE_HEADER_SIZE,key_size ) == 0 ){
+			}else if( key_len == key_size && memcmp( key,e + NODE_HEADER_SIZE,key_size ) == 0 ){
 				r = malloc( key_value_len + 1 ) ;
 				if( r != NULL ){
 					memcpy( r,e + NODE_HEADER_SIZE + key_len,key_value_len ) ;
@@ -515,16 +514,14 @@ int lxqt_wallet_wallet_has_key( lxqt_wallet_t wallet,const char * key,u_int32_t 
 				/*
 				 * remaining entries are not big enough to hold the searched
 				 * item and hence it must not exist.
-				 * Check is important to make sure memcmp doesnt go off the cliff
+				 * the check is important to make sure memcmp doesnt go off the cliff
 				 */
 				return 0 ;
+			}else if( key_len == key_size && memcmp( key,e + NODE_HEADER_SIZE,key_size ) == 0 ){
+				return 1 ;
 			}else{
-				if( memcmp( key,e + NODE_HEADER_SIZE,key_size ) == 0 ){
-					return 1 ;
-				}else{
-					i = i + NODE_HEADER_SIZE + key_len + key_value_len ;
-					e = z + i ;
-				}
+				i = i + NODE_HEADER_SIZE + key_len + key_value_len ;
+				e = z + i ;
 			}
 		}
 		
@@ -561,30 +558,28 @@ int lxqt_wallet_wallet_has_value( lxqt_wallet_t wallet,char ** key,u_int32_t * k
 				/*
 				 * remaining entries are not big enough to hold the searched
 				 * item and hence it must not exist.
-				 * Check is important to make sure memcmp doesnt go off the cliff
+				 * the check is important to make sure memcmp doesnt go off the cliff
 				 */
 				return 0 ;
-			}else{
-				if( memcmp( value,e + NODE_HEADER_SIZE + key_len,value_size ) == 0 ){
-					if( key != NULL ){
+			}else if( key_value_len == value_size && memcmp( value,e + NODE_HEADER_SIZE + key_len,value_size ) == 0 ){
+				if( key != NULL ){
+					r = malloc( key_len + 1 ) ;
+					if( r != NULL ){
 						r = malloc( key_len + 1 ) ;
-						if( r != NULL ){
-							r = malloc( key_len + 1 ) ;
-							memcpy( r,e + NODE_HEADER_SIZE,key_len ) ;
-							*( r + key_len ) = '\0' ;
-							*key = r ;
-						}
+						memcpy( r,e + NODE_HEADER_SIZE,key_len ) ;
+						*( r + key_len ) = '\0' ;
+						*key = r ;
 					}
-					if( key_size != NULL ){
-						*key_size = key_len ;
-					}
-					
-					return 1 ;
 				}
+				if( key_size != NULL ){
+					*key_size = key_len ;
+				}
+				
+				return 1 ;
+			}else{
+				i = i + NODE_HEADER_SIZE + key_len + key_value_len ;
+				e = z + i ;
 			}
-			
-			i = i + NODE_HEADER_SIZE + key_len + key_value_len ;
-			e = z + i ;
 		}
 		
 		return 0 ;
@@ -775,12 +770,12 @@ lxqt_wallet_error lxqt_wallet_delete_key( lxqt_wallet_t wallet,const char * key,
 				/*
 				 * remaining entries are not big enough to hold the searched
 				 * item and hence it must not exist.
-				 * Check is important to make sure memcmp doesnt go off the cliff
+				 * the check is important to make sure memcmp doesnt go off the cliff
 				 */
 				break ;
-			}
-			
-			if( memcmp( key,e + NODE_HEADER_SIZE,key_size ) == 0 ){
+				
+			}else if( key_len == key_size && memcmp( key,e + NODE_HEADER_SIZE,key_size ) == 0 ){
+				
 				if( wallet->wallet_data_entry_count == 1 ){
 					free( wallet->wallet_data ) ;
 					wallet->wallet_data_size = 0 ;
@@ -959,34 +954,37 @@ char ** lxqt_wallet_wallet_list( const char * application_name,int * size )
 	}
 	
 	lxqt_wallet_application_wallet_path( path,PATH_MAX,application_name ) ;
+	
 	dir = opendir( path ) ;
+	
 	if( dir == NULL ){
 		return NULL ;
-	}else{
-		while( ( entry = readdir( dir ) ) != NULL ){
-			if( strcmp( entry->d_name,"." ) == 0 || strcmp( entry->d_name,".." ) == 0 ){
-				;
-			}else{
-				len = strlen( entry->d_name ) - strlen( WALLET_EXTENSION ) ;
-				if( len > 0 ){
-					result_1 = realloc( result,sizeof( char * ) * ( count + 1 ) ) ;
-					if( result_1 != NULL ){
-						e = malloc( len + 1 ) ;
-						if( e!= NULL ){
-							memcpy( e,entry->d_name,len ) ;
-							*( e + len ) = '\0' ;
-							result_1[ count ] = e ;
-							result = result_1 ;
-							count++ ;
-						}
-					}
+	}
+	
+	while( ( entry = readdir( dir ) ) != NULL ){
+		if( strcmp( entry->d_name,"." ) == 0 || strcmp( entry->d_name,".." ) == 0 ){
+			 continue ;
+		}
+		
+		len = strlen( entry->d_name ) - strlen( WALLET_EXTENSION ) ;
+		if( len > 0 ){
+			result_1 = realloc( result,sizeof( char * ) * ( count + 1 ) ) ;
+			if( result_1 != NULL ){
+				e = malloc( len + 1 ) ;
+				if( e!= NULL ){
+					memcpy( e,entry->d_name,len ) ;
+					*( e + len ) = '\0' ;
+					result_1[ count ] = e ;
+					result = result_1 ;
+					count++ ;
 				}
 			}
 		}
-		*size = count ;
-		closedir( dir ) ;
 	}
 	
+	*size = count ;
+	closedir( dir ) ;
+		
 	return result ;
 }
 
