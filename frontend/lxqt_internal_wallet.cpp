@@ -39,12 +39,6 @@ lxqt::Wallet::internalWallet::~internalWallet()
 	lxqt_wallet_close( &m_wallet ) ;
 }
 
-bool lxqt::Wallet::internalWallet::addKey( const QString& key,const QByteArray& value )
-{
-	lxqt_wallet_error r = lxqt_wallet_add_key( m_wallet,key.toAscii().constData(),value.constData(),value.size() ) ;
-	return r == lxqt_wallet_no_error ;
-}
-
 bool lxqt::Wallet::internalWallet::openWallet()
 {
 	lxqt_wallet_error r = lxqt_wallet_open( &m_wallet,m_password.toAscii().constData(),m_password.size(),
@@ -141,11 +135,11 @@ bool lxqt::Wallet::internalWallet::open( const QString& walletName,const QString
 
 QByteArray lxqt::Wallet::internalWallet::readValue( const QString& key )
 {
-	void * cvalue = NULL ;
+	char * cvalue = NULL ;
 	size_t value_size ;
-	lxqt_wallet_read_key_value( m_wallet,key.toAscii().constData(),&cvalue,&value_size ) ;
+	lxqt_wallet_read_key_value( m_wallet,key.toAscii().constData(),key.size() + 1,&cvalue,&value_size ) ;
 	if( cvalue != NULL ){
-		return QByteArray( ( char * )cvalue,value_size ) ;
+		return QByteArray( cvalue,value_size ) ;
 	}else{
 		QByteArray b ;
 		return b ;
@@ -178,7 +172,7 @@ QVector<lxqt::Wallet::walletKeyValues> lxqt::Wallet::internalWallet::readAllKeyV
 			key_len       = *( u_int32_t * ) e ;
 			key_value_len = *( u_int32_t * ) f ;
 
-			s.key   = QByteArray( e + header_size,key_len ) ;
+			s.key   = QByteArray( e + header_size,key_len - 1 ) ;
 			s.value = QByteArray( e + header_size + key_len,key_value_len ) ;
 
 			i = i + header_size + key_len + key_value_len ;
@@ -214,7 +208,7 @@ QStringList lxqt::Wallet::internalWallet::readAllKeys()
 			key_len       = *( u_int32_t * ) e ;
 			key_value_len = *( u_int32_t * ) f ;
 
-			l.append( QByteArray( e + header_size,key_len ) ) ;
+			l.append( QByteArray( e + header_size,key_len - 1 ) ) ;
 
 			i = i + header_size + key_len + key_value_len ;
 			e = z + i ;
@@ -224,9 +218,19 @@ QStringList lxqt::Wallet::internalWallet::readAllKeys()
 	}
 }
 
+bool lxqt::Wallet::internalWallet::addKey( const QString& key,const QByteArray& value )
+{
+	/*
+	 * For the key,we add +1 to the key size to include the '\0' character in the key to
+	 * avoid possible collisions if our keys prefix match
+	 */
+	lxqt_wallet_error r = lxqt_wallet_add_key( m_wallet,key.toAscii().constData(),key.size() + 1,value.constData(),value.size() ) ;
+	return r == lxqt_wallet_no_error ;
+}
+
 void lxqt::Wallet::internalWallet::deleteKey( const QString& key )
 {
-	lxqt_wallet_delete_key( m_wallet,key.toAscii().constData() ) ;
+	lxqt_wallet_delete_key( m_wallet,key.toAscii().constData(),key.size() + 1 ) ;
 }
 
 int lxqt::Wallet::internalWallet::walletSize( void )

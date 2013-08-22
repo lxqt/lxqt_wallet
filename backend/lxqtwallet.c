@@ -64,8 +64,8 @@ struct lxqt_wallet_struct{
 	char * wallet_name ;
 	char key[ PASSWORD_SIZE ] ;
 	char * wallet_data ;
-	size_t wallet_data_size ;
-	size_t wallet_data_entry_count ;
+	u_int32_t wallet_data_size ;
+	u_int32_t wallet_data_entry_count ;
 	int wallet_modified ;
 };
 
@@ -109,11 +109,11 @@ struct lxqt_wallet_struct{
  * point to the next node in the list.
  */
 
-static char * _wallet_full_path( char * path_buffer,size_t path_buffer_size,const char * wallet_name,const char * application_name ) ;
+static char * _wallet_full_path( char * path_buffer,u_int32_t path_buffer_size,const char * wallet_name,const char * application_name ) ;
 
 static void _create_application_wallet_path( const char * application_name ) ;
 
-static gcry_error_t _create_key( char output_key[ PASSWORD_SIZE ],const char * input_key,size_t input_key_length ) ;
+static gcry_error_t _create_key( char output_key[ PASSWORD_SIZE ],const char * input_key,u_int32_t input_key_length ) ;
 
 static int _get_iv_from_wallet_header( char iv[ IV_SIZE ],const char * wallet_name,const char * application_name ) ;
 
@@ -159,7 +159,7 @@ int lxqt_wallet_wallet_entry_count( lxqt_wallet_t wallet )
 	}
 }
 
-lxqt_wallet_error lxqt_wallet_create( const char * password,size_t password_length,
+lxqt_wallet_error lxqt_wallet_create( const char * password,u_int32_t password_length,
 				      const char * wallet_name,const char * application_name )
 {
 	int fd ;
@@ -261,7 +261,7 @@ static lxqt_wallet_error _open_exit( lxqt_wallet_error st,
 	return st ;
 }
 
-lxqt_wallet_error lxqt_wallet_change_wallet_password( lxqt_wallet_t wallet,const char * new_key,size_t new_key_size )
+lxqt_wallet_error lxqt_wallet_change_wallet_password( lxqt_wallet_t wallet,const char * new_key,u_int32_t new_key_size )
 {
 	char key[ PASSWORD_SIZE ] ;
 	gcry_error_t r ;
@@ -280,11 +280,11 @@ lxqt_wallet_error lxqt_wallet_change_wallet_password( lxqt_wallet_t wallet,const
 	}
 }
 
-lxqt_wallet_error lxqt_wallet_open( lxqt_wallet_t * wallet,const char * password,size_t password_length,
+lxqt_wallet_error lxqt_wallet_open( lxqt_wallet_t * wallet,const char * password,u_int32_t password_length,
 		      const char * wallet_name,const char * application_name )
 {
 	struct stat st ;
-	size_t len ;
+	u_int32_t len ;
 
 	gcry_error_t r ;
 	gcry_cipher_hd_t gcry_cipher_handle ;
@@ -438,19 +438,18 @@ lxqt_wallet_error lxqt_wallet_open( lxqt_wallet_t * wallet,const char * password
 	}
 }
 
-void lxqt_wallet_read_key_value( lxqt_wallet_t wallet,const char * key,void ** value,size_t * value_size )
+void lxqt_wallet_read_key_value( lxqt_wallet_t wallet,const char * key,u_int32_t key_size,char ** value,u_int32_t * value_size )
 {
 	const char * e ;
 	const char * z ;
 	
 	char * r ;
 	
-	size_t k = 0 ;
-	size_t i = 0 ;
+	u_int32_t k = 0 ;
+	u_int32_t i = 0 ;
 	
 	u_int32_t key_len ;
 	u_int32_t key_value_len ;
-	u_int32_t key_len_1 ;
 	
 	if( key == NULL || wallet == NULL || value_size == NULL ){
 		;
@@ -458,14 +457,21 @@ void lxqt_wallet_read_key_value( lxqt_wallet_t wallet,const char * key,void ** v
 		e = wallet->wallet_data ;
 		z = e ;
 		k = wallet->wallet_data_size ;
-		key_len_1 = strlen( key ) ;
 		
 		while( i < k ){
 			
 			key_len       = _get_first_header_component( e ) ;
 			key_value_len = _get_second_header_component( e ) ;
-						
-			if( strncmp( key,e + NODE_HEADER_SIZE,key_len_1 ) == 0 ){
+			
+			if( k - i < key_size ){
+				/*
+				 * remaining entries are not big enough to hold the searched
+				 * item and hence it must not exist.
+				 * Check is important to make sure memcmp doesnt go off the cliff
+				 */
+				break ;
+			}
+			if( memcmp( key,e + NODE_HEADER_SIZE,key_size ) == 0 ){
 				r = malloc( key_value_len + 1 ) ;
 				if( r != NULL ){
 					memcpy( r,e + NODE_HEADER_SIZE + key_len,key_value_len ) ;
@@ -482,17 +488,16 @@ void lxqt_wallet_read_key_value( lxqt_wallet_t wallet,const char * key,void ** v
 	}
 }
 
-int lxqt_wallet_wallet_has_key( lxqt_wallet_t wallet,const char * key )
+int lxqt_wallet_wallet_has_key( lxqt_wallet_t wallet,const char * key,u_int32_t key_size )
 {
 	const char * e ;
 	const char * z ;
 	
-	size_t k = 0 ;
-	size_t i = 0 ;
+	u_int32_t k = 0 ;
+	u_int32_t i = 0 ;
 	
 	u_int32_t key_len ;
 	u_int32_t key_value_len ;
-	u_int32_t key_len_1 ;
 	
 	if( key == NULL || wallet == NULL ){
 		return 0 ;
@@ -500,18 +505,26 @@ int lxqt_wallet_wallet_has_key( lxqt_wallet_t wallet,const char * key )
 		e = wallet->wallet_data ;
 		z = e ;
 		k = wallet->wallet_data_size ;
-		key_len_1 = strlen( key ) ;
 		
 		while( i < k ){
 			
 			key_len       = _get_first_header_component( e ) ;
 			key_value_len = _get_second_header_component( e ) ;
 			
-			if( strncmp( key,e + NODE_HEADER_SIZE,key_len_1 ) == 0 ){
-				return 1 ;
+			if( k - i < key_size ){
+				/*
+				 * remaining entries are not big enough to hold the searched
+				 * item and hence it must not exist.
+				 * Check is important to make sure memcmp doesnt go off the cliff
+				 */
+				return 0 ;
 			}else{
-				i = i + NODE_HEADER_SIZE + key_len + key_value_len ;
-				e = z + i ;
+				if( memcmp( key,e + NODE_HEADER_SIZE,key_size ) == 0 ){
+					return 1 ;
+				}else{
+					i = i + NODE_HEADER_SIZE + key_len + key_value_len ;
+					e = z + i ;
+				}
 			}
 		}
 		
@@ -519,15 +532,15 @@ int lxqt_wallet_wallet_has_key( lxqt_wallet_t wallet,const char * key )
 	}
 }
 
-int lxqt_wallet_wallet_has_value( lxqt_wallet_t wallet,char ** key,const void * value,size_t value_size )
+int lxqt_wallet_wallet_has_value( lxqt_wallet_t wallet,char ** key,u_int32_t * key_size,const char * value,u_int32_t value_size )
 {
 	const char * e ;
 	const char * z ;
 	
 	char * r ;
 	
-	size_t k = 0 ;
-	size_t i = 0 ;
+	u_int32_t k = 0 ;
+	u_int32_t i = 0 ;
 	
 	u_int32_t key_len ;
 	u_int32_t key_value_len ;
@@ -544,9 +557,11 @@ int lxqt_wallet_wallet_has_value( lxqt_wallet_t wallet,char ** key,const void * 
 			key_len       = _get_first_header_component( e ) ;
 			key_value_len = _get_second_header_component( e ) ;
 			
-			if( i + value_size > k ){
+			if( k - i < value_size ){
 				/*
-				 * not enough room left to hold value
+				 * remaining entries are not big enough to hold the searched
+				 * item and hence it must not exist.
+				 * Check is important to make sure memcmp doesnt go off the cliff
 				 */
 				return 0 ;
 			}else{
@@ -559,6 +574,9 @@ int lxqt_wallet_wallet_has_value( lxqt_wallet_t wallet,char ** key,const void * 
 							*( r + key_len ) = '\0' ;
 							*key = r ;
 						}
+					}
+					if( key_size != NULL ){
+						*key_size = key_len ;
 					}
 					
 					return 1 ;
@@ -573,20 +591,18 @@ int lxqt_wallet_wallet_has_value( lxqt_wallet_t wallet,char ** key,const void * 
 	}
 }
 
-lxqt_wallet_error lxqt_wallet_add_key( lxqt_wallet_t wallet,const char * key,
-				       const void * value,u_int32_t key_value_length )
+lxqt_wallet_error lxqt_wallet_add_key( lxqt_wallet_t wallet,const char * key,u_int32_t key_size,
+				       const char * value,u_int32_t key_value_length )
 {
 	char * e ;
 	char * f ;
 	
-	size_t len ;
-	u_int32_t key_len ;
+	u_int32_t len ;
 	
 	if( key == NULL || wallet == NULL ){
 		return lxqt_wallet_invalid_argument ;
 	}else{
-		key_len = strlen( key ) ;
-		if( key_len == 0 ){
+		if( key_size == 0 ){
 			return lxqt_wallet_invalid_argument ;
 		}else{
 			if( value == NULL || key_value_length == 0 ){
@@ -594,7 +610,7 @@ lxqt_wallet_error lxqt_wallet_add_key( lxqt_wallet_t wallet,const char * key,
 				value = "" ;
 			}
 			
-			len = NODE_HEADER_SIZE + key_len + key_value_length ;
+			len = NODE_HEADER_SIZE + key_size + key_value_length ;
 			f = realloc( wallet->wallet_data,wallet->wallet_data_size + len ) ;
 
 			if( f != NULL ){
@@ -602,10 +618,10 @@ lxqt_wallet_error lxqt_wallet_add_key( lxqt_wallet_t wallet,const char * key,
 				mlock( f,wallet->wallet_data_size + len ) ;
 				e = f + wallet->wallet_data_size ;
 				
-				memcpy( e,&key_len,sizeof( u_int32_t ) ) ;
+				memcpy( e,&key_size,sizeof( u_int32_t ) ) ;
 				memcpy( e + sizeof( u_int32_t ),&key_value_length,sizeof( u_int32_t ) ) ;
-				memcpy( e + NODE_HEADER_SIZE,key,key_len ) ;
-				memcpy( e + NODE_HEADER_SIZE + key_len,value,key_value_length ) ;
+				memcpy( e + NODE_HEADER_SIZE,key,key_size ) ;
+				memcpy( e + NODE_HEADER_SIZE + key_size,value,key_value_length ) ;
 				
 				wallet->wallet_data_size += len ;
 				wallet->wallet_modified = 1 ;
@@ -625,9 +641,9 @@ lxqt_wallet_key_values_t * lxqt_wallet_read_all_keys( lxqt_wallet_t wallet )
 	const char * e ;
 	const char * z ;
 	
-	size_t k = 0 ;
-	size_t i = 0 ;
-	size_t q = 0 ;
+	u_int32_t k = 0 ;
+	u_int32_t i = 0 ;
+	u_int32_t q = 0 ;
 	
 	u_int32_t key_len ;
 	u_int32_t key_value_len ;
@@ -674,9 +690,9 @@ lxqt_wallet_key_values_t * lxqt_wallet_read_all_key_values( lxqt_wallet_t wallet
 	const char * e ;
 	const char * z ;
 	
-	size_t k = 0 ;
-	size_t i = 0 ;
-	size_t q = 0 ;
+	u_int32_t k = 0 ;
+	u_int32_t i = 0 ;
+	u_int32_t q = 0 ;
 	
 	u_int32_t key_len ;
 	u_int32_t key_value_len ;
@@ -730,19 +746,18 @@ lxqt_wallet_key_values_t * lxqt_wallet_read_all_key_values( lxqt_wallet_t wallet
 	}
 }
 
-lxqt_wallet_error lxqt_wallet_delete_key( lxqt_wallet_t wallet,const char * key )
+lxqt_wallet_error lxqt_wallet_delete_key( lxqt_wallet_t wallet,const char * key,u_int32_t key_size )
 {
 	char * e ;
 	char * z ;
 	
-	size_t k = 0 ;
-	size_t i = 0 ;
+	u_int32_t k = 0 ;
+	u_int32_t i = 0 ;
 	
 	u_int32_t key_len ;
 	u_int32_t key_value_len ;
-	u_int32_t key_len_1 ;
 	
-	size_t block_size ;
+	u_int32_t block_size ;
 	
 	if( key == NULL || wallet == NULL ){
 		return lxqt_wallet_invalid_argument ;
@@ -750,14 +765,22 @@ lxqt_wallet_error lxqt_wallet_delete_key( lxqt_wallet_t wallet,const char * key 
 		e = wallet->wallet_data ;
 		z = e ;
 		k = wallet->wallet_data_size ;
-		key_len_1 = strlen( key ) ;
 		
 		while( i < k ){
 			
 			key_len       = _get_first_header_component( e ) ;
 			key_value_len = _get_second_header_component( e ) ;
 			
-			if( strncmp( key,e + NODE_HEADER_SIZE,key_len_1 ) == 0 ){
+			if( k - i < key_size ){
+				/*
+				 * remaining entries are not big enough to hold the searched
+				 * item and hence it must not exist.
+				 * Check is important to make sure memcmp doesnt go off the cliff
+				 */
+				break ;
+			}
+			
+			if( memcmp( key,e + NODE_HEADER_SIZE,key_size ) == 0 ){
 				if( wallet->wallet_data_entry_count == 1 ){
 					free( wallet->wallet_data ) ;
 					wallet->wallet_data_size = 0 ;
@@ -825,7 +848,7 @@ lxqt_wallet_error lxqt_wallet_close( lxqt_wallet_t * w )
 
 	lxqt_wallet_t wallet ;
 
-	size_t k ;
+	u_int32_t k ;
 	char * e ;
 	
 	gcry_error_t r ;
@@ -927,7 +950,7 @@ char ** lxqt_wallet_wallet_list( const char * application_name,int * size )
 	char * e ;
 	
 	int count = 0 ;
-	size_t len ;
+	u_int32_t len ;
 	struct dirent * entry ;
 	DIR * dir ;
 	
@@ -979,13 +1002,13 @@ int lxqt_wallet_exists( const char * wallet_name,const char * application_name )
 	}
 }
 
-void lxqt_wallet_application_wallet_path( char * path,size_t path_buffer_size,const char * application_name )
+void lxqt_wallet_application_wallet_path( char * path,u_int32_t path_buffer_size,const char * application_name )
 {
 	struct passwd * pass = getpwuid( getuid() ) ;
 	snprintf( path,path_buffer_size,"%s/.config/lxqt/wallets/%s/",pass->pw_dir,application_name ) ;
 }
 
-char * _wallet_full_path( char * path_buffer,size_t path_buffer_size,const char * wallet_name,const char * application_name )
+char * _wallet_full_path( char * path_buffer,u_int32_t path_buffer_size,const char * wallet_name,const char * application_name )
 {
 	char path_1[ PATH_MAX ] ;
 	lxqt_wallet_application_wallet_path( path_1,PATH_MAX,application_name ) ;
@@ -1009,7 +1032,7 @@ static void _create_application_wallet_path( const char * application_name )
 	}
 }
 
-static gcry_error_t _create_key( char output_key[ PASSWORD_SIZE ],const char * input_key,size_t input_key_length )
+static gcry_error_t _create_key( char output_key[ PASSWORD_SIZE ],const char * input_key,u_int32_t input_key_length )
 {
 	gcry_md_hd_t md ;
 	unsigned char * digest ;
