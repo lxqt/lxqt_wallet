@@ -463,14 +463,7 @@ void lxqt_wallet_read_key_value( lxqt_wallet_t wallet,const char * key,u_int32_t
 			key_len       = _get_first_header_component( e ) ;
 			key_value_len = _get_second_header_component( e ) ;
 			
-			if( k - i < key_size ){
-				/*
-				 * remaining entries are not big enough to hold the searched
-				 * item and hence it must not exist.
-				 * the check is important to make sure memcmp doesnt go off the cliff
-				 */
-				break ;
-			}else if( key_len == key_size && memcmp( key,e + NODE_HEADER_SIZE,key_size ) == 0 ){
+			if( key_len == key_size && memcmp( key,e + NODE_HEADER_SIZE,key_size ) == 0 ){
 				r = malloc( key_value_len + 1 ) ;
 				if( r != NULL ){
 					memcpy( r,e + NODE_HEADER_SIZE + key_len,key_value_len ) ;
@@ -510,14 +503,7 @@ int lxqt_wallet_wallet_has_key( lxqt_wallet_t wallet,const char * key,u_int32_t 
 			key_len       = _get_first_header_component( e ) ;
 			key_value_len = _get_second_header_component( e ) ;
 			
-			if( k - i < key_size ){
-				/*
-				 * remaining entries are not big enough to hold the searched
-				 * item and hence it must not exist.
-				 * the check is important to make sure memcmp doesnt go off the cliff
-				 */
-				return 0 ;
-			}else if( key_len == key_size && memcmp( key,e + NODE_HEADER_SIZE,key_size ) == 0 ){
+			if( key_len == key_size && memcmp( key,e + NODE_HEADER_SIZE,key_size ) == 0 ){
 				return 1 ;
 			}else{
 				i = i + NODE_HEADER_SIZE + key_len + key_value_len ;
@@ -554,14 +540,7 @@ int lxqt_wallet_wallet_has_value( lxqt_wallet_t wallet,char ** key,u_int32_t * k
 			key_len       = _get_first_header_component( e ) ;
 			key_value_len = _get_second_header_component( e ) ;
 			
-			if( k - i < value_size ){
-				/*
-				 * remaining entries are not big enough to hold the searched
-				 * item and hence it must not exist.
-				 * the check is important to make sure memcmp doesnt go off the cliff
-				 */
-				return 0 ;
-			}else if( key_value_len == value_size && memcmp( value,e + NODE_HEADER_SIZE + key_len,value_size ) == 0 ){
+			if( key_value_len == value_size && memcmp( value,e + NODE_HEADER_SIZE + key_len,value_size ) == 0 ){
 				if( key != NULL ){
 					r = malloc( key_len + 1 ) ;
 					if( r != NULL ){
@@ -766,15 +745,7 @@ lxqt_wallet_error lxqt_wallet_delete_key( lxqt_wallet_t wallet,const char * key,
 			key_len       = _get_first_header_component( e ) ;
 			key_value_len = _get_second_header_component( e ) ;
 			
-			if( k - i < key_size ){
-				/*
-				 * remaining entries are not big enough to hold the searched
-				 * item and hence it must not exist.
-				 * the check is important to make sure memcmp doesnt go off the cliff
-				 */
-				break ;
-				
-			}else if( key_len == key_size && memcmp( key,e + NODE_HEADER_SIZE,key_size ) == 0 ){
+			if( key_len == key_size && memcmp( key,e + NODE_HEADER_SIZE,key_size ) == 0 ){
 				
 				if( wallet->wallet_data_entry_count == 1 ){
 					free( wallet->wallet_data ) ;
