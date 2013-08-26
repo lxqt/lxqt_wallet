@@ -41,10 +41,9 @@
 #include "lxqt_kwallet.h"
 #endif
 
-/*
- * No support for this backend for now
- */
-#define HAS_GNOME_KEYRING_SUPPORT 0
+#if HAS_SECRET_SUPPORT
+#include "lxqt_secret_service.h"
+#endif
 
 lxqt::Wallet::Wallet::Wallet()
 {
@@ -64,15 +63,15 @@ lxqt::Wallet::Wallet * lxqt::Wallet::getWalletBackend( lxqt::Wallet::walletBackE
 
 	if( bk == lxqt::Wallet::kwalletBackEnd ){
 		#if HAS_KWALLET_SUPPORT
-			return new lxqt::Wallet::kwallet();
+			return new lxqt::Wallet::kwallet() ;
 		#else
 			return NULL ;
 		#endif
 	}
 
-	if( bk == lxqt::Wallet::gnomeKeyringBackEnd ){
-		#if HAS_GNOME_KEYRING_SUPPORT
-			return new lxqt::Wallet::gnomeKeyring() ;
+	if( bk == lxqt::Wallet::secretServiceBackEnd ){
+		#if HAS_SECRET_SUPPORT
+			return new lxqt::Wallet::secretService() ;
 		#else
 			return NULL ;
 		#endif
@@ -95,8 +94,8 @@ bool lxqt::Wallet::backEndIsSupported( lxqt::Wallet::walletBackEnd bk )
 		#endif
 	}
 
-	if( bk == lxqt::Wallet::gnomeKeyringBackEnd ){
-		#if HAS_GNOME_KEYRING_SUPPORT
+	if( bk == lxqt::Wallet::secretServiceBackEnd ){
+		#if HAS_SECRET_SUPPORT
 			return true ;
 		#else
 			return false ;
@@ -127,8 +126,8 @@ bool lxqt::Wallet::deleteWallet( lxqt::Wallet::walletBackEnd bk,const QString& w
 		#endif
 	}
 
-	if( bk == lxqt::Wallet::gnomeKeyringBackEnd ){
-		#if HAS_GNOME_KEYRING_SUPPORT
+	if( bk == lxqt::Wallet::secretServiceBackEnd ){
+		#if HAS_SECRET_SUPPORT
 			return false ;
 		#else
 			return false ;
@@ -159,8 +158,8 @@ bool lxqt::Wallet::walletExists( lxqt::Wallet::walletBackEnd bk,const QString& w
 		#endif
 	}
 
-	if( bk == lxqt::Wallet::gnomeKeyringBackEnd ){
-		#if HAS_GNOME_KEYRING_SUPPORT
+	if( bk == lxqt::Wallet::secretServiceBackEnd ){
+		#if HAS_SECRET_SUPPORT
 			return false ;
 		#else
 			return false ;
@@ -186,7 +185,7 @@ QStringList lxqt::Wallet::walletList( lxqt::Wallet::walletBackEnd bk )
 		#else
 			return QStringList() ;
 		#endif
-	}else if( bk == lxqt::Wallet::gnomeKeyringBackEnd ){
+	}else if( bk == lxqt::Wallet::secretServiceBackEnd ){
 		return QStringList() ;
 	}else{
 		return QStringList() ;

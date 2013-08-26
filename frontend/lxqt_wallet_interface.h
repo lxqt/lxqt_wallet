@@ -52,7 +52,7 @@ public:
 typedef enum{
 	internalBackEnd,
 	kwalletBackEnd,
-	gnomeKeyringBackEnd
+	secretServiceBackEnd
 }walletBackEnd;
 
 /*
