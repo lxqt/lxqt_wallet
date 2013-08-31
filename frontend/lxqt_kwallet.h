@@ -64,6 +64,8 @@ public:
 	QString storagePath( void ) ;
 	void changeWalletPassWord( const QString& walletName,const QString& applicationName = QString() ) ;
 	QStringList managedWalletList( void ) ;
+signals:
+	void walletpassWordChanged( bool ) ;
 private slots:
 	void walletOpened( bool ) ;
 private:

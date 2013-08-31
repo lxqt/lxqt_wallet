@@ -30,14 +30,16 @@
 
 #include "lxqt_kwallet.h"
 
-lxqt::Wallet::kwallet::kwallet()
+lxqt::Wallet::kwallet::kwallet() : m_kwallet( 0 )
 {
 
 }
 
 lxqt::Wallet::kwallet::~kwallet()
 {
-	m_kwallet->deleteLater() ;
+	if( m_kwallet ){
+		m_kwallet->deleteLater() ;
+	}
 }
 
 bool lxqt::Wallet::kwallet::addKey( const QString& key,const QByteArray& value )
@@ -131,7 +133,6 @@ bool lxqt::Wallet::kwallet::walletIsOpened( void )
 void lxqt::Wallet::kwallet::setInterfaceObject( QObject * interfaceObject )
 {
 	m_interfaceObject = interfaceObject ;
-	connect( this,SIGNAL( walletIsOpen( bool ) ),interfaceObject,SLOT( walletIsOpen( bool ) ) ) ;
 }
 
 QObject * lxqt::Wallet::kwallet::qObject( void )
@@ -148,6 +149,8 @@ void lxqt::Wallet::kwallet::changeWalletPassWord( const QString& walletName,cons
 {
 	Q_UNUSED( applicationName ) ;
 	m_kwallet->changePassword( walletName,0 ) ;
+	connect( this,SIGNAL( walletpassWordChanged( bool ) ),m_interfaceObject,SLOT( walletpassWordChanged( bool ) ) ) ;
+	emit walletpassWordChanged( false ) ;
 }
 
 QStringList lxqt::Wallet::kwallet::managedWalletList()
