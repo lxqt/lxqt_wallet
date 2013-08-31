@@ -61,8 +61,12 @@ bool lxqt::Wallet::internalWallet::openWallet( QString password )
 	 * we run this one on the main thread because the password GUI prompt would block if it run for too long
 	 */
 	openWalletThread * t = new openWalletThread( &m_wallet,password,m_walletName,m_applicationName ) ;
-	connect( t,SIGNAL( walletOpened( bool ) ),this,SLOT( openWalletThreadResult( bool ) ) ) ;
-	t->start() ;
+	if( t ){
+		connect( t,SIGNAL( walletOpened( bool ) ),this,SLOT( openWalletThreadResult( bool ) ) ) ;
+		t->start() ;
+	}else{
+		this->openWalletThreadResult( false ) ;
+	}
 	return false ;
 }
 
@@ -80,10 +84,14 @@ void lxqt::Wallet::internalWallet::openWalletThreadResult_1( bool opened )
 		 * passwordless opening failed,prompt a user for a password
 		 */
 		password_dialog * p = new password_dialog() ;
-		connect( p,SIGNAL( password( QString ) ),this,SLOT( openWallet( QString ) ) ) ;
-		connect( this,SIGNAL( passwordIsCorrect( bool ) ),p,SLOT( passwordIsCorrect( bool ) ) ) ;
-		connect( p,SIGNAL( cancelled() ),this,SLOT( cancelled() ) ) ;
-		p->ShowUI( m_walletName,m_applicationName ) ;
+		if( p ){
+			connect( p,SIGNAL( password( QString ) ),this,SLOT( openWallet( QString ) ) ) ;
+			connect( this,SIGNAL( passwordIsCorrect( bool ) ),p,SLOT( passwordIsCorrect( bool ) ) ) ;
+			connect( p,SIGNAL( cancelled() ),this,SLOT( cancelled() ) ) ;
+			p->ShowUI( m_walletName,m_applicationName ) ;
+		}else{
+			this->cancelled() ;
+		}
 	}
 }
 
@@ -118,16 +126,24 @@ bool lxqt::Wallet::internalWallet::open( const QString& walletName,const QString
 			 */
 			QString passWordLessOpen ;
 			openWalletThread * t = new openWalletThread( &m_wallet,passWordLessOpen,m_walletName,m_applicationName ) ;
-			connect( t,SIGNAL( walletOpened( bool ) ),this,SLOT( openWalletThreadResult_1( bool ) ) ) ;
-			t->start() ;
+			if( t ){
+				connect( t,SIGNAL( walletOpened( bool ) ),this,SLOT( openWalletThreadResult_1( bool ) ) ) ;
+				t->start() ;
+			}else{
+				this->openWalletThreadResult_1( false ) ;
+			}
 			return false ;
 		}else{
 			return this->openWallet() ;
 		}
 	}else{
 		changePassWordDialog * c = new changePassWordDialog( 0,m_walletName,m_applicationName ) ;
-		connect( c,SIGNAL( password( QString,bool ) ),this,SLOT( password( QString,bool ) ) ) ;
-		c->ShowUI_1() ;
+		if( c ){
+			connect( c,SIGNAL( password( QString,bool ) ),this,SLOT( password( QString,bool ) ) ) ;
+			c->ShowUI_1() ;
+		}else{
+			this->password( QString( "" ),false ) ;
+		}
 	}
 
 	return false ;
@@ -151,7 +167,7 @@ QVector<lxqt::Wallet::walletKeyValues> lxqt::Wallet::internalWallet::readAllKeyV
 	QVector<lxqt::Wallet::walletKeyValues> w ;
 
 	const char * e = _lxqt_wallet_get_wallet_data( m_wallet ) ;
-	if( e == NULL ){
+	if( e == 0 ){
 		return w ;
 	}else{
 		u_int32_t key_len ;
@@ -189,7 +205,7 @@ QStringList lxqt::Wallet::internalWallet::readAllKeys()
 	QStringList l ;
 
 	const char * e = _lxqt_wallet_get_wallet_data( m_wallet ) ;
-	if( e == NULL ){
+	if( e == 0 ){
 		return l ;
 	}else{
 		u_int32_t key_len ;
@@ -273,8 +289,13 @@ QString lxqt::Wallet::internalWallet::storagePath()
 void lxqt::Wallet::internalWallet::changeWalletPassWord( const QString& walletName,const QString& applicationName )
 {
 	changePassWordDialog * c = new changePassWordDialog( 0,walletName,applicationName ) ;
-	connect( c,SIGNAL( walletpassWordChanged( bool ) ),m_interfaceObject,SLOT( walletpassWordChanged( bool ) ) ) ;
-	c->ShowUI() ;
+	if( c ){
+		connect( c,SIGNAL( walletpassWordChanged( bool ) ),m_interfaceObject,SLOT( walletpassWordChanged( bool ) ) ) ;
+		c->ShowUI() ;
+	}else{
+		connect( this,SIGNAL( walletpassWordChanged( bool ) ),m_interfaceObject,SLOT( walletpassWordChanged( bool ) ) ) ;
+		emit walletpassWordChanged( false ) ;
+	}
 }
 
 QStringList lxqt::Wallet::internalWallet::managedWalletList()
