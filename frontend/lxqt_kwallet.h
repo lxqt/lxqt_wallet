@@ -66,6 +66,7 @@ public:
 	QStringList managedWalletList( void ) ;
 signals:
 	void walletpassWordChanged( bool ) ;
+	void walletOpened_1( bool ) ;
 private slots:
 	void walletOpened( bool ) ;
 private:

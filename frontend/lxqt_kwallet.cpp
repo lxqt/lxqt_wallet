@@ -57,7 +57,6 @@ bool lxqt::Wallet::kwallet::open( const QString& walletName,const QString& appli
 	m_kwallet = KWallet::Wallet::openWallet( m_walletName,0,KWallet::Wallet::Asynchronous ) ;
 
 	connect( m_kwallet,SIGNAL( walletOpened( bool ) ),this,SLOT( walletOpened( bool ) ) ) ;
-	connect( m_kwallet,SIGNAL( walletOpened( bool ) ),m_interfaceObject,SLOT( walletIsOpen( bool ) ) ) ;
 
 	return false ;
 }
@@ -73,6 +72,9 @@ void lxqt::Wallet::kwallet::walletOpened( bool opened )
 			m_kwallet->setFolder( m_applicationName ) ;
 		}
 	}
+
+	connect( this,SIGNAL( walletOpened_1( bool ) ),m_interfaceObject,SLOT( walletIsOpen( bool ) ) ) ;
+	emit walletOpened_1( opened ) ;
 }
 
 QByteArray lxqt::Wallet::kwallet::readValue( const QString& key )

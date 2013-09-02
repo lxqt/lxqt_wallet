@@ -155,7 +155,9 @@ QByteArray lxqt::Wallet::internalWallet::readValue( const QString& key )
 	size_t value_size ;
 	lxqt_wallet_read_key_value( m_wallet,key.toAscii().constData(),key.size() + 1,&cvalue,&value_size ) ;
 	if( cvalue != NULL ){
-		return QByteArray( cvalue,value_size ) ;
+		QByteArray b = QByteArray( cvalue,value_size ) ;
+		free( cvalue ) ;
+		return b ;
 	}else{
 		QByteArray b ;
 		return b ;
