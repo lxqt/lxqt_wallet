@@ -33,19 +33,27 @@
 static const SecretSchema lxqtSecretSchema = {
 	"lxqt.Wallet",SECRET_SCHEMA_NONE,
 	{
-	    {  "string", SECRET_SCHEMA_ATTRIBUTE_STRING },
-	    {  "NULL", 0 },
+	    { "string",SECRET_SCHEMA_ATTRIBUTE_STRING },
+	    { "string",SECRET_SCHEMA_ATTRIBUTE_STRING },
+	    { "string",SECRET_SCHEMA_ATTRIBUTE_STRING },
+	    { "NULL",0 },
 	}
 };
 
 char * lxqt_secret_service_get_value( const char * key,const char * walletName,const char * applicationName )
 {
-	if( key && walletName && applicationName ){;}
-	return NULL ;
+	return secret_password_lookup_sync( &lxqtSecretSchema,NULL,NULL,
+					    "string",walletName,"string",applicationName,"string",key,NULL ) ;
 }
 
 gboolean lxqt_secret_service_password_store_sync( const char * key,const char * value,const char * walletName,const char * applicationName )
 {
-	return secret_password_store_sync( &lxqtSecretSchema,walletName,applicationName,key,NULL,NULL,value,NULL ) ;
+	return secret_password_store_sync( &lxqtSecretSchema,"default","lxqt wallet",value,NULL,NULL,
+					   "string",walletName,"string",applicationName,"string",key,NULL ) ;
 }
 
+gboolean lxqt_secret_service_clear_sync( const char * key,const char * walletName,const char * applicationName )
+{
+	return secret_password_clear_sync( &lxqtSecretSchema,NULL,NULL,
+					   "string",walletName,"string",applicationName,"string",key,NULL ) ;
+}

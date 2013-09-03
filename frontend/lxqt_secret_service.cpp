@@ -42,8 +42,8 @@ lxqt::Wallet::secretService::~secretService()
 
 bool lxqt::Wallet::secretService::addKey( const QString& key,const QByteArray& value )
 {
-	Q_UNUSED( key ) ;
-	Q_UNUSED( value ) ;
+	lxqt_secret_service_password_store_sync( key.toAscii().constBegin(),value.constData(),
+						 m_walletName.toAscii().constData(),m_applicationName.toAscii().constData() ) ;
 	return true ;
 }
 
@@ -52,12 +52,14 @@ bool lxqt::Wallet::secretService::open( const QString& walletName,const QString&
 	m_walletName        = walletName ;
 	m_applicationName   = applicationName ;
 	m_password          = password ;
+	connect( this,SIGNAL( walletIsOpen( bool ) ),m_interfaceObject,SLOT( walletIsOpen( bool ) ) ) ;
+	this->walletOpened( true ) ;
 	return false ;
 }
 
 void lxqt::Wallet::secretService::walletOpened( bool opened )
 {
-	if( opened ){;}
+	emit walletIsOpen( opened ) ;
 }
 
 QByteArray lxqt::Wallet::secretService::readValue( const QString& key )
@@ -86,7 +88,8 @@ QStringList lxqt::Wallet::secretService::readAllKeys( void )
 
 void lxqt::Wallet::secretService::deleteKey( const QString& key )
 {
-	Q_UNUSED( key ) ;
+	lxqt_secret_service_clear_sync( key.toAscii().constData(),
+					m_walletName.toAscii().constData(),m_applicationName.toAscii().constData() ) ;
 }
 
 int lxqt::Wallet::secretService::walletSize( void )
@@ -113,7 +116,6 @@ bool lxqt::Wallet::secretService::walletIsOpened( void )
 void lxqt::Wallet::secretService::setInterfaceObject( QObject * interfaceObject )
 {
 	m_interfaceObject = interfaceObject ;
-	connect( this,SIGNAL( walletIsOpen( bool ) ),interfaceObject,SLOT( walletIsOpen( bool ) ) ) ;
 }
 
 QObject * lxqt::Wallet::secretService::qObject( void )

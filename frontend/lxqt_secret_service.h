@@ -37,12 +37,15 @@
 #include <QByteArray>
 #include <QDebug>
 
-//#include "secret_service.h"
-
+/*
+ * adding libsecret header file together with C++ header files doesnt seem to work.
+ * as a workaround,a static library that interfaces with libsecret is used and a "pure" C interface of the
+ * static library is then used in C++
+ */
 extern "C" {
-
 char * lxqt_secret_service_get_value( const char * key,const char * walletName,const char * applicationName ) ;
-
+int lxqt_secret_service_password_store_sync( const char * key,const char * value,const char * walletName,const char * applicationName ) ;
+int lxqt_secret_service_clear_sync( const char * key,const char * walletName,const char * applicationName ) ;
 }
 
 namespace lxqt{
@@ -70,6 +73,8 @@ public:
 	QString storagePath( void ) ;
 	void changeWalletPassWord( const QString& walletName,const QString& applicationName = QString() ) ;
 	QStringList managedWalletList( void ) ;
+signals:
+	void walletIsOpen( bool ) ;
 private slots:
 	void walletOpened( bool ) ;
 private:

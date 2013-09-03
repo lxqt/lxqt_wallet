@@ -10,7 +10,7 @@ TARGET = wallet_manager
 
 TEMPLATE = app
 
-INCLUDEPATH += /home/local/KDE4/include /usr/include /home/ink/src/build-lxde-wallet /home/ink/src/wallet_manager /usr/include/ /usr/include/libsecret-1 /usr/include/libsecret-1/libsecret /usr/include/glib-2.0 /usr/lib/glib-2.0/include
+INCLUDEPATH += /home/local/KDE4/include /usr/include /home/ink/src/wallet_manager-build /home/ink/src/wallet_manager /usr/include/ /usr/include/libsecret-1 /usr/include/libsecret-1/libsecret /usr/include/glib-2.0 /usr/lib/glib-2.0/include
 
 LIBS += -lgcrypt -lkwalletbackend -L/home/local/KDE4/lib -lsecret-1
 
