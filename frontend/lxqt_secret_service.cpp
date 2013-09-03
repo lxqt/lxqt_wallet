@@ -30,6 +30,18 @@
 
 #include "lxqt_secret_service.h"
 
+/*
+ * adding libsecret header file together with C++ header files doesnt seem to work.
+ * as a workaround,a static library that interfaces with libsecret is used and a "pure" C interface of the
+ * static library is then used in C++
+ */
+extern "C" {
+char * lxqt_secret_service_get_value( const char * key,const char * walletName,const char * applicationName ) ;
+int lxqt_secret_service_password_store_sync( const char * key,const char * value,const char * walletName,const char * applicationName ) ;
+int lxqt_secret_service_clear_sync( const char * key,const char * walletName,const char * applicationName ) ;
+char ** lxqt_secret_get_all_keys( const char * walletName,const char * applicationName ) ;
+}
+
 lxqt::Wallet::secretService::secretService()
 {
 
@@ -42,16 +54,20 @@ lxqt::Wallet::secretService::~secretService()
 
 bool lxqt::Wallet::secretService::addKey( const QString& key,const QByteArray& value )
 {
-	lxqt_secret_service_password_store_sync( key.toAscii().constBegin(),value.constData(),
-						 m_walletName.toAscii().constData(),m_applicationName.toAscii().constData() ) ;
+	lxqt_secret_service_password_store_sync( key.toAscii().constBegin(),value.constData(),m_walletName,m_applicationName ) ;
 	return true ;
 }
 
 bool lxqt::Wallet::secretService::open( const QString& walletName,const QString& applicationName,const QString& password )
 {
-	m_walletName        = walletName ;
-	m_applicationName   = applicationName ;
+	m_byteArrayWalletName      = walletName.toAscii() ;
+	m_byteArrayApplicationName = applicationName.toAscii() ;
+
+	m_walletName        = m_byteArrayWalletName.constData() ;
+	m_applicationName   = m_byteArrayApplicationName.constData() ;
+
 	m_password          = password ;
+
 	connect( this,SIGNAL( walletIsOpen( bool ) ),m_interfaceObject,SLOT( walletIsOpen( bool ) ) ) ;
 	this->walletOpened( true ) ;
 	return false ;
@@ -65,8 +81,7 @@ void lxqt::Wallet::secretService::walletOpened( bool opened )
 QByteArray lxqt::Wallet::secretService::readValue( const QString& key )
 {
 	QByteArray r ;
-	char * e = lxqt_secret_service_get_value( key.toAscii().constData(),
-						  m_walletName.toAscii().constEnd(),m_applicationName.toAscii().constData() ) ;
+	char * e = lxqt_secret_service_get_value( key.toAscii().constData(),m_walletName,m_applicationName ) ;
 	if( e ){
 		r = QByteArray( e ) ;
 		free( e ) ;
@@ -83,13 +98,14 @@ QVector<lxqt::Wallet::walletKeyValues> lxqt::Wallet::secretService::readAllKeyVa
 
 QStringList lxqt::Wallet::secretService::readAllKeys( void )
 {
+	char ** c = lxqt_secret_get_all_keys( m_walletName,m_applicationName ) ;
+	if( c ){;}
 	return QStringList() ;
 }
 
 void lxqt::Wallet::secretService::deleteKey( const QString& key )
 {
-	lxqt_secret_service_clear_sync( key.toAscii().constData(),
-					m_walletName.toAscii().constData(),m_applicationName.toAscii().constData() ) ;
+	lxqt_secret_service_clear_sync( key.toAscii().constData(),m_walletName,m_applicationName ) ;
 }
 
 int lxqt::Wallet::secretService::walletSize( void )

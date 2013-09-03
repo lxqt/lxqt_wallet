@@ -38,6 +38,11 @@ openWalletThread::openWalletThread( lxqt_wallet_t * wallet,QString password,QStr
 	m_applicationName = applicationName ;
 }
 
+openWalletThread::openWalletThread()
+{
+
+}
+
 void openWalletThread::start()
 {
 	QThreadPool::globalInstance()->start( this ) ;

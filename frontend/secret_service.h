@@ -34,9 +34,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 #include <libsecret-1/libsecret/secret.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif

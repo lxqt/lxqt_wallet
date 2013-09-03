@@ -44,6 +44,7 @@ class openWalletThread : public QObject,public QRunnable
 	Q_OBJECT
 public:
 	openWalletThread( lxqt_wallet_t * wallet,QString password,QString walletName,QString applicationName ) ;
+	openWalletThread() ;
 	void start( void ) ;
 signals:
 	void walletOpened( bool ) ;

@@ -57,3 +57,39 @@ gboolean lxqt_secret_service_clear_sync( const char * key,const char * walletNam
 	return secret_password_clear_sync( &lxqtSecretSchema,NULL,NULL,
 					   "string",walletName,"string",applicationName,"string",key,NULL ) ;
 }
+
+char ** lxqt_secret_get_all_keys( const char * walletName,const char * applicationName )
+{
+#if 0
+	GHashTable * h = g_hash_table_new( g_str_hash,g_str_equal ) ;
+	GList * l = NULL ;
+
+	GError * r = NULL ;
+
+	g_hash_table_insert( h,"string",( gpointer )walletName ) ;
+	g_hash_table_insert( h,"string",( gpointer )applicationName ) ;
+	g_hash_table_insert( h,"string",( gpointer )"qqq" ) ;
+
+	l = secret_service_search_sync( NULL,&lxqtSecretSchema,h,SECRET_SEARCH_ALL,NULL,&r ) ;
+
+	if( l != NULL ){
+		while( 1 ){
+			puts( l->data ) ;
+			if( l->next != NULL ){
+				l = l->next ;
+			}else{
+				break ;
+			}
+		}
+	}else{
+		if( r != NULL ){
+			puts( r->message ) ;
+			g_error_free( r ) ;
+		}else{
+			puts( "ss" ) ;
+		}
+	}
+#endif
+	if( 0 && walletName && applicationName ){;}
+	return NULL ;
+}

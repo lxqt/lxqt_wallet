@@ -186,7 +186,7 @@ QVector<lxqt::Wallet::walletKeyValues> lxqt::Wallet::internalWallet::readAllKeyV
 
 		while( i < k ){
 
-			f = e + sizeof( u_int32_t ) ;
+			f             = e + sizeof( u_int32_t ) ;
 			key_len       = *( u_int32_t * ) e ;
 			key_value_len = *( u_int32_t * ) f ;
 
@@ -222,7 +222,7 @@ QStringList lxqt::Wallet::internalWallet::readAllKeys()
 
 		while( i < k ){
 
-			f = e + sizeof( u_int32_t ) ;
+			f             = e + sizeof( u_int32_t ) ;
 			key_len       = *( u_int32_t * ) e ;
 			key_value_len = *( u_int32_t * ) f ;
 
