@@ -1,22 +1,16 @@
 lxqt_wallet
 ===========
 
-This projects seeks to create a secure storage of sensitive information that can be represented in key-pair values
-without creating dependencies on kde with its kwallet secure storage facilities or gnome with its gnome-keyring secure storage facilities.
+This project seeks to give a functionality for secure storage of information that can be presented in key-pair values
+like user names-passwords.
 
-The project is divided into two parts.
+Currently the project can store the information in KDE's kwallet,GNOME's secret service or in an internal system.
 
-The back end is written in C,has a dependency only on gcrypt and is designed to be used simply by dropping it in the middle
-of a build tree and start using it.
+The internal secure storage system allows the functionality to be provided without dependencies on KDE or gnome libraries.
 
-The front end to the project is in Qt/C++.
-The front end is plugin based and has a default plugin of the backend discussed above and optional additional plugins in kwallet and
-a yet to be developed gnome-keyring.
+This project is designed to be used by other projects simply by adding the source folder in the build system and start using it.
 
-This plugin architecture allows users of the library to target only one API and securely store information in different wallet systems.
+The front end is build on Qt/C++ and has an optional dependency on KDE's kwallet and GNOME's secretservice. 
 
-The front end and its backend counter part are build specifically to be easily intergrated in other projects simply by dropping the folder
-in the middle of the source tree and start using it.
-
-This project is designed with small time independent developers who want to store their user's sensitive information but do not want to
-tie themselves to kde or gnome.
+The project allows other Qt based project's to target one API and use it for secure storage of information in different 
+secure storage systems.

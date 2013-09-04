@@ -4,7 +4,7 @@ like user names-passwords.
 
 Currently the project can store the information in KDE's kwallet,GNOME's secret service or in an internal system.
 
-The internal system allows the functionality to be provided without dependencies on KDE or gnome libraries.
+The internal secure storage system allows the functionality to be provided without dependencies on KDE or gnome libraries.
 
 The header file with the public API is named "lxqt_wallet.h".
 
