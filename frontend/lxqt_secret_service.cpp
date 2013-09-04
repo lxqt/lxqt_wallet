@@ -53,8 +53,12 @@ lxqt::Wallet::secretService::~secretService()
 
 bool lxqt::Wallet::secretService::addKey( const QString& key,const QByteArray& value )
 {
-	lxqt_secret_service_password_store_sync( key.toAscii().constBegin(),value.constData(),m_walletName,m_applicationName ) ;
-	return true ;
+	if( key.isEmpty() ){
+		return false ;
+	}else{
+		lxqt_secret_service_password_store_sync( key.toAscii().constBegin(),value.constData(),m_walletName,m_applicationName ) ;
+		return true ;
+	}
 }
 
 bool lxqt::Wallet::secretService::open( const QString& walletName,const QString& applicationName,const QString& password )
@@ -107,16 +111,21 @@ QStringList lxqt::Wallet::secretService::readAllKeys( void )
 	int count ;
 	QStringList l ;
 	char ** c = lxqt_secret_get_all_keys( m_walletName,m_applicationName,&count ) ;
-	for( int i = 0 ; i < count ; i++ ){
-		l.append( QString( c[ i ] ) ) ;
-		free( c[ i ] ) ;
+	if( c ){
+		for( int i = 0 ; i < count ; i++ ){
+			l.append( QString( c[ i ] ) ) ;
+			free( c[ i ] ) ;
+		}
+		free( c ) ;
 	}
 	return l ;
 }
 
 void lxqt::Wallet::secretService::deleteKey( const QString& key )
 {
-	lxqt_secret_service_clear_sync( key.toAscii().constData(),m_walletName,m_applicationName ) ;
+	if( !key.isEmpty() ){
+		lxqt_secret_service_clear_sync( key.toAscii().constData(),m_walletName,m_applicationName ) ;
+	}
 }
 
 int lxqt::Wallet::secretService::walletSize( void )
