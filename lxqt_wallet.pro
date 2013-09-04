@@ -6,11 +6,11 @@
 
 QT       += core gui
 
-TARGET = wallet_manager
+TARGET = lxqt_wallet
 
 TEMPLATE = app
 
-INCLUDEPATH += /home/local/KDE4/include /usr/include /home/ink/src/wallet_manager-build /home/ink/src/wallet_manager /usr/include/ /usr/include/libsecret-1 /usr/include/libsecret-1/libsecret /usr/include/glib-2.0 /usr/lib/glib-2.0/include
+INCLUDEPATH += /home/local/KDE4/include /usr/include /home/ink/src/lxqt_wallet-build /home/ink/src/wallet_manager /usr/include/ /usr/include/libsecret-1 /usr/include/libsecret-1/libsecret /usr/include/glib-2.0 /usr/lib/glib-2.0/include
 
 LIBS += -lgcrypt -lkwalletbackend -L/home/local/KDE4/lib -lsecret-1
 
@@ -25,7 +25,7 @@ OTHER_FILES += \
 HEADERS += \
     frontend/password_dialog.h \
     frontend/open_wallet_thread.h \
-    frontend/lxqt_wallet_interface.h \
+    frontend/lxqt_wallet.h \
     frontend/lxqt_kwallet.h \
     frontend/lxqt_internal_wallet.h \
     frontend/changepassworddialog.h \
@@ -37,7 +37,7 @@ HEADERS += \
 SOURCES += \
     frontend/password_dialog.cpp \
     frontend/open_wallet_thread.cpp \
-    frontend/lxqt_wallet_interface.cpp \
+    frontend/lxqt_wallet.cpp \
     frontend/lxqt_kwallet.cpp \
     frontend/lxqt_internal_wallet.cpp \
     frontend/changepassworddialog.cpp \

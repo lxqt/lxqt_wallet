@@ -30,8 +30,15 @@
 
 #include "secret_service.h"
 
-static const SecretSchema lxqtSecretSchema = {
-	"lxqt.Wallet",SECRET_SCHEMA_NONE,
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+
+/*
+ * This schema is used to store walletName,applicationName,key and key value
+ */
+static const SecretSchema lxqtValuesSecretSchema = {
+	"lxqt.Wallet.Values",SECRET_SCHEMA_NONE,
 	{
 	    { "string",SECRET_SCHEMA_ATTRIBUTE_STRING },
 	    { "string",SECRET_SCHEMA_ATTRIBUTE_STRING },
@@ -40,56 +47,117 @@ static const SecretSchema lxqtSecretSchema = {
 	}
 };
 
+/*
+ * This schema is used to store keys in a way they can be retrieved by readAllKeys()
+ */
+static const SecretSchema lxqtKeysSecretSchema = {
+	"lxqt.Wallet.Keys",SECRET_SCHEMA_NONE,
+	{
+		{ "string",SECRET_SCHEMA_ATTRIBUTE_STRING },
+		{ "string",SECRET_SCHEMA_ATTRIBUTE_STRING },
+		{ "number", SECRET_SCHEMA_ATTRIBUTE_INTEGER },
+		{ "NULL",0 },
+	}
+};
+
 char * lxqt_secret_service_get_value( const char * key,const char * walletName,const char * applicationName )
 {
-	return secret_password_lookup_sync( &lxqtSecretSchema,NULL,NULL,
+	return secret_password_lookup_sync( &lxqtValuesSecretSchema,NULL,NULL,
 					    "string",walletName,"string",applicationName,"string",key,NULL ) ;
 }
 
 gboolean lxqt_secret_service_password_store_sync( const char * key,const char * value,const char * walletName,const char * applicationName )
 {
-	return secret_password_store_sync( &lxqtSecretSchema,"default","lxqt wallet",value,NULL,NULL,
+	int i = 0 ;
+	char * c ;
+	while( 1 ){
+		c = secret_password_lookup_sync( &lxqtKeysSecretSchema,NULL,NULL,
+						 "string",walletName,"string",applicationName,"number",i,NULL ) ;
+		if( c != NULL ){
+			i++ ;
+			free( c ) ;
+		}else{
+			secret_password_store_sync( &lxqtKeysSecretSchema,"default","lxqt wallet",key,NULL,NULL,
+							   "string",walletName,"string",applicationName,"number",i,NULL ) ;
+			break ;
+		}
+	}
+
+	return secret_password_store_sync( &lxqtValuesSecretSchema,"default","lxqt wallet",value,NULL,NULL,
 					   "string",walletName,"string",applicationName,"string",key,NULL ) ;
 }
 
 gboolean lxqt_secret_service_clear_sync( const char * key,const char * walletName,const char * applicationName )
 {
-	return secret_password_clear_sync( &lxqtSecretSchema,NULL,NULL,
+	int i = 0 ;
+	char * c ;
+
+	while( 1 ){
+		c = secret_password_lookup_sync( &lxqtKeysSecretSchema,NULL,NULL,
+						 "string",walletName,"string",applicationName,"number",i,NULL ) ;
+		if( c != NULL ){
+			if( strcmp( c,key ) == 0 ){
+				secret_password_clear_sync( &lxqtKeysSecretSchema,NULL,NULL,
+									   "string",walletName,"string",applicationName,"number",i,NULL ) ;
+				free( c  ) ;
+				break ;
+			}else{
+				i++ ;
+				free( c ) ;
+			}
+		}else{
+			break ;
+		}
+	}
+
+	return secret_password_clear_sync( &lxqtValuesSecretSchema,NULL,NULL,
 					   "string",walletName,"string",applicationName,"string",key,NULL ) ;
 }
 
-char ** lxqt_secret_get_all_keys( const char * walletName,const char * applicationName )
+char ** lxqt_secret_get_all_keys( const char * walletName,const char * applicationName,int * count )
 {
-#if 0
-	GHashTable * h = g_hash_table_new( g_str_hash,g_str_equal ) ;
-	GList * l = NULL ;
-
-	GError * r = NULL ;
-
-	g_hash_table_insert( h,"string",( gpointer )walletName ) ;
-	g_hash_table_insert( h,"string",( gpointer )applicationName ) ;
-	g_hash_table_insert( h,"string",( gpointer )"qqq" ) ;
-
-	l = secret_service_search_sync( NULL,&lxqtSecretSchema,h,SECRET_SEARCH_ALL,NULL,&r ) ;
-
-	if( l != NULL ){
-		while( 1 ){
-			puts( l->data ) ;
-			if( l->next != NULL ){
-				l = l->next ;
+	int i = 0 ;
+	char * c  = NULL  ;
+	char ** e = NULL ;
+	char ** f ;
+	*count = 0 ;
+	while( 1 ){
+		c = secret_password_lookup_sync( &lxqtKeysSecretSchema,NULL,NULL,
+						 "string",walletName,"string",applicationName,"number",i,NULL ) ;
+		if( c != NULL ){
+			f = realloc( e,sizeof( char * ) * ( i + 1 ) ) ;
+			if( f != NULL ){
+				e = f ;
+				e[ i ] =  c ;
+				i++ ;
+				*count = *count + 1 ;
+				c = NULL ;
 			}else{
 				break ;
 			}
-		}
-	}else{
-		if( r != NULL ){
-			puts( r->message ) ;
-			g_error_free( r ) ;
 		}else{
-			puts( "ss" ) ;
+			break ;
 		}
 	}
-#endif
-	if( 0 && walletName && applicationName ){;}
-	return NULL ;
+
+	return e ;
+}
+
+int lxqt_secret_service_wallet_size( const char * walletName,const char * applicationName )
+{
+	int i = 0 ;
+	char * c = NULL ;
+	while( 1 ){
+		c = secret_password_lookup_sync( &lxqtKeysSecretSchema,NULL,NULL,
+						 "string",walletName,"string",applicationName,"number",i,NULL ) ;
+		if( c != NULL ){
+			i++ ;
+			free( c ) ;
+			c = NULL ;
+		}else{
+			break ;
+		}
+	}
+
+	return i ;
 }
