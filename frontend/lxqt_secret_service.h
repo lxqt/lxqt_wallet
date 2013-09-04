@@ -31,7 +31,7 @@
 #ifndef LXQT_SECRET_SERVICE_H
 #define LXQT_SECRET_SERVICE_H
 
-#include "lxqt_wallet_interface.h"
+#include "lxqt_wallet.h"
 
 #include <QString>
 #include <QByteArray>

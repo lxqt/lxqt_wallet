@@ -31,7 +31,7 @@
 #ifndef LXQT_KWALLET_H
 #define LXQT_KWALLET_H
 
-#include "lxqt_wallet_interface.h"
+#include "lxqt_wallet.h"
 
 #include <QString>
 #include <QByteArray>
