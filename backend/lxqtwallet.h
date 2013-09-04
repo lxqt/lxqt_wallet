@@ -35,11 +35,8 @@
 extern "C" {
 #endif
 
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <gcrypt.h>
-
+#include <sys/types.h>
+	
 typedef struct lxqt_wallet_struct * lxqt_wallet_t ;
 
 /*
@@ -64,7 +61,10 @@ typedef enum{
 
 /*
  * key can not be NULL,
- * a NULL value or a non NULL value of size 0 will be taken as an empty value.
+ * a NULL key_value or a key_value_length of size 0 will be taken as an empty key_value
+ * 
+ * If the key is a NULL terminated string,add the NULL character as part of the key by adding one to strlen( key ) in key_size argument
+ * and account for the extra character when searching for the key value or when retrieving the key through its value.
  */
 lxqt_wallet_error lxqt_wallet_add_key( lxqt_wallet_t,const char * key,u_int32_t key_size,const char * key_value,u_int32_t key_value_length ) ;
 

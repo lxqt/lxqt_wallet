@@ -91,6 +91,15 @@ Q_DECL_EXPORT lxqt::Wallet::Wallet * getWalletBackend( lxqt::Wallet::walletBackE
 QStringList walletList( lxqt::Wallet::walletBackEnd ) ;
 
 /*
+ * NOTE: secretServiceBackEnd is not complete as the backend API is not stable yet.
+ * only the following methods works: open(),addKey(),deleteKey(),readValue().
+ * The above API are sufficient to store and retrieve credentials and hence the backend is usable.
+ * open() method will not attempt to open the backend and the backend will be opened when one of the mentioned
+ * medhod is called and the call will block while the user is prompted for the passphrase to unlock the wallet
+ * if the wallet is found not to be opened(it will usually be as gnome desktop auto unlock wallet at login time)
+ */
+
+/*
  * Below class is the interface that implements various backends.
  * See example at the end of this header file to see an example of how to use the interface.
  */

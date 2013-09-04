@@ -40,6 +40,11 @@
 #include <sys/mman.h>
 #include <dirent.h>
 
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <gcrypt.h>
+
 /*
  * below string MUST BE 5 bytes long
  */
