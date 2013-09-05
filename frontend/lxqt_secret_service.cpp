@@ -72,19 +72,27 @@ bool lxqt::Wallet::secretService::open( const QString& walletName,const QString&
 	m_password  = password ;
 
 	if( applicationName.isEmpty() ){
-		m_walletName = m_applicationName ;
+
+		m_byteArrayWalletName      = walletName.toAscii() ;
+		m_byteArrayApplicationName = walletName.toAscii() ;
+
+		m_walletName        = m_byteArrayWalletName.constData() ;
+		m_applicationName   = m_byteArrayApplicationName.constData() ;
+
+		m_byteArraySchemaName = QString( "lxqt.Wallet.%1.%2" ).arg( walletName ).arg( walletName ).toAscii() ;
+	}else{
+		m_byteArrayWalletName      = walletName.toAscii() ;
+		m_byteArrayApplicationName = applicationName.toAscii() ;
+
+		m_walletName        = m_byteArrayWalletName.constData() ;
+		m_applicationName   = m_byteArrayApplicationName.constData() ;
+
+		m_byteArraySchemaName = QString( "lxqt.Wallet.%1.%2" ).arg( walletName ).arg( applicationName ).toAscii() ;
 	}
 
-	m_byteArrayWalletName      = walletName.toAscii() ;
-	m_byteArrayApplicationName = applicationName.toAscii() ;
 
-	m_walletName        = m_byteArrayWalletName.constData() ;
-	m_applicationName   = m_byteArrayApplicationName.constData() ;
-
-	m_byteArraySchemaName = QString( "lxqt.Wallet.%1.%2" ).arg( walletName ).arg( applicationName ).toAscii() ;
-
-	m_schema   = lxqt_secret_service_create_schema( m_byteArrayApplicationName.constData() ) ;
-	m_schema_1 = lxqt_secret_service_create_schema_1( m_byteArrayApplicationName.constData() ) ;
+	m_schema   = lxqt_secret_service_create_schema( m_byteArraySchemaName.constData() ) ;
+	m_schema_1 = lxqt_secret_service_create_schema_1( m_byteArraySchemaName.constData() ) ;
 
 	connect( this,SIGNAL( walletIsOpen( bool ) ),m_interfaceObject,SLOT( walletIsOpen( bool ) ) ) ;
 

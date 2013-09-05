@@ -78,7 +78,8 @@ static int _number_of_entries_in_the_wallet( const SecretSchema * s )
  */
 int lxqt_secret_service_wallet_is_open( const void * s )
 {
-	return secret_password_store_sync( ( SecretSchema * )s,"default","lxqt wallet",
+	SecretSchema * e = ( SecretSchema * )s ;
+	return secret_password_store_sync( e,"default",e->name,
 					   "lxqt_wallet_open",NULL,NULL,"string","lxqt_wallet_open",NULL ) ;
 }
 
@@ -133,6 +134,8 @@ gboolean lxqt_secret_service_password_store_sync( const char * key,const char * 
 	const SecretSchema * keyID = ( SecretSchema * )q ;
 	const SecretSchema * s     = ( SecretSchema * )p ;
 
+	const char * walletLabel = s->name ;
+
 	if( lxqt_secret_service_wallet_is_open( s ) == 0 ){
 		return 0 ;
 	}
@@ -140,21 +143,21 @@ gboolean lxqt_secret_service_password_store_sync( const char * key,const char * 
 	c = secret_password_lookup_sync( s,NULL,NULL,"string","lxqt_wallet_size",NULL ) ;
 
 	if( c == NULL ){
-		secret_password_store_sync( s,"default","lxqt wallet","1",NULL,NULL,"string","lxqt_wallet_size",NULL ) ;
+		secret_password_store_sync( s,"default",walletLabel,"1",NULL,NULL,"string","lxqt_wallet_size",NULL ) ;
 
-		secret_password_store_sync( keyID,"default","lxqt wallet",key,NULL,NULL,"integer",0,NULL ) ;
+		secret_password_store_sync( keyID,"default",walletLabel,key,NULL,NULL,"integer",0,NULL ) ;
 	}else{
 		snprintf( d,BUFFER_SIZE,"%d",atoi( c ) + 1 ) ;
 		free( c ) ;
 
-		secret_password_store_sync( s,"default","lxqt wallet",d,NULL,NULL,"string","lxqt_wallet_size",NULL ) ;
+		secret_password_store_sync( s,"default",walletLabel,d,NULL,NULL,"string","lxqt_wallet_size",NULL ) ;
 
 		j = _number_of_entries_in_the_wallet( s ) ;
 		while( i < j ){
 			c = secret_password_lookup_sync( keyID,NULL,NULL,"integer",i,NULL ) ;
 			if( c == NULL ){
 				snprintf( d,BUFFER_SIZE,"%d",i ) ;
-				secret_password_store_sync( keyID,"default","lxqt wallet",key,NULL,NULL,"integer",i,NULL ) ;
+				secret_password_store_sync( keyID,"default",walletLabel,key,NULL,NULL,"integer",i,NULL ) ;
 				break ;
 			}else{
 				i++ ;
@@ -163,13 +166,15 @@ gboolean lxqt_secret_service_password_store_sync( const char * key,const char * 
 		}
 	}
 
-	return secret_password_store_sync( s,"default","lxqt wallet",value,NULL,NULL,"string",key,NULL ) ;
+	return secret_password_store_sync( s,"default",walletLabel,value,NULL,NULL,"string",key,NULL ) ;
 }
 
 gboolean lxqt_secret_service_clear_sync( const char * key,const void * p,const void * q )
 {
 	const SecretSchema * keyID = ( SecretSchema * )q ;
 	const SecretSchema * s     = ( SecretSchema * )p ;
+
+	const char * walletLabel = s->name ;
 
 	int i = 0 ;
 	int k = 0 ;
@@ -193,7 +198,7 @@ gboolean lxqt_secret_service_clear_sync( const char * key,const void * p,const v
 
 				snprintf( d,BUFFER_SIZE,"%d",atoi( c ) - 1 ) ;
 				free( c ) ;
-				secret_password_store_sync( s,"default","lxqt wallet",d,NULL,NULL,"string","lxqt_wallet_size",NULL ) ;
+				secret_password_store_sync( s,"default",walletLabel,d,NULL,NULL,"string","lxqt_wallet_size",NULL ) ;
 
 				break ;
 			}else{
