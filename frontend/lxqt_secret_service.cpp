@@ -49,12 +49,18 @@ void * lxqt_secret_service_create_schema_1( const char * schemaName ) ;
 
 lxqt::Wallet::secretService::secretService()
 {
+	m_schema   = 0 ;
+	m_schema_1 = 0 ;
 }
 
 lxqt::Wallet::secretService::~secretService()
 {
-	free( m_schema ) ;
-	free( m_schema_1 ) ;
+	if( m_schema ){
+		free( m_schema ) ;
+	}
+	if( m_schema_1 ){
+		free( m_schema_1 ) ;
+	}
 }
 
 bool lxqt::Wallet::secretService::addKey( const QString& key,const QByteArray& value )
@@ -90,7 +96,6 @@ bool lxqt::Wallet::secretService::open( const QString& walletName,const QString&
 		m_byteArraySchemaName = QString( "lxqt.Wallet.%1.%2" ).arg( walletName ).arg( applicationName ).toAscii() ;
 	}
 
-
 	m_schema   = lxqt_secret_service_create_schema( m_byteArraySchemaName.constData() ) ;
 	m_schema_1 = lxqt_secret_service_create_schema_1( m_byteArraySchemaName.constData() ) ;
 
@@ -115,13 +120,17 @@ void lxqt::Wallet::secretService::walletOpened( bool opened )
 
 QByteArray lxqt::Wallet::secretService::readValue( const QString& key )
 {
-	QByteArray r ;
-	char * e = lxqt_secret_service_get_value( key.toAscii().constData(),m_schema ) ;
-	if( e ){
-		r = QByteArray( e ) ;
-		free( e ) ;
+	if( m_schema ){
+		QByteArray r ;
+		char * e = lxqt_secret_service_get_value( key.toAscii().constData(),m_schema ) ;
+		if( e ){
+			r = QByteArray( e ) ;
+			free( e ) ;
+		}
+		return r ;
+	}else{
+		return QByteArray() ;
 	}
-	return r ;
 }
 
 QVector<lxqt::Wallet::walletKeyValues> lxqt::Wallet::secretService::readAllKeyValues( void )
@@ -140,29 +149,41 @@ QVector<lxqt::Wallet::walletKeyValues> lxqt::Wallet::secretService::readAllKeyVa
 
 QStringList lxqt::Wallet::secretService::readAllKeys( void )
 {
-	int count ;
-	QStringList l ;
-	char ** c = lxqt_secret_get_all_keys( m_schema,m_schema_1,&count ) ;
-	if( c ){
-		for( int i = 0 ; i < count ; i++ ){
-			l.append( QString( c[ i ] ) ) ;
-			free( c[ i ] ) ;
+	if( m_schema && m_schema_1 ){
+		int count ;
+		QStringList l ;
+		char ** c = lxqt_secret_get_all_keys( m_schema,m_schema_1,&count ) ;
+		if( c ){
+			for( int i = 0 ; i < count ; i++ ){
+				l.append( QString( c[ i ] ) ) ;
+				free( c[ i ] ) ;
+			}
+			free( c ) ;
 		}
-		free( c ) ;
+		return l ;
+	}else{
+		return QStringList() ;
 	}
-	return l ;
 }
 
 void lxqt::Wallet::secretService::deleteKey( const QString& key )
 {
-	if( !key.isEmpty() ){
-		lxqt_secret_service_clear_sync( key.toAscii().constData(),m_schema,m_schema_1 ) ;
+	if( m_schema && m_schema_1 ){
+		if( key.isEmpty() ){
+			;
+		}else{
+			lxqt_secret_service_clear_sync( key.toAscii().constData(),m_schema,m_schema_1 ) ;
+		}
 	}
 }
 
 int lxqt::Wallet::secretService::walletSize( void )
 {
-	return lxqt_secret_service_wallet_size( m_schema ) ;
+	if( m_schema ){
+		return lxqt_secret_service_wallet_size( m_schema ) ;
+	}else{
+		return -1 ;
+	}
 }
 
 void lxqt::Wallet::secretService::closeWallet( bool b )
@@ -177,7 +198,11 @@ lxqt::Wallet::walletBackEnd lxqt::Wallet::secretService::backEnd( void )
 
 bool lxqt::Wallet::secretService::walletIsOpened( void )
 {
-	return lxqt_secret_service_wallet_is_open( m_schema ) ;
+	if( m_schema ){
+		return lxqt_secret_service_wallet_is_open( m_schema ) ;
+	}else{
+		return false ;
+	}
 }
 
 void lxqt::Wallet::secretService::setInterfaceObject( QObject * interfaceObject )
