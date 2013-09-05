@@ -63,7 +63,7 @@ bool lxqt::Wallet::internalWallet::openWallet( QString password )
 	openWalletThread * t = new openWalletThread( &m_wallet,password,m_walletName,m_applicationName ) ;
 	if( t ){
 		connect( t,SIGNAL( walletOpened( bool ) ),this,SLOT( openWalletThreadResult( bool ) ) ) ;
-		t->start() ;
+		t->start( openWalletThread::openInternal ) ;
 	}else{
 		this->openWalletThreadResult( false ) ;
 	}
@@ -128,7 +128,7 @@ bool lxqt::Wallet::internalWallet::open( const QString& walletName,const QString
 			openWalletThread * t = new openWalletThread( &m_wallet,passWordLessOpen,m_walletName,m_applicationName ) ;
 			if( t ){
 				connect( t,SIGNAL( walletOpened( bool ) ),this,SLOT( openWalletThreadResult_1( bool ) ) ) ;
-				t->start() ;
+				t->start( openWalletThread::openInternal ) ;
 			}else{
 				this->openWalletThreadResult_1( false ) ;
 			}

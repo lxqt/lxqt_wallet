@@ -38,19 +38,26 @@ openWalletThread::openWalletThread( lxqt_wallet_t * wallet,QString password,QStr
 	m_applicationName = applicationName ;
 }
 
-openWalletThread::openWalletThread()
+openWalletThread::openWalletThread( int(*f)( const void * ),const void * schema )
 {
-
+	m_schema   = schema ;
+	m_function = f ;
 }
 
-void openWalletThread::start()
+void openWalletThread::start( openWalletThread::action action )
 {
+	m_action = action ;
 	QThreadPool::globalInstance()->start( this ) ;
 }
 
 void openWalletThread::run()
 {
-	lxqt_wallet_error r = lxqt_wallet_open( m_wallet,m_password.toAscii().constData(),m_password.size(),
-				     m_walletName.toAscii().constData(),m_applicationName.toAscii().constData() ) ;
-	emit walletOpened( r == lxqt_wallet_no_error ) ;
+	if( m_action == openWalletThread::openInternal ){
+		lxqt_wallet_error r = lxqt_wallet_open( m_wallet,m_password.toAscii().constData(),m_password.size(),
+						     m_walletName.toAscii().constData(),m_applicationName.toAscii().constData() ) ;
+		emit walletOpened( r == lxqt_wallet_no_error ) ;
+	}else if( m_action == openWalletThread::openSecretService ){
+		int r = m_function( m_schema ) ;
+		emit walletOpened( r ) ;
+	}
 }

@@ -143,6 +143,7 @@ public:
 
 	/*
 	 * check if a wallet is opened or not
+	 * If the wallet is not open,secretService backend will block while the user is prompted for a key to inlock it
 	 */
 	virtual bool walletIsOpened( void ) = 0 ;
 
@@ -155,7 +156,7 @@ public:
 	/*
 	 * Behavior of the method according to different back ends.
 	 *
-	 * gnome keyring - backend not implemented yet
+	 * secret service( gnome backend ):
 	 *
 	 * kwallet:
 	 * walletName argument corresponds to the same thing in KWAllet API

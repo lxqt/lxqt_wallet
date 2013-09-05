@@ -43,9 +43,13 @@ class openWalletThread : public QObject,public QRunnable
 {
 	Q_OBJECT
 public:
+	typedef enum{
+		openInternal,
+		openSecretService
+	}action ;
 	openWalletThread( lxqt_wallet_t * wallet,QString password,QString walletName,QString applicationName ) ;
-	openWalletThread() ;
-	void start( void ) ;
+	openWalletThread( int(*)( const void * ),const void * ) ;
+	void start( openWalletThread::action  ) ;
 signals:
 	void walletOpened( bool ) ;
 private:
@@ -54,6 +58,9 @@ private:
 	QString m_password ;
 	QString m_walletName ;
 	QString m_applicationName ;
+	openWalletThread::action m_action ;
+	const void * m_schema ;
+	int( * m_function )( const void * ) ;
 };
 
 #endif // OPEN_WALLET_THREAD_H

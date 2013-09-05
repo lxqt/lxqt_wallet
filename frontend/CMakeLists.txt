@@ -30,9 +30,8 @@ if( NOSECRETSUPPORT )
 	file( WRITE  ${PROJECT_BINARY_DIR}/storage_manager.h "\n#define HAS_SECRET_SUPPORT 0\n" )
 else()
 	pkg_check_modules( LIBSECRET libsecret-1 )
-	
+
 	if( LIBSECRET_FOUND )
-		add_definitions( -Wno-missing-field-initializers )
 		add_subdirectory( secret_service )
 		endif()
 	if( LIBSECRET_FOUND )
@@ -46,20 +45,20 @@ endif()
 
 if( NOKDESUPPORT )
 	add_definitions( -std=c++0x )
-	
+
 	SET( KDE_SUPPORT "false" )
 	SET( KWALLET_SUPPORT "false" )
 	file( APPEND  ${PROJECT_BINARY_DIR}/storage_manager.h "\n#define HAS_KWALLET_SUPPORT 0\n" )
 else()
 	find_package( KDE4 )
-	
+
 	include (KDE4Defaults)
 	include_directories(${KDE4_INCLUDES})
 	add_definitions( -I${KDE4_INCLUDE_DIR} )
-	
+
 	add_definitions( -I${Qt4_INCLUDE_DIR} )
 	add_definitions( -I${QT_HEADERS_DIR} )
-	
+
 	SET( KDE_SUPPORT "true" )
 
 	if( NOKWALLETSUPPORT )
@@ -168,7 +167,7 @@ if( KDE_SUPPORT )
 			add_library( lxqtwallet SHARED ${UI} ${SRC} ${MOC} )
 			set( link_libraries "-L${KDE4_LIB_DIR} -L${QT_LIBRARY_DIR} ${LIBKDEUI} ${LIBKDECORE}" )
 		endif()
-		
+
 	endif()
 else()
 	if( SECRET_SUPPORT )

@@ -124,8 +124,7 @@ void changePassWordDialog::change()
 		QString password = m_ui->lineEditCurrentPassWord->text() ;
 		openWalletThread * t = new openWalletThread( &m_wallet,password,m_walletName,m_applicationName ) ;
 		connect( t,SIGNAL( walletOpened( bool ) ),this,SLOT( openWalletThreadResult( bool ) ) ) ;
-		t->start() ;
-
+		t->start( openWalletThread::openInternal ) ;
 	}else{
 		m_ui->label->setText( tr( "new passwords do not match" ) ) ;
 		m_ui->pushButtonOK->setVisible( true ) ;

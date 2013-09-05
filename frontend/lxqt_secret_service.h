@@ -69,10 +69,16 @@ private slots:
 private:
 	QByteArray m_byteArrayWalletName ;
 	QByteArray m_byteArrayApplicationName ;
+	QByteArray m_byteArraySchemaName ;
+
 	const char * m_walletName ;
 	const char * m_applicationName ;
+
 	QString m_password ;
 	QObject * m_interfaceObject ;
+
+	void * m_schema   ;
+	void * m_schema_1 ;
 };
 
 }
