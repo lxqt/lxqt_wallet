@@ -68,8 +68,11 @@ bool lxqt::Wallet::secretService::addKey( const QString& key,const QByteArray& v
 	if( key.isEmpty() ){
 		return false ;
 	}else{
-		lxqt_secret_service_password_store_sync( key.toAscii().constBegin(),value.constData(),m_schema,m_schema_1 ) ;
-		return true ;
+		if( m_schema && m_schema_1 ){
+			return lxqt_secret_service_password_store_sync( key.toAscii().constBegin(),value.constData(),m_schema,m_schema_1 ) ;
+		}else{	
+			return false ;
+		}
 	}
 }
 
