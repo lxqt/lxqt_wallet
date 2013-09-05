@@ -55,6 +55,8 @@
 
 #define BUFFER_SIZE 32
 
+#define CAST_SCHEMA( x ) ( const SecretSchema * )x
+
 static int _number_of_entries_in_the_wallet( const SecretSchema * s )
 {
 	int i ;
@@ -78,7 +80,7 @@ static int _number_of_entries_in_the_wallet( const SecretSchema * s )
  */
 int lxqt_secret_service_wallet_is_open( const void * s )
 {
-	SecretSchema * e = ( SecretSchema * )s ;
+	const SecretSchema * e = CAST_SCHEMA( s ) ;
 	return secret_password_store_sync( e,"default",e->name,
 					   "lxqt_wallet_open",NULL,NULL,"string","lxqt_wallet_open",NULL ) ;
 }
@@ -88,7 +90,7 @@ char * lxqt_secret_service_get_value( const char * key,const void * s )
 	return secret_password_lookup_sync( ( SecretSchema * )s,NULL,NULL,"string",key,NULL ) ;
 }
 
-void * lxqt_secret_service_create_schema( const char * schemaName )
+void * lxqt_secret_service_create_schema( const char * schemaName,const char * type )
 {
 	SecretSchema * s = malloc( sizeof( SecretSchema ) ) ;
 
@@ -97,26 +99,13 @@ void * lxqt_secret_service_create_schema( const char * schemaName )
 	s->name  = schemaName ;
 	s->flags = SECRET_SCHEMA_NONE ;
 
-	s->attributes[0].name = "string" ;
-	s->attributes[0].type = SECRET_SCHEMA_ATTRIBUTE_STRING ;
+	s->attributes[0].name = type ;
 
-	s->attributes[1].name = "NULL" ;
-	s->attributes[1].type = 0 ;
-
-	return s ;
-}
-
-void * lxqt_secret_service_create_schema_1( const char * schemaName )
-{
-	SecretSchema * s = malloc( sizeof( SecretSchema ) ) ;
-
-	memset( s,'\0',sizeof( SecretSchema ) ) ;
-
-	s->name  = schemaName ;
-	s->flags = SECRET_SCHEMA_NONE ;
-
-	s->attributes[0].name = "integer" ;
-	s->attributes[0].type = SECRET_SCHEMA_ATTRIBUTE_INTEGER ;
+	if( strcmp( type,"string" ) == 0 ){
+		s->attributes[0].type = SECRET_SCHEMA_ATTRIBUTE_STRING ;
+	}else{
+		s->attributes[0].type = SECRET_SCHEMA_ATTRIBUTE_INTEGER ;
+	}
 
 	s->attributes[1].name = "NULL" ;
 	s->attributes[1].type = 0 ;
@@ -126,15 +115,15 @@ void * lxqt_secret_service_create_schema_1( const char * schemaName )
 
 gboolean lxqt_secret_service_password_store_sync( const char * key,const char * value,const void * p,const void * q )
 {
+	const SecretSchema * keyValues = CAST_SCHEMA( p ) ;
+	const SecretSchema * keyID     = CAST_SCHEMA( q ) ;
+
 	int i = 0 ;
 	char * c ;
-	char wallet_size[ BUFFER_SIZE ] ;
 	int j ;
-	
-	const SecretSchema * keyValues = ( SecretSchema * )p ;
-	const SecretSchema * keyID     = ( SecretSchema * )q ;
 
 	const char * walletLabel = keyValues->name ;
+	char wallet_size[ BUFFER_SIZE ] ;
 
 	if( !lxqt_secret_service_wallet_is_open( keyValues ) ){
 		return 0 ;
@@ -144,12 +133,12 @@ gboolean lxqt_secret_service_password_store_sync( const char * key,const char * 
 
 	if( c == NULL ){
 		secret_password_store_sync( keyValues,"default",walletLabel,"1",NULL,NULL,"string","lxqt_wallet_size",NULL ) ;
-
 		secret_password_store_sync( keyID,"default",walletLabel,key,NULL,NULL,"integer",0,NULL ) ;
 	}else{
 		j = atoi( c ) + 1 ;
-		snprintf( wallet_size,BUFFER_SIZE,"%d",j ) ;
 		free( c ) ;
+
+		snprintf( wallet_size,BUFFER_SIZE,"%d",j ) ;
 
 		secret_password_store_sync( keyValues,"default",walletLabel,wallet_size,NULL,NULL,"string","lxqt_wallet_size",NULL ) ;
 
@@ -170,16 +159,16 @@ gboolean lxqt_secret_service_password_store_sync( const char * key,const char * 
 
 gboolean lxqt_secret_service_clear_sync( const char * key,const void * p,const void * q )
 {
-	const SecretSchema * keyValues = ( SecretSchema * )p ;
-	const SecretSchema * keyID     = ( SecretSchema * )q ;
-
-	const char * walletLabel = keyValues->name ;
+	const SecretSchema * keyValues = CAST_SCHEMA( p ) ;
+	const SecretSchema * keyID     = CAST_SCHEMA( q ) ;
 
 	int i = 0 ;
 	int k = 0 ;
+
 	char * c ;
 	char wallet_size[ BUFFER_SIZE ] ;
-
+	const char * walletLabel = keyValues->name ;
+	
 	int j = _number_of_entries_in_the_wallet( keyValues ) ;
 
 	if( !lxqt_secret_service_wallet_is_open( keyValues ) ){
@@ -190,15 +179,12 @@ gboolean lxqt_secret_service_clear_sync( const char * key,const void * p,const v
 		c = secret_password_lookup_sync( keyID,NULL,NULL,"integer",k,NULL ) ;
 		if( c != NULL ){
 			if( strcmp( c,key ) == 0 ){
-				secret_password_clear_sync( keyID,NULL,NULL,"integer",k,NULL ) ;
 				free( c ) ;
-
+				secret_password_clear_sync( keyID,NULL,NULL,"integer",k,NULL ) ;
 				c = secret_password_lookup_sync( keyValues,NULL,NULL,"string","lxqt_wallet_size",NULL ) ;
-
 				snprintf( wallet_size,BUFFER_SIZE,"%d",atoi( c ) - 1 ) ;
 				free( c ) ;
 				secret_password_store_sync( keyValues,"default",walletLabel,wallet_size,NULL,NULL,"string","lxqt_wallet_size",NULL ) ;
-
 				break ;
 			}else{
 				i++ ;
@@ -215,6 +201,9 @@ gboolean lxqt_secret_service_clear_sync( const char * key,const void * p,const v
 
 char ** lxqt_secret_get_all_keys( const void * p,const void * q,int * count )
 {
+	const SecretSchema * keyValues = CAST_SCHEMA( p ) ;
+	const SecretSchema * keyID     = CAST_SCHEMA( q ) ;
+	
 	int k = 0 ;
 	int i = 0 ;
 	int j ;
@@ -222,9 +211,6 @@ char ** lxqt_secret_get_all_keys( const void * p,const void * q,int * count )
 	char * c  = NULL  ;
 	char ** e = NULL ;
 	char ** f ;
-
-	const SecretSchema * keyValues = ( SecretSchema * )p ;
-	const SecretSchema * keyID     = ( SecretSchema * )q ;
 
 	*count = 0 ;
 
@@ -255,5 +241,5 @@ char ** lxqt_secret_get_all_keys( const void * p,const void * q,int * count )
 
 int lxqt_secret_service_wallet_size( const void * s )
 {
-	return _number_of_entries_in_the_wallet( ( SecretSchema * ) s ) ;
+	return _number_of_entries_in_the_wallet( CAST_SCHEMA( s ) ) ;
 }

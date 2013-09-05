@@ -48,7 +48,7 @@ public:
 		openSecretService
 	}action ;
 	openWalletThread( lxqt_wallet_t * wallet,QString password,QString walletName,QString applicationName ) ;
-	openWalletThread( int(*)( const void * ),const void * ) ;
+	openWalletThread( int (*)( const void * ),const void * ) ;
 	void start( openWalletThread::action  ) ;
 signals:
 	void walletOpened( bool ) ;
@@ -60,7 +60,7 @@ private:
 	QString m_applicationName ;
 	openWalletThread::action m_action ;
 	const void * m_schema ;
-	int( * m_function )( const void * ) ;
+	int ( * m_function )( const void * ) ;
 };
 
 #endif // OPEN_WALLET_THREAD_H

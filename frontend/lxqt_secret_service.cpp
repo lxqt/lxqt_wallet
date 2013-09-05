@@ -43,8 +43,7 @@ int lxqt_secret_service_clear_sync( const char * key,const void *,const void * )
 char ** lxqt_secret_get_all_keys( const void *,const void *,int * count ) ;
 int lxqt_secret_service_wallet_size( const void * ) ;
 int lxqt_secret_service_wallet_is_open( const void * ) ;
-void * lxqt_secret_service_create_schema( const char * schemaName ) ;
-void * lxqt_secret_service_create_schema_1( const char * schemaName ) ;
+void * lxqt_secret_service_create_schema( const char * schemaName,const char * type ) ;
 }
 
 lxqt::Wallet::secretService::secretService()
@@ -70,7 +69,7 @@ bool lxqt::Wallet::secretService::addKey( const QString& key,const QByteArray& v
 	}else{
 		if( m_schema && m_schema_1 ){
 			return lxqt_secret_service_password_store_sync( key.toAscii().constBegin(),value.constData(),m_schema,m_schema_1 ) ;
-		}else{	
+		}else{
 			return false ;
 		}
 	}
@@ -78,6 +77,9 @@ bool lxqt::Wallet::secretService::addKey( const QString& key,const QByteArray& v
 
 bool lxqt::Wallet::secretService::open( const QString& walletName,const QString& applicationName,const QString& password )
 {
+	/*
+	 * this backend does not use this variable
+	 */
 	m_password  = password ;
 
 	if( applicationName.isEmpty() ){
@@ -99,8 +101,8 @@ bool lxqt::Wallet::secretService::open( const QString& walletName,const QString&
 		m_byteArraySchemaName = QString( "lxqt.Wallet.%1.%2" ).arg( walletName ).arg( applicationName ).toAscii() ;
 	}
 
-	m_schema   = lxqt_secret_service_create_schema( m_byteArraySchemaName.constData() ) ;
-	m_schema_1 = lxqt_secret_service_create_schema_1( m_byteArraySchemaName.constData() ) ;
+	m_schema   = lxqt_secret_service_create_schema( m_byteArraySchemaName.constData(),"string" ) ;
+	m_schema_1 = lxqt_secret_service_create_schema( m_byteArraySchemaName.constData(),"integer" ) ;
 
 	connect( this,SIGNAL( walletIsOpen( bool ) ),m_interfaceObject,SLOT( walletIsOpen( bool ) ) ) ;
 
