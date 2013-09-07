@@ -168,7 +168,7 @@ gboolean lxqt_secret_service_clear_sync( const char * key,const void * p,const v
 	char * c ;
 	char wallet_size[ BUFFER_SIZE ] ;
 	const char * walletLabel = keyValues->name ;
-	
+
 	int j = _number_of_entries_in_the_wallet( keyValues ) ;
 
 	if( !lxqt_secret_service_wallet_is_open( keyValues ) ){
@@ -203,7 +203,7 @@ char ** lxqt_secret_get_all_keys( const void * p,const void * q,int * count )
 {
 	const SecretSchema * keyValues = CAST_SCHEMA( p ) ;
 	const SecretSchema * keyID     = CAST_SCHEMA( q ) ;
-	
+
 	int k = 0 ;
 	int i = 0 ;
 	int j ;
