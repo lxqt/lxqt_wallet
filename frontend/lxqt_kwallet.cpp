@@ -38,6 +38,7 @@ lxqt::Wallet::kwallet::kwallet() : m_kwallet( 0 )
 lxqt::Wallet::kwallet::~kwallet()
 {
 	if( m_kwallet ){
+		m_kwallet->sync() ;
 		m_kwallet->deleteLater() ;
 	}
 }

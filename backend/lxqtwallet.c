@@ -43,7 +43,10 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #include <gcrypt.h>
+#pragma GCC diagnostic warning "-Wdeprecated-declarations"
 
 /*
  * below string MUST BE 5 bytes long
