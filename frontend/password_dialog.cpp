@@ -31,7 +31,7 @@
 #include "password_dialog.h"
 #include "ui_password_dialog.h"
 
-password_dialog::password_dialog( QWidget * parent ) : QDialog( parent ),m_ui(new Ui::password_dialog )
+password_dialog::password_dialog( QWidget * parent ) : QDialog( parent ),m_ui( new Ui::password_dialog )
 {
 	m_ui->setupUi( this ) ;
 	this->setFixedSize( this->size() ) ;

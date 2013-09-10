@@ -44,7 +44,7 @@ class password_dialog : public QDialog
 {
 	Q_OBJECT
 public:
-	explicit password_dialog( QWidget *parent = 0 ) ;
+	explicit password_dialog( QWidget * parent = 0 ) ;
 	void ShowUI( const QString& walletName,const QString& applicationName ) ;
 	void ShowUI( const QString& walletName ) ;
 	void ShowUI( void ) ;
