@@ -5,7 +5,7 @@ This project seeks to give a functionality for secure storage of information tha
 like user names-passwords pairs.
 
 Currently the project can store the information in KDE's kwallet,GNOME's secret service or in an internal system that use libgcrypt
-as its crytographic backend.
+as its cryptographic backend.
 
 The internal secure storage system allows the functionality to be provided without dependencies on KDE or gnome libraries.
 
