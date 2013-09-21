@@ -120,6 +120,14 @@ struct lxqt_wallet_struct{
  *
  * The sum of the two 4 bytes plus the length of the key plus the length of the value will
  * point to the next node in the list.
+ *
+ * An empty node takes 8 bytes.A key is not allowed to be empty necessitating it having at least one character
+ * making the minimum allowed size for the node to be 9 bytes.
+ *
+ * The size of the key in the node is managed by a u_int32_t data type.
+ * The size of the value in the node is managed by a u_int32_t data type.
+ * The above two data types means a node can occupy upto 8 bytes + 8 GiB of memory.
+ *
  */
 
 static char * _wallet_full_path( char * path_buffer,u_int32_t path_buffer_size,const char * wallet_name,const char * application_name ) ;
@@ -1033,7 +1041,7 @@ void lxqt_wallet_application_wallet_path( char * path,u_int32_t path_buffer_size
 	snprintf( path,path_buffer_size,"%s/.config/lxqt/wallets/%s/",pass->pw_dir,application_name ) ;
 }
 
-char * _wallet_full_path( char * path_buffer,u_int32_t path_buffer_size,const char * wallet_name,const char * application_name )
+static char * _wallet_full_path( char * path_buffer,u_int32_t path_buffer_size,const char * wallet_name,const char * application_name )
 {
 	char path_1[ PATH_MAX ] ;
 	lxqt_wallet_application_wallet_path( path_1,PATH_MAX,application_name ) ;
