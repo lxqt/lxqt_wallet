@@ -141,7 +141,7 @@ static void _get_iv_from_wallet_header( char iv[ IV_SIZE ],int fd ) ;
 
 static void _get_salt_from_wallet_header( char salt[ SALT_SIZE ],int fd ) ;
 
-static void _get_magic_string_from_header( char magic_string[ MAGIC_STRING_BUFFER_SIZE ],int fd ) ;
+static void _get_magic_string_from_wallet_header( char magic_string[ MAGIC_STRING_BUFFER_SIZE ],int fd ) ;
 
 static void _get_random_data( char * buffer,size_t buffer_size ) ;
 
@@ -202,10 +202,9 @@ lxqt_wallet_error lxqt_wallet_create( const char * password,u_int32_t password_l
 	int fd ;
 	char path[ PATH_MAX ] ;
 	char iv[ IV_SIZE ] ;
-	char magic_string[ MAGIC_STRING_BUFFER_SIZE ] ;
+	char buffer[ MAGIC_STRING_BUFFER_SIZE + BLOCK_SIZE ] ;
 	char key[ PASSWORD_SIZE ] ;
 	char salt[ SALT_SIZE ] ;
-	char block[ BLOCK_SIZE ] ;
 
 	gcry_error_t r ;
 
@@ -269,12 +268,11 @@ lxqt_wallet_error lxqt_wallet_create( const char * password,u_int32_t password_l
 	 */
 	write( fd,iv,IV_SIZE ) ;
 
-	_create_magic_string_header( magic_string ) ;
+	memset( buffer,'\0',MAGIC_STRING_BUFFER_SIZE + BLOCK_SIZE ) ;
+	
+	_create_magic_string_header( buffer ) ;
 
-	r = gcry_cipher_encrypt( gcry_cipher_handle,magic_string,MAGIC_STRING_BUFFER_SIZE,NULL,0 ) ;
-
-	memset( block,'\0',BLOCK_SIZE ) ;
-	gcry_cipher_encrypt( gcry_cipher_handle,block,BLOCK_SIZE,NULL,0 ) ;
+	r = gcry_cipher_encrypt( gcry_cipher_handle,buffer,MAGIC_STRING_BUFFER_SIZE + BLOCK_SIZE,NULL,0 ) ;
 
 	gcry_cipher_close( gcry_cipher_handle ) ;
 
@@ -286,11 +284,11 @@ lxqt_wallet_error lxqt_wallet_create( const char * password,u_int32_t password_l
 		/*
 		 * third 16 bytes are for the magic string
 		 */
-		write( fd,magic_string,MAGIC_STRING_BUFFER_SIZE ) ;
+		write( fd,buffer,MAGIC_STRING_BUFFER_SIZE ) ;
 		/*
-		 * fourth 16 bytes block
+		 * fourth 16 bytes block that holds information about data load sizes
 		 */
-		write( fd,block,BLOCK_SIZE ) ;
+		write( fd,buffer + MAGIC_STRING_BUFFER_SIZE,BLOCK_SIZE ) ;
 
 		close( fd ) ;
 		return lxqt_wallet_no_error ;
@@ -431,7 +429,7 @@ lxqt_wallet_error lxqt_wallet_open( lxqt_wallet_t * wallet,const char * password
 		return _exit_open( lxqt_wallet_gcry_cipher_setiv_failed,w,gcry_cipher_handle,fd ) ;
 	}
 
-	_get_magic_string_from_header( magic_string,fd ) ;
+	_get_magic_string_from_wallet_header( magic_string,fd ) ;
 
 	r =  gcry_cipher_decrypt( gcry_cipher_handle,magic_string,MAGIC_STRING_BUFFER_SIZE,NULL,0 ) ;
 
@@ -644,7 +642,7 @@ lxqt_wallet_error lxqt_wallet_add_key( lxqt_wallet_t wallet,const char * key,u_i
 	}
 }
 
-int lxqt_wallet_iter_read_value( lxqt_wallet_t wallet,lxqt_wallet_iterator_t * iter )
+int lxqt_wallet_iter_read_value( lxqt_wallet_t wallet,lxqt_wallet_iterator_t * iter ) 
 {
 	u_int32_t key_len ;
 	u_int32_t key_value_len ;
@@ -1025,7 +1023,7 @@ static void _get_salt_from_wallet_header( char salt[ SALT_SIZE ],int fd )
 	read( fd,salt,SALT_SIZE ) ;
 }
 
-static void _get_magic_string_from_header( char magic_string[ MAGIC_STRING_BUFFER_SIZE ],int fd )
+static void _get_magic_string_from_wallet_header( char magic_string[ MAGIC_STRING_BUFFER_SIZE ],int fd )
 {
 	lseek( fd,IV_SIZE + SALT_SIZE,SEEK_SET ) ;
 	read( fd,magic_string,MAGIC_STRING_BUFFER_SIZE ) ;
