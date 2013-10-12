@@ -32,7 +32,6 @@ HEADERS += \
     backend/lxqtwallet.h \
     /home/ink/src/build-lxde-wallet/mainwindow.h \
     frontend/lxqt_secret_service.h \
-    frontend/secret_service.h
 
 SOURCES += \
     frontend/password_dialog.cpp \
