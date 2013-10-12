@@ -459,6 +459,7 @@ lxqt_wallet_error lxqt_wallet_open( lxqt_wallet_t * wallet,const char * password
 						*wallet = w ;
 						return _exit_open( lxqt_wallet_no_error,NULL,gcry_cipher_handle,fd ) ;
 					}else{
+						free( e ) ;
 						return _exit_open( lxqt_wallet_gcry_cipher_decrypt_failed,w,gcry_cipher_handle,fd ) ;
 					}
 				}else{
