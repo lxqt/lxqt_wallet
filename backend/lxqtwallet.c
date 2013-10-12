@@ -48,11 +48,8 @@
 #include <gcrypt.h>
 #pragma GCC diagnostic warning "-Wdeprecated-declarations"
 
-/*
- * below string MUST BE 5 bytes long
- */
-#define VERSION "2.0.0"
-#define VERSION_SIZE 5
+#define VERSION 200
+#define VERSION_SIZE sizeof( short )
 /*
  * below string MUST BE 11 bytes long
  */
@@ -147,7 +144,7 @@ static void _get_random_data( char * buffer,size_t buffer_size ) ;
 
 static void _create_magic_string_header( char magic_string[ MAGIC_STRING_BUFFER_SIZE ] ) ;
 
-static int _wallet_is_not_compatible( char version_buffer[ VERSION_SIZE + 1 ] ) ;
+static int _wallet_is_compatible( const char * ) ;
 
 static void _get_load_information( lxqt_wallet_t,const char * buffer ) ;
 
@@ -346,7 +343,6 @@ lxqt_wallet_error lxqt_wallet_open( lxqt_wallet_t * wallet,const char * password
 
 	char iv[ IV_SIZE ] ;
 	char path[ PATH_MAX ] ;
-	char version_buffer[ VERSION_SIZE + 1 ] ;
 	char buffer[ MAGIC_STRING_BUFFER_SIZE + BLOCK_SIZE ] ;
 
 	char * e ;
@@ -437,15 +433,8 @@ lxqt_wallet_error lxqt_wallet_open( lxqt_wallet_t * wallet,const char * password
 	}
 
 	if( memcmp( buffer,MAGIC_STRING,MAGIC_STRING_SIZE ) == 0 ){
-		/*
-		 * correct password was given and wallet is opened
-		 */
-		memcpy( version_buffer,buffer + MAGIC_STRING_SIZE,VERSION_SIZE ) ;
-		version_buffer[ VERSION_SIZE ] = '\0' ;
-
-		if( _wallet_is_not_compatible( version_buffer ) ){
-			return _exit_open( lxqt_wallet_incompatible_wallet,w,gcry_cipher_handle,fd ) ;
-		}else{
+		if( _wallet_is_compatible( buffer ) ){
+			
 			fstat( fd,&st ) ;
 
 			len = st.st_size - ( SALT_SIZE + IV_SIZE + MAGIC_STRING_BUFFER_SIZE + BLOCK_SIZE ) ;
@@ -464,14 +453,20 @@ lxqt_wallet_error lxqt_wallet_open( lxqt_wallet_t * wallet,const char * password
 				if( e != NULL ){
 					mlock( e,len ) ;
 					read( fd,e,len ) ;
-					gcry_cipher_decrypt( gcry_cipher_handle,e,len,NULL,0 ) ;
-					w->wallet_data = e ;
-					*wallet = w ;
-					return _exit_open( lxqt_wallet_no_error,NULL,gcry_cipher_handle,fd ) ;
+					r = gcry_cipher_decrypt( gcry_cipher_handle,e,len,NULL,0 ) ;
+					if( r == GPG_ERR_NO_ERROR ){
+						w->wallet_data = e ;
+						*wallet = w ;
+						return _exit_open( lxqt_wallet_no_error,NULL,gcry_cipher_handle,fd ) ;
+					}else{
+						return _exit_open( lxqt_wallet_gcry_cipher_decrypt_failed,w,gcry_cipher_handle,fd ) ;
+					}
 				}else{
 					return _exit_open( lxqt_wallet_failed_to_allocate_memory,w,gcry_cipher_handle,fd ) ;
 				}
 			}
+		}else{
+			return _exit_open( lxqt_wallet_incompatible_wallet,w,gcry_cipher_handle,fd ) ;
 		}
 	}else{
 		return _exit_open( lxqt_wallet_wrong_password,w,gcry_cipher_handle,fd ) ;
@@ -1038,6 +1033,7 @@ static void _get_random_data( char * buffer,size_t buffer_size )
 
 static void _create_magic_string_header( char magic_string[ MAGIC_STRING_BUFFER_SIZE ] )
 {
+	short version = VERSION ;
 	/*
 	 * write 11 bytes of magic string
 	 */
@@ -1045,11 +1041,15 @@ static void _create_magic_string_header( char magic_string[ MAGIC_STRING_BUFFER_
 	/*
 	 * write version information in the remaining 5 bytes of the 16 byte buffer
 	 */
-	memcpy( magic_string + MAGIC_STRING_SIZE,VERSION,VERSION_SIZE ) ;
+	memcpy( magic_string + MAGIC_STRING_SIZE,&version,sizeof( short ) ) ;
 }
 
-static int _wallet_is_not_compatible( char version_buffer[ VERSION_SIZE + 1 ] )
+static int _wallet_is_compatible( const char * buffer )
 {
-	if( version_buffer ){;}
-	return 0 ;
+	short version ;
+	memcpy( &version,buffer + MAGIC_STRING_SIZE,sizeof( short ) ) ;
+	/*
+	 * This source file should be able to guarantee it can open volumes that have the same major version number
+	 */
+	return version >= VERSION && version < ( VERSION + 100 ) ;
 }
