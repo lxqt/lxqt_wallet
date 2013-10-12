@@ -754,8 +754,7 @@ lxqt_wallet_error lxqt_wallet_close( lxqt_wallet_t * w )
 	char iv[ IV_SIZE ] ;
 	char path[ PATH_MAX ] ;
 	char path_1[ PATH_MAX ] ;
-	char magic_string[ MAGIC_STRING_BUFFER_SIZE ] ;
-	char buffer[ BLOCK_SIZE ] ;
+	char buffer[ MAGIC_STRING_BUFFER_SIZE + BLOCK_SIZE ] ;
 
 	lxqt_wallet_t wallet ;
 
@@ -809,24 +808,20 @@ lxqt_wallet_error lxqt_wallet_close( lxqt_wallet_t * w )
 	write( fd,wallet->salt,SALT_SIZE ) ;
 	write( fd,iv,IV_SIZE ) ;
 
-	_create_magic_string_header( magic_string ) ;
+	_create_magic_string_header( buffer ) ;
 
-	r = gcry_cipher_encrypt( gcry_cipher_handle,magic_string,MAGIC_STRING_BUFFER_SIZE,NULL,0 ) ;
+	memcpy( buffer + MAGIC_STRING_BUFFER_SIZE,&wallet->wallet_data_size,sizeof( u_int64_t ) ) ;
+	memcpy( buffer + MAGIC_STRING_BUFFER_SIZE + sizeof( u_int64_t ),&wallet->wallet_data_entry_count,sizeof( u_int64_t ) ) ;
+	
+	r = gcry_cipher_encrypt( gcry_cipher_handle,buffer,MAGIC_STRING_BUFFER_SIZE + BLOCK_SIZE,NULL,0 ) ;
 
 	if( r != GPG_ERR_NO_ERROR ){
 		unlink( path_1 ) ;
 		close( fd ) ;
 		return _close_exit( lxqt_wallet_gcry_cipher_encrypt_failed,w,gcry_cipher_handle ) ;
+	}else{
+		write( fd,buffer,MAGIC_STRING_BUFFER_SIZE + BLOCK_SIZE ) ;
 	}
-
-	write( fd,magic_string,MAGIC_STRING_BUFFER_SIZE ) ;
-
-	memcpy( buffer,&wallet->wallet_data_size,sizeof( u_int64_t ) ) ;
-	memcpy( buffer + sizeof( u_int64_t ),&wallet->wallet_data_entry_count,sizeof( u_int64_t ) ) ;
-
-	r = gcry_cipher_encrypt( gcry_cipher_handle,buffer,BLOCK_SIZE,NULL,0 ) ;
-
-	write( fd,buffer,BLOCK_SIZE ) ;
 
 	k = wallet->wallet_data_size ;
 
