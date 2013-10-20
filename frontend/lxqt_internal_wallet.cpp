@@ -50,7 +50,10 @@ void lxqt::Wallet::internalWallet::taskResult( bool opened )
 {
 	emit passwordIsCorrect( opened ) ;
 	if( opened ){
-		emit getPassWord( m_password ) ;
+		/*
+		 * comment out this undocumented API that allows an application to know of a password to open a wallet
+		 * emit getPassWord( m_password ) ;
+		 */
 		emit walletIsOpen( opened ) ;
 	}
 }
