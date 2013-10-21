@@ -273,4 +273,6 @@ else()
 	endif()
 endif()
 
-install( TARGETS lxqtwallet RUNTIME LIBRARY DESTINATION "${LIB_PATH}" )
+install(TARGETS lxqtwallet RUNTIME LIBRARY DESTINATION "${LIB_PATH}")
+
+install(FILES lxqt_wallet.h DESTINATION "${CMAKE_INSTALL_PREFIX}/include/lxqt")
