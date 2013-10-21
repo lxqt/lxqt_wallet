@@ -7,7 +7,7 @@ INCLUDE(FindPkgConfig)
 SET(QT_USE_QTCORE TRUE)
 SET(QT_USE_QTGUI TRUE)
 
-set(LIBRARY_VERSION "1.0.0")
+set(LIBRARY_VERSION "2.0.0")
 
 add_definitions(-I${PROJECT_BINARY_DIR}/frontend)
 add_definitions(-I${PROJECT_BINARY_DIR}/backend)
