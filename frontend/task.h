@@ -39,36 +39,39 @@
 
 #include "../backend/lxqtwallet.h"
 
-namespace lxqt{
-	
-namespace Wallet{
-	
-class Task : public QObject,public QRunnable
+namespace LxQt
 {
-	Q_OBJECT
+
+namespace Wallet
+{
+
+class Task : public QObject, public QRunnable
+{
+    Q_OBJECT
 public:
-	typedef enum{
-		openInternal,
-		openSecretService,
-		createVolume
-	}action ;
-	Task( lxqt_wallet_t * wallet,const QString& password,const QString& walletName,const QString& applicationName ) ;
-	Task( const QString& password,const QString& walletName,const QString& applicationName ) ;
-	Task( int (*)( const void * ),const void * ) ;
-	void start( lxqt::Wallet::Task::action ) ;
+    typedef enum
+    {
+        openInternal,
+        openSecretService,
+        createVolume
+    } action ;
+    Task(lxqt_wallet_t *wallet, const QString &password, const QString &walletName, const QString &applicationName) ;
+    Task(const QString &password, const QString &walletName, const QString &applicationName) ;
+    Task(int ( *)(const void *), const void *) ;
+    void start(LxQt::Wallet::Task::action) ;
 signals:
-	void walletOpened( bool ) ;
-	void taskResult( bool ) ;
-	void openWallet( QString ) ;
+    void walletOpened(bool) ;
+    void taskResult(bool) ;
+    void openWallet(QString) ;
 private:
-	void run( void ) ;
-	lxqt_wallet_t * m_wallet ;
-	QString m_password ;
-	QString m_walletName ;
-	QString m_applicationName ;
-	lxqt::Wallet::Task::action m_action ;
-	const void * m_schema ;
-	int ( * m_function )( const void * ) ;
+    void run(void) ;
+    lxqt_wallet_t *m_wallet ;
+    QString m_password ;
+    QString m_walletName ;
+    QString m_applicationName ;
+    LxQt::Wallet::Task::action m_action ;
+    const void *m_schema ;
+    int (* m_function)(const void *) ;
 };
 
 }

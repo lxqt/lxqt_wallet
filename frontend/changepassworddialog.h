@@ -39,41 +39,44 @@
 #include "../backend/lxqtwallet.h"
 #include "task.h"
 
-namespace Ui {
+namespace Ui
+{
 class changePassWordDialog;
 }
 
-namespace lxqt{
+namespace LxQt
+{
 
-namespace Wallet{
+namespace Wallet
+{
 
 class changePassWordDialog : public QDialog
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	explicit changePassWordDialog( QWidget * parent = 0,const QString& walletName = QString(),const QString& applicationName = QString() ) ;
-	void ShowUI( void ) ;
-	void HideUI( void ) ;
-	void ShowUI_1( void ) ;
-	~changePassWordDialog() ;
+    explicit changePassWordDialog(QWidget *parent = 0, const QString &walletName = QString(), const QString &applicationName = QString()) ;
+    void ShowUI(void) ;
+    void HideUI(void) ;
+    void ShowUI_1(void) ;
+    ~changePassWordDialog() ;
 signals:
-	void password( QString,bool ) ;
-	void walletpassWordChanged( bool ) ;
+    void password(QString, bool) ;
+    void walletpassWordChanged(bool) ;
 private slots:
-	void create( void ) ;
-	void change( void ) ;
-	void cancel( void ) ;
-	void ok( void ) ;
-	void ok_1( void ) ;
-	void taskResult( bool ) ;
+    void create(void) ;
+    void change(void) ;
+    void cancel(void) ;
+    void ok(void) ;
+    void ok_1(void) ;
+    void taskResult(bool) ;
 private:
-	void closeEvent( QCloseEvent * ) ;
-	Ui::changePassWordDialog * m_ui ;
-	lxqt_wallet_t m_wallet ;
-	QString m_walletName ;
-	QString m_applicationName ;
-	QString m_banner ;
-	bool m_walletPassWordChanged ;
+    void closeEvent(QCloseEvent *) ;
+    Ui::changePassWordDialog *m_ui ;
+    lxqt_wallet_t m_wallet ;
+    QString m_walletName ;
+    QString m_applicationName ;
+    QString m_banner ;
+    bool m_walletPassWordChanged ;
 };
 
 }
