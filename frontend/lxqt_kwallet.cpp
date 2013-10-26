@@ -85,7 +85,7 @@ QByteArray LxQt::Wallet::kwallet::readValue(const QString &key)
 {
     QString value ;
     m_kwallet->readPassword(key, value) ;
-    return value.toAscii() ;
+    return value.toLatin1() ;
 }
 
 QVector<LxQt::Wallet::walletKeyValues> LxQt::Wallet::kwallet::readAllKeyValues(void)
@@ -98,7 +98,7 @@ QVector<LxQt::Wallet::walletKeyValues> LxQt::Wallet::kwallet::readAllKeyValues(v
     for (int i = 0 ; i < j ; i++)
     {
         m_kwallet->readPassword(l.at(i), value) ;
-        LxQt::Wallet::walletKeyValues q(l.at(i), value.toAscii()) ;
+	LxQt::Wallet::walletKeyValues q(l.at(i), value.toLatin1()) ;
         p.append(q) ;
     }
     return p ;
