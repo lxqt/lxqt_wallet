@@ -174,14 +174,10 @@ char *_lxqt_wallet_get_wallet_data(lxqt_wallet_t wallet)
     }
 }
 
-inline static void _get_first_header_component(u_int32_t *value, const char *str)
+inline static void  _get_header_components(u_int32_t *first, u_int32_t *second, const char *str)
 {
-    memcpy(value, str, sizeof(u_int32_t)) ;
-}
-
-inline static void  _get_second_header_component(u_int32_t *value, const char *str)
-{
-    memcpy(value, str + sizeof(u_int32_t), sizeof(u_int32_t)) ;
+    memcpy(first, str, sizeof(u_int32_t)) ;
+    memcpy(second, str + sizeof(u_int32_t), sizeof(u_int32_t)) ;
 }
 
 u_int64_t lxqt_wallet_wallet_size(lxqt_wallet_t wallet)
@@ -638,8 +634,7 @@ int lxqt_wallet_read_key_value(lxqt_wallet_t wallet, const char *key, u_int32_t 
         while (i < k)
         {
 
-            _get_first_header_component(&key_len, e) ;
-            _get_second_header_component(&key_value_len, e) ;
+            _get_header_components(&key_len, &key_value_len, e) ;
 
             if (key_len == key_size && memcmp(key, e + NODE_HEADER_SIZE, key_size) == 0)
             {
@@ -690,8 +685,7 @@ int lxqt_wallet_wallet_has_value(lxqt_wallet_t wallet, const char *value, u_int3
         while (i < k)
         {
 
-            _get_first_header_component(&key_len, e) ;
-            _get_second_header_component(&key_value_len, e) ;
+            _get_header_components(&key_len, &key_value_len, e) ;
 
             if (key_value_len == value_size && memcmp(value, e + NODE_HEADER_SIZE + key_len, value_size) == 0)
             {
@@ -782,8 +776,7 @@ int lxqt_wallet_iter_read_value(lxqt_wallet_t wallet, lxqt_wallet_iterator_t *it
     {
         e = wallet->wallet_data + iter->iter_pos ;
 
-        _get_first_header_component(&key_len, e) ;
-        _get_second_header_component(&key_value_len, e) ;
+        _get_header_components(&key_len, &key_value_len, e) ;
 
         iter->entry.key             = e + NODE_HEADER_SIZE ;
         iter->entry.key_size        = key_len ;
@@ -817,8 +810,8 @@ int lxqt_wallet_read_value_at(lxqt_wallet_t wallet, u_int64_t pos, lxqt_wallet_k
         z = e ;
         while (1)
         {
-            _get_first_header_component(&key_len, e) ;
-            _get_second_header_component(&key_value_len, e) ;
+
+            _get_header_components(&key_len, &key_value_len, e) ;
 
             if (k == pos)
             {
@@ -865,8 +858,7 @@ lxqt_wallet_error lxqt_wallet_delete_key(lxqt_wallet_t wallet, const char *key, 
         while (i < k)
         {
 
-            _get_first_header_component(&key_len, e) ;
-            _get_second_header_component(&key_value_len, e) ;
+            _get_header_components(&key_len, &key_value_len, e) ;
 
             if (key_len == key_size && memcmp(key, e + NODE_HEADER_SIZE, key_size) == 0)
             {
