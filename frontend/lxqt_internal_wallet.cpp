@@ -51,12 +51,15 @@ void LxQt::Wallet::internalWallet::taskResult(bool opened)
     emit passwordIsCorrect(opened) ;
     if (opened)
     {
-        /*
-         * comment out this undocumented API that allows an application to know of a password to open a wallet
-         * emit getPassWord( m_password ) ;
-         */
+        emit getPassWord(m_password) ;
         emit walletIsOpen(opened) ;
     }
+}
+
+void LxQt::Wallet::internalWallet::setImage(const QString &image)
+{
+    m_image = image ;
+    this->setWindowIcon(QIcon(image)) ;
 }
 
 bool LxQt::Wallet::internalWallet::openWallet(QString password)
