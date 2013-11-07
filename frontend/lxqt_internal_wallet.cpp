@@ -51,7 +51,7 @@ void LxQt::Wallet::internalWallet::taskResult(bool opened)
     emit passwordIsCorrect(opened) ;
     if (opened)
     {
-        emit getPassWord(m_password) ;
+        //emit getPassWord(m_password) ;
         emit walletIsOpen(opened) ;
     }
 }
