@@ -292,7 +292,7 @@ lxqt_wallet_error lxqt_wallet_create(const char *password, u_int32_t password_le
 
         if (fd == -1)
         {
-            return _exit_create(lxqt_wallet_failed_to_open_file, handle) ;
+            return lxqt_wallet_failed_to_open_file ;
         }
         else
         {

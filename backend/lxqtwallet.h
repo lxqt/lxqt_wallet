@@ -107,6 +107,7 @@ extern "C" {
      * return value will be something like 200 for version 2.0.0
      */
     int lxqt_wallet_library_version(void) ;
+    
     /*
      * delete a key.
      */

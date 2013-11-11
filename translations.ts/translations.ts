@@ -2,6 +2,62 @@
 <!DOCTYPE TS>
 <TS version="2.0">
 <context>
+    <name>LxQt::Wallet::changePassWordDialog</name>
+    <message>
+        <location filename="../frontend/changepassworddialog.cpp" line="73"/>
+        <source>Create a new wallet</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../frontend/changepassworddialog.cpp" line="75"/>
+        <source>Create</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../frontend/changepassworddialog.cpp" line="100"/>
+        <source>Passwords do not match</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../frontend/changepassworddialog.cpp" line="139"/>
+        <source>New passwords do not match</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../frontend/changepassworddialog.cpp" line="203"/>
+        <source>Wallet password could not be changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../frontend/changepassworddialog.cpp" line="212"/>
+        <source>Wallet could not be opened with the presented key</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>LxQt::Wallet::password_dialog</name>
+    <message>
+        <location filename="../frontend/password_dialog.cpp" line="72"/>
+        <source>Yes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../frontend/password_dialog.cpp" line="73"/>
+        <source>No</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../frontend/password_dialog.cpp" line="82"/>
+        <source>wallet could not be opened with the presented key</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../frontend/password_dialog.cpp" line="139"/>
+        <source>Wallet could not be opened with the presented key</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>MainWindow</name>
     <message>
         <location filename="../../../../src/build-lxde-wallet/mainwindow.ui" line="14"/>
@@ -68,62 +124,6 @@ p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;An application &apos;&lt;span style=&quot; font-weight:600;&quot;&gt;%1&lt;/span&gt;&apos; has made a request for a password of its wallet &apos;&lt;span style=&quot; font-weight:600;&quot;&gt;%2&lt;/span&gt;&apos; to be changed&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>lxqt::Wallet::changePassWordDialog</name>
-    <message>
-        <location filename="../frontend/changepassworddialog.cpp" line="69"/>
-        <source>Create a new wallet</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../frontend/changepassworddialog.cpp" line="71"/>
-        <source>Create</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../frontend/changepassworddialog.cpp" line="96"/>
-        <source>Passwords do not match</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../frontend/changepassworddialog.cpp" line="135"/>
-        <source>New passwords do not match</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../frontend/changepassworddialog.cpp" line="199"/>
-        <source>Wallet password could not be changed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../frontend/changepassworddialog.cpp" line="208"/>
-        <source>Wallet could not be opened with the presented key</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>lxqt::Wallet::password_dialog</name>
-    <message>
-        <location filename="../frontend/password_dialog.cpp" line="68"/>
-        <source>Yes</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../frontend/password_dialog.cpp" line="69"/>
-        <source>No</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../frontend/password_dialog.cpp" line="78"/>
-        <source>wallet could not be opened with the presented key</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../frontend/password_dialog.cpp" line="135"/>
-        <source>Wallet could not be opened with the presented key</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
