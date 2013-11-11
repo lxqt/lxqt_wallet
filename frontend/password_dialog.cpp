@@ -51,6 +51,26 @@ LxQt::Wallet::password_dialog::password_dialog(QWidget *parent) : QDialog(parent
     m_ui->pushButtonOK->setVisible(false) ;
 
     m_closeUIOnKeySend = false ;
+
+    this->installEventFilter(this) ;
+}
+
+bool LxQt::Wallet::password_dialog::eventFilter(QObject *watched, QEvent *event)
+{
+    if (watched == this)
+    {
+        if (event->type() == QEvent::KeyPress)
+        {
+            QKeyEvent *keyEvent = static_cast< QKeyEvent * >(event) ;
+            if (keyEvent->key() == Qt::Key_Escape)
+            {
+                this->HideUI() ;
+                return true ;
+            }
+        }
+    }
+
+    return false ;
 }
 
 void LxQt::Wallet::password_dialog::ShowUI(const QString &walletName, const QString &applicationName)
@@ -192,6 +212,7 @@ void LxQt::Wallet::password_dialog::pbOK_2()
 
 void LxQt::Wallet::password_dialog::HideUI()
 {
+    this->hide() ;
     this->deleteLater() ;
 }
 

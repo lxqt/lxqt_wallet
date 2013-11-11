@@ -51,6 +51,27 @@ LxQt::Wallet::changePassWordDialog::changePassWordDialog(QWidget *parent, const 
     m_ui->textEdit_2->setVisible(false) ;
 
     m_walletPassWordChanged = false ;
+
+    this->installEventFilter(this) ;
+}
+
+
+bool LxQt::Wallet::changePassWordDialog::eventFilter(QObject *watched, QEvent *event)
+{
+    if (watched == this)
+    {
+        if (event->type() == QEvent::KeyPress)
+        {
+            QKeyEvent *keyEvent = static_cast< QKeyEvent * >(event) ;
+            if (keyEvent->key() == Qt::Key_Escape)
+            {
+                this->HideUI() ;
+                return true ;
+            }
+        }
+    }
+
+    return false ;
 }
 
 void LxQt::Wallet::changePassWordDialog::ShowUI()
