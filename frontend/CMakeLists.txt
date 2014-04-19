@@ -29,7 +29,7 @@ if(QT5)
 
 	set(CMAKE_INCLUDE_CURRENT_DIR ON)
 	include_directories(${Qt5Widgets_INCLUDE_DIRS})
-	
+
 	add_definitions(${Qt5Widgets_DEFINITIONS})
 else()
 	find_package(Qt4 REQUIRED)
@@ -38,7 +38,7 @@ else()
 	add_definitions(-I${QT_HEADERS_DIR})
 
 	INCLUDE(${QT_USE_FILE})
-	
+
 	INCLUDE(${QT_USE_FILE})
 endif()
 
@@ -84,23 +84,19 @@ else()
 				# some distributions do not have libkwalletbackend.so for reasons i currently do not know
 				# look for libkwalletbackend.sp.4 when the above happen
 				find_library(LIBKWALLETBACKEND libkwalletbackend.so.4)
-				file(APPEND  ${PROJECT_BINARY_DIR}/storage_manager.h "\n#define HAS_KWALLET_SUPPORT 0\n")
-				SET(KWALLET_SUPPORT "false")
-			else()
-				SET(KWALLET_SUPPORT "true")
-				file(APPEND  ${PROJECT_BINARY_DIR}/storage_manager.h "\n#define HAS_KWALLET_SUPPORT 1\n")
-			endif()
-
-			if(NOT LIBKWALLETBACKEND)
-				SET(KWALLET_SUPPORT "false")
-				file(APPEND  ${PROJECT_BINARY_DIR}/storage_manager.h "\n#define HAS_KWALLET_SUPPORT 0\n")
-				#message(FATAL_ERROR "could not find libkwalletbackend.so or libkwalletbackend.so.4,please make sure you have kwallet development libraries installed and try again")
+				if(NOT LIBKWALLETBACKEND)
+					file(APPEND  ${PROJECT_BINARY_DIR}/storage_manager.h "\n#define HAS_KWALLET_SUPPORT 0\n")
+					SET(KWALLET_SUPPORT "false")
+				else()
+					SET(KWALLET_SUPPORT "true")
+					file(APPEND  ${PROJECT_BINARY_DIR}/storage_manager.h "\n#define HAS_KWALLET_SUPPORT 1\n")
+				endif()
 			else()
 				SET(KWALLET_SUPPORT "true")
 				file(APPEND  ${PROJECT_BINARY_DIR}/storage_manager.h "\n#define HAS_KWALLET_SUPPORT 1\n")
 			endif()
 		endif()
-	
+
 		find_library(LIBKDEUI libkdeui.so)
 		if(NOT LIBKDEUI)
 			# adding this one just in case the same case as above happen
@@ -226,7 +222,7 @@ else()
 endif()
 
 else()
-	
+
 Qt4_WRAP_UI(UI ${UI_FILES})
 
 if(KDE_SUPPORT)
@@ -286,13 +282,13 @@ if(BUILD_SHARED)
 	install(TARGETS lxqtwallet RUNTIME LIBRARY DESTINATION "${LIB_PATH}")
 
 	install(FILES lxqt_wallet.h DESTINATION "${CMAKE_INSTALL_PREFIX}/include/lxqt")
-	
+
 	file( WRITE ${PROJECT_BINARY_DIR}/lxqtwallet.pc
 "prefix=${CMAKE_INSTALL_PREFIX}
 exec_prefix=${CMAKE_INSTALL_PREFIX}
 libdir=${LIB_PATH}
 includedir=${CMAKE_INSTALL_PREFIX}/include/lxqt
-	
+
 Name: lxqt_wallet
 Description: lxqt secure storage system
 Version: ${LIBRARY_VERSION}
