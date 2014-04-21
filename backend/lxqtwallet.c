@@ -222,7 +222,7 @@ static lxqt_wallet_error lxqt_wallet_create_1(gcry_cipher_hd_t *h, const char *p
 
     gcry_cipher_hd_t handle ;
 
-    if (gcry_control(GCRYCTL_INITIALIZATION_FINISHED_P) != 0)
+    if (gcry_control(GCRYCTL_INITIALIZATION_FINISHED_P) == 0)
     {
         gcry_check_version(NULL) ;
         gcry_control(GCRYCTL_INITIALIZATION_FINISHED, 0) ;
@@ -506,7 +506,7 @@ static lxqt_wallet_error _lxqt_wallet_open_0(gcry_cipher_hd_t *h, struct lxqt_wa
     gcry_cipher_hd_t handle ;
     char iv[ IV_SIZE ] ;
 
-    if (gcry_control(GCRYCTL_INITIALIZATION_FINISHED_P) != 0)
+    if (gcry_control(GCRYCTL_INITIALIZATION_FINISHED_P) == 0)
     {
         gcry_check_version(NULL) ;
         gcry_control(GCRYCTL_INITIALIZATION_FINISHED, 0) ;
