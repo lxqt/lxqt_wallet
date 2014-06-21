@@ -3,6 +3,8 @@ cmake_policy(SET CMP0017 OLD)
 
 INCLUDE(FindPkgConfig)
 
+add_definitions( -Wno-unused-result )
+
 find_file( GCRYPT_INCLUDE_FILE gcrypt.h )
 
 find_library( GCRYPT_LIBRARY gcrypt )
@@ -20,7 +22,7 @@ else()
 endif()
 
 add_library( lxqtwallet-backend STATIC lxqtwallet.c )
-set_target_properties( lxqtwallet-backend PROPERTIES COMPILE_FLAGS "-D_FILE_OFFSET_BITS=64 -Wall -s -fPIC -pedantic " ) 
+set_target_properties( lxqtwallet-backend PROPERTIES COMPILE_FLAGS "-D_FILE_OFFSET_BITS=64 -Wall -s -fPIC -pedantic " )
 set_target_properties( lxqtwallet-backend PROPERTIES LINK_FLAGS "-pie" )
 TARGET_LINK_LIBRARIES( lxqtwallet-backend "${GCRYPT_LIBRARY}" )
 
