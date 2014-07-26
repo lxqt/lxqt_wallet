@@ -70,7 +70,6 @@ private slots:
     void cancel(void) ;
     void ok(void) ;
     void ok_1(void) ;
-    void taskResult(bool) ;
 private:
     void closeEvent(QCloseEvent *) ;
     bool eventFilter(QObject *watched, QEvent *event) ;

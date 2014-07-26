@@ -203,7 +203,7 @@ extern "C" {
      * show progress in percentage.If the return value of the function is non zero,the process will terminate.
      */
     lxqt_wallet_error lxqt_wallet_create_encrypted_file(const char *password, u_int32_t password_length,
-            const char *source, const char *destination, int(*function)(int)) ;
+            const char *source, const char *destination, int(*function)(int, void *), void *) ;
 
     /*
      * get an encrypted file given by argument "source" and create an un encrypted version of the file given by argument "destination" using
@@ -213,7 +213,7 @@ extern "C" {
      * show progress in percentage.If the return value of the function is non zero,the process will terminate.
      */
     lxqt_wallet_error lxqt_wallet_create_decrypted_file(const char *password, u_int32_t password_length,
-            const char *source, const char *destination, int(*function)(int)) ;
+            const char *source, const char *destination, int(*function)(int, void *), void *) ;
     /*
      * undocumented API
      */

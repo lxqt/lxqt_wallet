@@ -60,7 +60,8 @@ public:
     internalWallet() ;
     ~internalWallet() ;
     bool addKey(const QString &key, const QByteArray &value) ;
-    void open(const QString &walletName, const QString &applicationName, const QString &password = QString()) ;
+    void open(const QString &walletName, const QString &applicationName,
+              const QString &password = QString(), const QString &displayApplicationName = QString()) ;
     QByteArray readValue(const QString &key) ;
     QVector<LxQt::Wallet::walletKeyValues> readAllKeyValues(void) ;
     QStringList readAllKeys(void) ;
@@ -85,14 +86,14 @@ signals:
 private slots:
     bool openWallet(QString) ;
     void cancelled(void) ;
-    void taskResult(bool) ;
-    void taskResult_1(bool) ;
     void password(QString, bool) ;
 private:
+    void taskResult(bool) ;
     bool openWallet(void) ;
     lxqt_wallet_t m_wallet ;
     QString m_walletName ;
     QString m_applicationName ;
+    QString m_displayApplicationName ;
     QString m_password ;
     QString m_image ;
     QWidget *m_interfaceObject ;

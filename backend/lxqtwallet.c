@@ -175,6 +175,16 @@ char *_lxqt_wallet_get_wallet_data(lxqt_wallet_t wallet)
     }
 }
 
+static int _failed(gcry_error_t r)
+{
+    return r != GPG_ERR_NO_ERROR ;
+}
+
+static int _passed(gcry_error_t r)
+{
+    return r == GPG_ERR_NO_ERROR ;
+}
+
 inline static void  _get_header_components(u_int32_t *first, u_int32_t *second, const char *str)
 {
     memcpy(first, str, sizeof(u_int32_t)) ;
@@ -230,7 +240,7 @@ static lxqt_wallet_error lxqt_wallet_create_1(gcry_cipher_hd_t *h, const char *p
 
     r = gcry_cipher_open(h, GCRY_CIPHER_AES256, GCRY_CIPHER_MODE_CBC, 0) ;
 
-    if (r != GPG_ERR_NO_ERROR)
+    if (_failed(r))
     {
         return lxqt_wallet_gcry_cipher_open_failed ;
     }
@@ -241,14 +251,14 @@ static lxqt_wallet_error lxqt_wallet_create_1(gcry_cipher_hd_t *h, const char *p
 
     r = _create_key(salt, key, password, password_length) ;
 
-    if (r != GPG_ERR_NO_ERROR)
+    if (_failed(r))
     {
         return lxqt_wallet_failed_to_create_key_hash ;
     }
 
     r = gcry_cipher_setkey(handle, key, PASSWORD_SIZE) ;
 
-    if (r != GPG_ERR_NO_ERROR)
+    if (_failed(r))
     {
         return lxqt_wallet_gcry_cipher_setkey_failed ;
     }
@@ -257,7 +267,7 @@ static lxqt_wallet_error lxqt_wallet_create_1(gcry_cipher_hd_t *h, const char *p
 
     r = gcry_cipher_setiv(handle, iv, IV_SIZE) ;
 
-    if (r != GPG_ERR_NO_ERROR)
+    if (_failed(r))
     {
         return lxqt_wallet_gcry_cipher_setiv_failed ;
     }
@@ -291,7 +301,7 @@ lxqt_wallet_error lxqt_wallet_create(const char *password, u_int32_t password_le
 
     r = lxqt_wallet_create_1(&handle, password, password_length, key, iv, salt) ;
 
-    if (r != GPG_ERR_NO_ERROR)
+    if (_failed(r))
     {
         return _exit_create(lxqt_wallet_gcry_cipher_encrypt_failed, handle) ;
     }
@@ -337,7 +347,7 @@ lxqt_wallet_error lxqt_wallet_create(const char *password, u_int32_t password_le
 }
 
 lxqt_wallet_error lxqt_wallet_create_encrypted_file(const char *password, u_int32_t password_length,
-        const char *source, const char *destination, int(*function)(int))
+        const char *source, const char *destination, int(*function)(int, void *), void *v)
 {
     gcry_error_t r ;
     int fd_dest ;
@@ -368,7 +378,7 @@ lxqt_wallet_error lxqt_wallet_create_encrypted_file(const char *password, u_int3
 
     r = lxqt_wallet_create_1(&handle, password, password_length, key, iv, salt) ;
 
-    if (r != GPG_ERR_NO_ERROR)
+    if (_failed(r))
     {
         return _exit_create(lxqt_wallet_gcry_cipher_encrypt_failed, handle) ;
     }
@@ -411,6 +421,7 @@ lxqt_wallet_error lxqt_wallet_create_encrypted_file(const char *password, u_int3
         i = 0 ;
         j = 0 ;
         l = 0 ;
+
         while (1)
         {
             k = read(fd_src, file_buffer, FILE_BLOCK_SIZE) ;
@@ -428,20 +439,16 @@ lxqt_wallet_error lxqt_wallet_create_encrypted_file(const char *password, u_int3
             j = (i * 100 / size) ;
             if (j > l)
             {
-                if (function)
+                if (function(j, v))
                 {
-                    if (function(j))
-                    {
-                        break ;
-                    }
+                    break ;
                 }
                 l = j ;
             }
         }
-        if (function)
-        {
-            function(100) ;
-        }
+
+        function(100, v) ;
+
         close(fd_dest) ;
         close(fd_src) ;
         return  _exit_create(lxqt_wallet_no_error, handle) ;
@@ -460,7 +467,7 @@ lxqt_wallet_error lxqt_wallet_change_wallet_password(lxqt_wallet_t wallet, const
     else
     {
         r = _create_key(wallet->salt, key, new_key, new_key_size) ;
-        if (r != GPG_ERR_NO_ERROR)
+        if (_failed(r))
         {
             return lxqt_wallet_failed_to_create_key_hash ;
         }
@@ -486,14 +493,8 @@ static lxqt_wallet_error _exit_open(lxqt_wallet_error st,
     }
     if (w != NULL)
     {
-        if (w->wallet_name != NULL)
-        {
-            free(w->wallet_name) ;
-        }
-        if (w->application_name != NULL)
-        {
-            free(w->application_name) ;
-        }
+        free(w->wallet_name) ;
+        free(w->application_name) ;
         free(w) ;
     }
     return st ;
@@ -516,7 +517,7 @@ static lxqt_wallet_error _lxqt_wallet_open_0(gcry_cipher_hd_t *h, struct lxqt_wa
 
     handle = *h ;
 
-    if (r != GPG_ERR_NO_ERROR)
+    if (_failed(r))
     {
         return lxqt_wallet_gcry_cipher_open_failed ;
     }
@@ -525,14 +526,14 @@ static lxqt_wallet_error _lxqt_wallet_open_0(gcry_cipher_hd_t *h, struct lxqt_wa
 
     r = _create_key(w->salt, w->key, password, password_length) ;
 
-    if (r != GPG_ERR_NO_ERROR)
+    if (_failed(r))
     {
         return lxqt_wallet_failed_to_create_key_hash ;
     }
 
     r = gcry_cipher_setkey(handle, w->key, PASSWORD_SIZE) ;
 
-    if (r != GPG_ERR_NO_ERROR)
+    if (_failed(r))
     {
         return lxqt_wallet_gcry_cipher_setkey_failed ;
     }
@@ -541,7 +542,7 @@ static lxqt_wallet_error _lxqt_wallet_open_0(gcry_cipher_hd_t *h, struct lxqt_wa
 
     r = gcry_cipher_setiv(handle, iv, IV_SIZE) ;
 
-    if (r != GPG_ERR_NO_ERROR)
+    if (_failed(r))
     {
         return lxqt_wallet_gcry_cipher_setiv_failed ;
     }
@@ -553,7 +554,7 @@ static lxqt_wallet_error _lxqt_wallet_open_0(gcry_cipher_hd_t *h, struct lxqt_wa
 }
 
 lxqt_wallet_error lxqt_wallet_create_decrypted_file(const char *password, u_int32_t password_length,
-        const char *source, const char *destination, int(*function)(int))
+        const char *source, const char *destination, int(*function)(int, void *), void *v)
 {
     gcry_error_t r ;
 
@@ -603,7 +604,7 @@ lxqt_wallet_error lxqt_wallet_create_decrypted_file(const char *password, u_int3
 
     r = _lxqt_wallet_open_0(&handle, w, password, password_length, fd_src, buffer) ;
 
-    if (r != GPG_ERR_NO_ERROR)
+    if (_failed(r))
     {
         close(fd_src) ;
         return _exit_open(lxqt_wallet_failed_to_open_file, w, handle, -1) ;
@@ -637,12 +638,9 @@ lxqt_wallet_error lxqt_wallet_create_decrypted_file(const char *password, u_int3
             j = (i * 100 / size) ;
             if (j > l)
             {
-                if (function)
+                if (function(j, v))
                 {
-                    if (function(j))
-                    {
-                        break ;
-                    }
+                    break ;
                 }
                 l = j ;
             }
@@ -659,10 +657,9 @@ lxqt_wallet_error lxqt_wallet_create_decrypted_file(const char *password, u_int3
 
         close(fd_src) ;
         close(fd_dest) ;
-        if (function)
-        {
-            function(100) ;
-        }
+
+        function(100, v) ;
+
         return _exit_open(lxqt_wallet_no_error, w, handle, -1) ;
     }
     else
@@ -733,7 +730,7 @@ static lxqt_wallet_error _lxqt_wallet_open(const char *password, u_int32_t passw
 
     r = _lxqt_wallet_open_0(&handle, w, password, password_length, fd, buffer) ;
 
-    if (r != GPG_ERR_NO_ERROR)
+    if (_failed(r))
     {
         return _exit_open(lxqt_wallet_gcry_cipher_decrypt_failed, w, handle, fd) ;
     }
@@ -803,7 +800,7 @@ lxqt_wallet_error lxqt_wallet_open(lxqt_wallet_t *wallet, const char *password, 
                     mlock(e, len) ;
                     read(fd, e, len) ;
                     r = gcry_cipher_decrypt(handle, e, len, NULL, 0) ;
-                    if (r == GPG_ERR_NO_ERROR)
+                    if (_passed(r))
                     {
                         w->wallet_data = e ;
                         *wallet = w ;
@@ -1223,14 +1220,14 @@ lxqt_wallet_error lxqt_wallet_close(lxqt_wallet_t *w)
 
     r = gcry_cipher_open(&handle, GCRY_CIPHER_AES256, GCRY_CIPHER_MODE_CBC, 0) ;
 
-    if (r != GPG_ERR_NO_ERROR)
+    if (_failed(r))
     {
         return _close_exit(lxqt_wallet_gcry_cipher_open_failed, w, 0) ;
     }
 
     r = gcry_cipher_setkey(handle, wallet->key, PASSWORD_SIZE) ;
 
-    if (r != GPG_ERR_NO_ERROR)
+    if (_failed(r))
     {
         return _close_exit(lxqt_wallet_gcry_cipher_setkey_failed, w, handle) ;
     }
@@ -1239,7 +1236,7 @@ lxqt_wallet_error lxqt_wallet_close(lxqt_wallet_t *w)
 
     r = gcry_cipher_setiv(handle, iv, IV_SIZE) ;
 
-    if (r != GPG_ERR_NO_ERROR)
+    if (_failed(r))
     {
         return _close_exit(lxqt_wallet_gcry_cipher_setiv_failed, w, handle) ;
     }
@@ -1251,7 +1248,7 @@ lxqt_wallet_error lxqt_wallet_close(lxqt_wallet_t *w)
 
     r = gcry_cipher_encrypt(handle, buffer, MAGIC_STRING_BUFFER_SIZE + BLOCK_SIZE, NULL, 0) ;
 
-    if (r != GPG_ERR_NO_ERROR)
+    if (_failed(r))
     {
         return _close_exit(lxqt_wallet_gcry_cipher_encrypt_failed, w, handle) ;
     }
@@ -1291,7 +1288,7 @@ lxqt_wallet_error lxqt_wallet_close(lxqt_wallet_t *w)
         {
             wallet->wallet_data = e ;
             r = gcry_cipher_encrypt(handle, wallet->wallet_data, k, NULL, 0) ;
-            if (r != GPG_ERR_NO_ERROR)
+            if (_failed(r))
             {
                 return _close_exit(lxqt_wallet_gcry_cipher_encrypt_failed, w, handle) ;
             }
@@ -1433,7 +1430,7 @@ static gcry_error_t _create_temp_key(char *output_key, u_int32_t output_key_size
 
     gcry_error_t r = gcry_md_open(&md, GCRY_MD_SHA256, GCRY_MD_FLAG_SECURE) ;
 
-    if (r == GPG_ERR_NO_ERROR)
+    if (_passed(r))
     {
         gcry_md_write(md, input_key, input_key_length) ;
         gcry_md_final(md) ;
@@ -1466,7 +1463,7 @@ static gcry_error_t _create_key(const char salt[ SALT_SIZE ],
     char temp_key[ PASSWORD_SIZE ] ;
     gcry_error_t r = _create_temp_key(temp_key, PASSWORD_SIZE, input_key, input_key_length) ;
 
-    if (r == GPG_ERR_NO_ERROR)
+    if (_passed(r))
     {
         return gcry_kdf_derive(temp_key, PASSWORD_SIZE, GCRY_KDF_PBKDF2, GCRY_MD_SHA256,
                                salt, SALT_SIZE, PBKDF2_ITERATIONS, PASSWORD_SIZE, output_key) ;

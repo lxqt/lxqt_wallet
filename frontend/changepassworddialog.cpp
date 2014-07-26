@@ -153,17 +153,54 @@ void LxQt::Wallet::changePassWordDialog::change()
 
     if (m_ui->lineEditNewPassWord->text() == m_ui->lineEditNewPassWord_2->text())
     {
+
         QString password = m_ui->lineEditCurrentPassWord->text() ;
-        LxQt::Wallet::Task *t = new LxQt::Wallet::Task(&m_wallet, password, m_walletName, m_applicationName) ;
-        if (t)
+
+        auto _a = [ &, password ]()
         {
-            connect(t, SIGNAL(walletOpened(bool)), this, SLOT(taskResult(bool))) ;
-            t->start(LxQt::Wallet::Task::openInternal) ;
-        }
-        else
+
+            lxqt_wallet_error r = lxqt_wallet_open(&m_wallet, password.toLatin1().constData(),
+                                                   password.size(), m_walletName.toLatin1().constData(),
+                                                   m_applicationName.toLatin1().constData()) ;
+            return r == lxqt_wallet_no_error ;
+        } ;
+
+        auto _b = [&](bool opened)
         {
-            this->taskResult(false) ;
-        }
+
+            if (opened)
+            {
+                QString new_password = m_ui->lineEditNewPassWord->text() ;
+                lxqt_wallet_error r = lxqt_wallet_change_wallet_password(m_wallet, new_password.toLatin1().constData(), new_password.size()) ;
+                if (r == lxqt_wallet_no_error)
+                {
+                    m_walletPassWordChanged = true ;
+                    this->HideUI() ;
+                }
+                else
+                {
+                    m_ui->pushButtonChange->setEnabled(true) ;
+                    m_ui->pushButtonCancel->setEnabled(true) ;
+                    m_ui->label->setText(tr("Wallet password could not be changed")) ;
+                    m_ui->pushButtonCancel->setVisible(false) ;
+                    m_ui->pushButtonChange->setVisible(false) ;
+                    m_ui->pushButtonOK->setVisible(true) ;
+                    m_ui->pushButtonOK->setFocus() ;
+                }
+            }
+            else
+            {
+                m_ui->pushButtonChange->setEnabled(true) ;
+                m_ui->pushButtonCancel->setEnabled(true) ;
+                m_ui->label->setText(tr("Wallet could not be opened with the presented key")) ;
+                m_ui->pushButtonCancel->setVisible(false) ;
+                m_ui->pushButtonChange->setVisible(false) ;
+                m_ui->pushButtonOK->setVisible(true) ;
+                m_ui->pushButtonOK->setFocus() ;
+            }
+        } ;
+
+        LxQt::Wallet::Task::run< bool >(_a).then(_b) ;
     }
     else
     {
@@ -218,40 +255,6 @@ void LxQt::Wallet::changePassWordDialog::ok_1()
     m_ui->pushButtonCancel->setEnabled(true) ;
     m_ui->pushButtonChange->setEnabled(true) ;
     m_ui->label->setText(m_banner) ;
-}
-
-void LxQt::Wallet::changePassWordDialog::taskResult(bool opened)
-{
-    if (opened)
-    {
-        QString new_password = m_ui->lineEditNewPassWord->text() ;
-        lxqt_wallet_error r = lxqt_wallet_change_wallet_password(m_wallet, new_password.toLatin1().constData(), new_password.size()) ;
-        if (r == lxqt_wallet_no_error)
-        {
-            m_walletPassWordChanged = true ;
-            this->HideUI() ;
-        }
-        else
-        {
-            m_ui->pushButtonChange->setEnabled(true) ;
-            m_ui->pushButtonCancel->setEnabled(true) ;
-            m_ui->label->setText(tr("Wallet password could not be changed")) ;
-            m_ui->pushButtonCancel->setVisible(false) ;
-            m_ui->pushButtonChange->setVisible(false) ;
-            m_ui->pushButtonOK->setVisible(true) ;
-            m_ui->pushButtonOK->setFocus() ;
-        }
-    }
-    else
-    {
-        m_ui->pushButtonChange->setEnabled(true) ;
-        m_ui->pushButtonCancel->setEnabled(true) ;
-        m_ui->label->setText(tr("Wallet could not be opened with the presented key")) ;
-        m_ui->pushButtonCancel->setVisible(false) ;
-        m_ui->pushButtonChange->setVisible(false) ;
-        m_ui->pushButtonOK->setVisible(true) ;
-        m_ui->pushButtonOK->setFocus() ;
-    }
 }
 
 void LxQt::Wallet::changePassWordDialog::closeEvent(QCloseEvent *e)
