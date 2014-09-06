@@ -121,13 +121,11 @@ void LxQt::Wallet::secretService::open(const QString &walletName, const QString 
 
     auto _a = [&]()
     {
-
         return lxqt_secret_service_wallet_is_open(m_schema) ;
     } ;
 
     auto _b = [&](bool opened)
     {
-
         this->walletOpened(opened) ;
     } ;
 

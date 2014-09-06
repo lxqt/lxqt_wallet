@@ -246,7 +246,7 @@ char **lxqt_secret_get_all_keys(const void *p, const void *q, int *count)
                 e = secret_password_lookup_sync(keyID, NULL, NULL, "integer", k, NULL) ;
                 if (e != NULL)
                 {
-                    c[ i ] =  e ;
+                    c[i] =  e ;
                     *count += 1 ;
                     i++ ;
                     k++ ;

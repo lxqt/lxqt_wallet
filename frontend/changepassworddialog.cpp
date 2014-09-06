@@ -153,12 +153,10 @@ void LxQt::Wallet::changePassWordDialog::change()
 
     if (m_ui->lineEditNewPassWord->text() == m_ui->lineEditNewPassWord_2->text())
     {
-
         QString password = m_ui->lineEditCurrentPassWord->text() ;
 
         auto _a = [ &, password ]()
         {
-
             lxqt_wallet_error r = lxqt_wallet_open(&m_wallet, password.toLatin1().constData(),
                                                    password.size(), m_walletName.toLatin1().constData(),
                                                    m_applicationName.toLatin1().constData()) ;
@@ -167,7 +165,6 @@ void LxQt::Wallet::changePassWordDialog::change()
 
         auto _b = [&](bool opened)
         {
-
             if (opened)
             {
                 QString new_password = m_ui->lineEditNewPassWord->text() ;
@@ -200,7 +197,7 @@ void LxQt::Wallet::changePassWordDialog::change()
             }
         } ;
 
-        LxQt::Wallet::Task::run< bool >(_a).then(_b) ;
+        LxQt::Wallet::Task::run<bool>(_a).then(_b) ;
     }
     else
     {

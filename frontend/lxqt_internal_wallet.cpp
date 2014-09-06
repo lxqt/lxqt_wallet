@@ -58,7 +58,6 @@ bool LxQt::Wallet::internalWallet::openWallet(QString password)
 
     auto _a = [ &, password ]()
     {
-
         lxqt_wallet_error r = lxqt_wallet_open(&m_wallet, password.toLatin1().constData(),
                                                password.size(), m_walletName.toLatin1().constData(),
                                                m_applicationName.toLatin1().constData()) ;
@@ -67,7 +66,6 @@ bool LxQt::Wallet::internalWallet::openWallet(QString password)
 
     auto _b = [&](bool opened)
     {
-
         this->taskResult(opened) ;
     } ;
 
@@ -95,12 +93,10 @@ void LxQt::Wallet::internalWallet::password(QString password, bool create)
 {
     if (create)
     {
-
         m_password = password ;
 
         auto _a = [&]()
         {
-
             lxqt_wallet_error r = lxqt_wallet_create(m_password.toLatin1().constData(), m_password.size(),
                                   m_walletName.toLatin1().constData(),
                                   m_applicationName.toLatin1().constData()) ;
@@ -109,7 +105,6 @@ void LxQt::Wallet::internalWallet::password(QString password, bool create)
 
         auto _b = [&](bool created)
         {
-
             this->taskResult(created) ;
 
             if (created)
@@ -146,7 +141,6 @@ void LxQt::Wallet::internalWallet::open(const QString &walletName, const QString
 
     if (LxQt::Wallet::walletExists(LxQt::Wallet::internalBackEnd, m_walletName, m_applicationName))
     {
-
         if (m_password.isEmpty())
         {
             /*
@@ -155,7 +149,6 @@ void LxQt::Wallet::internalWallet::open(const QString &walletName, const QString
              */
             auto _a = [&]()
             {
-
                 lxqt_wallet_error r = lxqt_wallet_open(&m_wallet, m_password.toLatin1().constData(),
                                                        m_password.size(),
                                                        m_walletName.toLatin1().constData(),
@@ -165,7 +158,6 @@ void LxQt::Wallet::internalWallet::open(const QString &walletName, const QString
 
             auto _b = [&](bool opened)
             {
-
                 if (opened)
                 {
                     this->taskResult(opened) ;
