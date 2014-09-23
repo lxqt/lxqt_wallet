@@ -18,6 +18,8 @@ cmake -DCMAKE_INSTALL_PREFIX=`kde4-config --prefix`  -DCMAKE_BUILD_TYPE=RELEASE 
 make
 make install
 
-To build without KDE/KWALLET support,pass "-DNOKDESUPPORT=true" as one of the arguments in the third stage above
+To build without KDE/KWALLET support,pass "-DNOKDESUPPORT=true" as one of the arguments at the third stage above
 
-To build without gnome/secret_service support,pass "-DNOSECRETSUPPORT=true" as one of the arguments in the third stage above
+To build without gnome/secret_service support,pass "-DNOSECRETSUPPORT=true" as one of the arguments at the third stage above
+
+The default option if to build for Qt4,to build for Qt5,pass "QT5=true" option at the third stage above.
