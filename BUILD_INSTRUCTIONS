@@ -14,7 +14,7 @@ Build instructions are below:
 
 mkdir build
 cd build
-cmake -DCMAKE_INSTALL_PREFIX=`kde4-config --prefix`  -DCMAKE_BUILD_TYPE=RELEASE ..
+cmake -DCMAKE_INSTALL_PREFIX=/usr  -DCMAKE_BUILD_TYPE=RELEASE ..
 make
 make install
 
