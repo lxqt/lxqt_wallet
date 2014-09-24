@@ -302,5 +302,11 @@ Libs: -L${LIB_PATH} -lQtGui -lQtCore -lgcrypt
 Cflags: -I${CMAKE_INSTALL_PREFIX}/include/lxqt
 \n")
 
-	install(FILES ${PROJECT_BINARY_DIR}/lxqtwallet.pc DESTINATION ${LIB_PATH}/pkgconfig/ PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ )
+	install( FILES ${PROJECT_BINARY_DIR}/lxqtwallet.pc DESTINATION ${LIB_PATH}/pkgconfig/ PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ )
+	install( FILES ../translations.qm/german_DE.qm     DESTINATION share/qCheckGMail/lxqt_wallet/translations.qm/ )
+	install( FILES ../translations.qm/greek_GR.qm      DESTINATION share/qCheckGMail/lxqt_wallet/translations.qm/ )
+	install( FILES ../translations.qm/dutch_NL.qm      DESTINATION share/qCheckGMail/lxqt_wallet/translations.qm/ )
+	install( FILES ../translations.qm/french_FR.qm     DESTINATION share/qCheckGMail/lxqt_wallet/translations.qm/ )
+	install( FILES ../translations.qm/spanish_ES.qm    DESTINATION share/qCheckGMail/lxqt_wallet/translations.qm/ )
 endif()
+
