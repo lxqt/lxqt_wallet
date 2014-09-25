@@ -53,7 +53,7 @@ static void _help( void )
 
 	help1 = gettext( "\n\n\
 This is a simple tool for secure storage of files in a wallet.Added files to the wallet\n\
-will be stored in a secured file located at \"~/.config/lxqt/wallets/zuluSafe/YYY.lwt\" where YYY is\n\
+will be stored in a secured file located at \"~/.config/lxqt/wallets/lxqt_wallet-cli/YYY.lwt\" where YYY is\n\
 wallet name\n\n" ) ;
 
 	help2 = gettext( "\
