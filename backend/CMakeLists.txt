@@ -27,3 +27,10 @@ set_target_properties( lxqtwallet-backend PROPERTIES LINK_FLAGS "-pie" )
 TARGET_LINK_LIBRARIES( lxqtwallet-backend "${GCRYPT_LIBRARY}" )
 
 install(FILES lxqtwallet.h DESTINATION "${CMAKE_INSTALL_PREFIX}/include/lxqt")
+
+add_executable( lxqt_wallet-cli lxqt_wallet-cli.c lxqtwallet.c )
+set_target_properties( lxqt_wallet-cli PROPERTIES COMPILE_FLAGS "-D_FILE_OFFSET_BITS=64 -Wextra -Wall -s -fPIE -pthread  -pedantic " )
+set_target_properties( lxqt_wallet-cli PROPERTIES LINK_FLAGS "-pie" )
+TARGET_LINK_LIBRARIES( lxqt_wallet-cli "${GCRYPT_LIBRARY}" )
+
+install(TARGETS lxqt_wallet-cli RUNTIME DESTINATION bin PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE )
