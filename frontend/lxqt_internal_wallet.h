@@ -44,8 +44,9 @@
 #include "password_dialog.h"
 #include <QPushButton>
 #include <QDir>
+#include <QEventLoop>
 
-class QWidget ;
+class QWidget;
 
 namespace LxQt
 {
@@ -57,46 +58,50 @@ class internalWallet : public LxQt::Wallet::Wallet
 {
     Q_OBJECT
 public:
-    internalWallet() ;
-    ~internalWallet() ;
-    bool addKey(const QString &key, const QByteArray &value) ;
+    internalWallet();
+    ~internalWallet();
+    bool addKey(const QString &key, const QByteArray &value);
     void open(const QString &walletName, const QString &applicationName,
-              const QString &password = QString(), const QString &displayApplicationName = QString()) ;
-    QByteArray readValue(const QString &key) ;
-    QVector<LxQt::Wallet::walletKeyValues> readAllKeyValues(void) ;
-    QStringList readAllKeys(void) ;
-    void deleteKey(const QString &key) ;
-    int walletSize(void)  ;
-    void closeWallet(bool) ;
-    LxQt::Wallet::walletBackEnd backEnd(void) ;
-    bool walletIsOpened(void) ;
-    void setInterfaceObject(QWidget *parent) ;
-    QObject *qObject(void) ;
-    QString storagePath(void) ;
-    void changeWalletPassWord(const QString &walletName, const QString &applicationName = QString()) ;
-    QStringList managedWalletList(void) ;
-    QString localDefaultWalletName(void) ;
-    QString networkDefaultWalletName(void) ;
-    void setImage(const QString &) ;
+              const QString &password = QString(), const QString &displayApplicationName = QString());
+    bool await_open(const QString &walletName, const QString &applicationName,
+                    const QString &password = QString(), const QString &displayApplicationName = QString());
+    QByteArray readValue(const QString &key);
+    QVector<LxQt::Wallet::walletKeyValues> readAllKeyValues(void);
+    QStringList readAllKeys(void);
+    void deleteKey(const QString &key);
+    int walletSize(void) ;
+    void closeWallet(bool);
+    LxQt::Wallet::walletBackEnd backEnd(void);
+    bool walletIsOpened(void);
+    void setInterfaceObject(QWidget *parent);
+    QObject *qObject(void);
+    QString storagePath(void);
+    void changeWalletPassWord(const QString &walletName, const QString &applicationName = QString());
+    QStringList managedWalletList(void);
+    QString localDefaultWalletName(void);
+    QString networkDefaultWalletName(void);
+    void setImage(const QString &);
 signals:
-    void walletIsOpen(bool) ;
-    void passwordIsCorrect(bool) ;
-    void walletpassWordChanged(bool) ;
-    void getPassWord(QString) ;
+    void walletIsOpen(bool);
+    void passwordIsCorrect(bool);
+    void walletpassWordChanged(bool);
+    void getPassWord(QString);
 private slots:
-    bool openWallet(QString) ;
-    void cancelled(void) ;
-    void password(QString, bool) ;
+    bool openWallet(QString);
+    void cancelled(void);
+    void password(QString, bool);
 private:
-    void taskResult(bool) ;
-    bool openWallet(void) ;
-    lxqt_wallet_t m_wallet ;
-    QString m_walletName ;
-    QString m_applicationName ;
-    QString m_displayApplicationName ;
-    QString m_password ;
-    QString m_image ;
-    QWidget *m_interfaceObject ;
+    void taskResult(bool);
+    bool openWallet(void);
+    lxqt_wallet_t m_wallet;
+    QString m_walletName;
+    QString m_applicationName;
+    QString m_displayApplicationName;
+    QString m_password;
+    QString m_image;
+    QWidget *m_interfaceObject;
+    QEventLoop m_loop;
+    bool m_opened;
 };
 
 }

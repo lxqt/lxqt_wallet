@@ -7,10 +7,7 @@ INCLUDE(FindPkgConfig)
 #
 # set below variable to "false" if you want to build a static library
 #
-set(BUILD_SHARED "true")
-
-SET(QT_USE_QTCORE TRUE)
-SET(QT_USE_QTGUI TRUE)
+set(BUILD_SHARED "false")
 
 set(LIBRARY_VERSION "2.0.0")
 
@@ -33,6 +30,9 @@ if(QT5)
 	add_definitions(${Qt5Widgets_DEFINITIONS})
 else()
 	find_package(Qt4 REQUIRED)
+
+	SET(QT_USE_QTCORE TRUE)
+	SET(QT_USE_QTGUI TRUE)
 
 	add_definitions(-I${Qt4_INCLUDE_DIR})
 	add_definitions(-I${QT_HEADERS_DIR})
@@ -120,7 +120,6 @@ else()
 			message(STATUS "could not find libkdecore.so or libkdecore.so.5,please make sure you have kde development libraries installed and try again")
 		endif()
 	else()
-		add_definitions(-std=c++11)
 		file(APPEND  ${PROJECT_BINARY_DIR}/storage_manager.h "\n#define HAS_KWALLET_SUPPORT 0\n")
 		SET(KDE_SUPPORT "false")
 		SET(KWALLET_SUPPORT "false")
@@ -149,10 +148,10 @@ endif()
 
 set(UI_FILES 	changepassworddialog.ui password_dialog.ui)
 
-set(MOC_FILES 	changepassworddialog.h lxqt_internal_wallet.h task.h password_dialog.h)
-set(MOC_FILES_1 changepassworddialog.h lxqt_internal_wallet.h task.h password_dialog.h lxqt_kwallet.h)
-set(MOC_FILES_2 changepassworddialog.h lxqt_internal_wallet.h task.h password_dialog.h lxqt_kwallet.h lxqt_secret_service.h)
-set(MOC_FILES_3 changepassworddialog.h lxqt_internal_wallet.h task.h password_dialog.h lxqt_secret_service.h)
+set(MOC_FILES 	changepassworddialog.h lxqt_internal_wallet.h password_dialog.h task.h)
+set(MOC_FILES_1 changepassworddialog.h lxqt_internal_wallet.h password_dialog.h lxqt_kwallet.h task.h)
+set(MOC_FILES_2 changepassworddialog.h lxqt_internal_wallet.h password_dialog.h lxqt_kwallet.h lxqt_secret_service.h task.h)
+set(MOC_FILES_3 changepassworddialog.h lxqt_internal_wallet.h password_dialog.h lxqt_secret_service.h task.h)
 
 set(SRC 	changepassworddialog.cpp password_dialog.cpp lxqt_internal_wallet.cpp lxqt_wallet.cpp)
 set(SRC_1 	changepassworddialog.cpp password_dialog.cpp lxqt_internal_wallet.cpp lxqt_wallet.cpp lxqt_kwallet.cpp)
@@ -267,12 +266,7 @@ endif()
 
 set_target_properties(lxqtwallet PROPERTIES COMPILE_FLAGS "-D_FILE_OFFSET_BITS=64 -Wextra -Wall -s -fPIC -pedantic ")
 set_target_properties(lxqtwallet PROPERTIES SOVERSION "${LIBRARY_VERSION}")
-
-if(QT5)
-	TARGET_LINK_LIBRARIES(lxqtwallet "${link_libraries}" lxqtwallet-backend)
-else()
-	TARGET_LINK_LIBRARIES(lxqtwallet "${link_libraries}" lxqtwallet-backend -lQtCore -lQtGui)
-endif()
+TARGET_LINK_LIBRARIES(lxqtwallet "${link_libraries}" lxqtwallet-backend)
 
 if(LIB_SUFFIX)
 	set(LIB_PATH "${CMAKE_INSTALL_PREFIX}/${LIB_SUFFIX}")
@@ -302,11 +296,5 @@ Libs: -L${LIB_PATH} -lQtGui -lQtCore -lgcrypt
 Cflags: -I${CMAKE_INSTALL_PREFIX}/include/lxqt
 \n")
 
-	install( FILES ${PROJECT_BINARY_DIR}/lxqtwallet.pc DESTINATION ${LIB_PATH}/pkgconfig/ PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ )
-	install( FILES ../translations.qm/german_DE.qm     DESTINATION share/qCheckGMail/lxqt_wallet/translations.qm/ )
-	install( FILES ../translations.qm/greek_GR.qm      DESTINATION share/qCheckGMail/lxqt_wallet/translations.qm/ )
-	install( FILES ../translations.qm/dutch_NL.qm      DESTINATION share/qCheckGMail/lxqt_wallet/translations.qm/ )
-	install( FILES ../translations.qm/french_FR.qm     DESTINATION share/qCheckGMail/lxqt_wallet/translations.qm/ )
-	install( FILES ../translations.qm/spanish_ES.qm    DESTINATION share/qCheckGMail/lxqt_wallet/translations.qm/ )
+	install(FILES ${PROJECT_BINARY_DIR}/lxqtwallet.pc DESTINATION ${LIB_PATH}/pkgconfig/ PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ )
 endif()
-

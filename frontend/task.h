@@ -1,29 +1,65 @@
 /*
+ * copyright: 2014
+ * name : Francis Banyikwa
+ * email: mhogomchungu@gmail.com
  *
- *  Copyright (c) 2014
- *  name : Francis Banyikwa
- *  email: mhogomchungu@gmail.com
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 2 of the License, or
- *  (at your option) any later version.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in
+ *    the documentation and/or other materials provided with the
+ *    distribution.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+ * FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE
+ * COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
+ * AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+ * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
  */
 
-#ifndef TASK_H
-#define TASK_H
+#ifndef __TASK_H_INCLUDED__
+#define __TASK_H_INCLUDED__
 
+#include <utility>
+#include <future>
 #include <functional>
 #include <QThread>
-#include <QDebug>
 #include <QEventLoop>
+
+/*
+ *
+ * Examples on how to use the library are at the end of this file.
+ *
+ */
+
+/*
+ * This library wraps a function into a future where the result of the function
+ * can be retrieved through the future's 3 public methods:
+ *
+ * 1. .get() runs the wrapped function on the current thread.
+ *
+ * 2. .then() registers an event to be called when the wrapped function finishes
+ *            and then runs the wrapped function in a different thread.
+ *            The registered function will run in the current thread.
+ *
+ * 3. .await() suspends the calling function and then runs the wrapped function
+ *             in a separate thread and then unsuspends the calling function when
+ *             the wrapped function finish running.The suspension will be done
+ *             without blocking the current thread leaving free to perform other tasks.
+ *
+ *             recommending reading up on C#'s await keyword to get a sense of how this feature works.
+ */
 
 namespace LxQt
 {
@@ -46,7 +82,7 @@ protected:
     {
     }
 private:
-    virtual void run(void)
+    virtual void run()
     {
     }
 };
@@ -55,19 +91,38 @@ template< typename T >
 class future
 {
 public:
-    future() : m_function([](const T &t) { Q_UNUSED(t) ; })
+    future(std::function< void() > start,
+           std::function< void() > cancel,
+           std::function< void(T &) > get) :
+        m_start(std::move(start)),
+        m_cancel(std::move(cancel)),
+        m_get(std::move(get))
     {
     }
-    void setActions(std::function< void(void) > start,
-                    std::function< void(void) > cancel)
+    void then(std::function< void(T) > function)
     {
-        m_start = start ;
-        m_cancel = cancel ;
+        m_function = std::move(function) ;
+        this->start() ;
     }
-    void then(std::function< void(const T &) > function)
+    T get()
     {
-        m_function = function ;
-        m_start() ;
+        T r ;
+        m_get(r) ;
+        return r ;
+    }
+    T await()
+    {
+        QEventLoop p ;
+
+        T q ;
+
+        m_function = [ & ](T r) { q = std::move(r) ; p.exit() ; } ;
+
+        this->start() ;
+
+        p.exec() ;
+
+        return q ;
     }
     void start()
     {
@@ -77,59 +132,76 @@ public:
     {
         m_cancel() ;
     }
-    void run(const T &arg)
+    void run(T r)
     {
-        m_function(arg) ;
+        m_function(std::move(r)) ;
     }
 private:
-    std::function< void(const T &) > m_function ;
-    std::function< void(void) > m_start ;
-    std::function< void(void) > m_cancel ;
+    std::function< void(T) > m_function = [](T t) { Q_UNUSED(t) ; } ;
+    std::function< void() > m_start ;
+    std::function< void() > m_cancel ;
+    std::function< void(T &) > m_get ;
 };
 
 template< typename T >
 class ThreadHelper : public Thread
 {
 public:
-    ThreadHelper(std::function< T(void) > function) : m_function(function)
+    ThreadHelper(std::function< T() > function) :
+        m_function(std::move(function)),
+        m_future([ this ]() { this->start() ; },
+    [ this ]() { this->deleteLater() ; },
+    [ this ](T &r) { r = m_function() ; this->deleteLater() ; })
     {
     }
-    future<T>& taskContinuation(void)
+    future<T>& Future()
     {
-        m_future.setActions([ this ]() { this->start() ; },
-        [ this ]() { this->deleteLater() ; }) ;
         return m_future ;
     }
 private:
     ~ThreadHelper()
     {
-        m_future.run(m_cargo) ;
+        m_future.run(std::move(m_result)) ;
     }
-    void run(void)
+    void run()
     {
-        m_cargo =  m_function() ;
+        m_result =  m_function() ;
     }
-    std::function< T(void) > m_function ;
+    std::function< T() > m_function ;
     future<T> m_future ;
-    T m_cargo ;
+    T m_result ;
 };
 
-class future_1
+template<>
+class future< void >
 {
 public:
-    future_1() : m_function([]() {})
+    future(std::function< void() > start,
+           std::function< void() > cancel,
+           std::function< void() > get) :
+        m_start(std::move(start)),
+        m_cancel(std::move(cancel)),
+        m_get(std::move(get))
     {
     }
-    void setActions(std::function< void(void) > start,
-                    std::function< void(void) > cancel)
+    void then(std::function< void() > function)
     {
-        m_start = start ;
-        m_cancel = cancel ;
+        m_function = std::move(function) ;
+        this->start() ;
     }
-    void then(std::function< void(void) > function)
+    void get()
     {
-        m_function = function ;
-        m_start() ;
+        m_get() ;
+    }
+    void await()
+    {
+        QEventLoop p ;
+
+        m_function = [ & ]() { p.exit() ; } ;
+
+        this->start() ;
+
+        p.exec() ;
     }
     void start()
     {
@@ -144,183 +216,182 @@ public:
         m_cancel() ;
     }
 private:
-    std::function< void(void) > m_function ;
-    std::function< void(void) > m_start ;
-    std::function< void(void) > m_cancel ;
+    std::function< void() > m_function = []() {} ;
+    std::function< void() > m_start ;
+    std::function< void() > m_cancel ;
+    std::function< void() > m_get ;
 };
 
-class ThreadHelper_1 : public Thread
+template<>
+class ThreadHelper< void > : public Thread
 {
 public:
-    ThreadHelper_1(std::function< void (void) > function) : m_function(function)
+    ThreadHelper(std::function< void() > function) :
+        m_function(std::move(function)),
+        m_future([ this ]() { this->start() ; },
+    [ this ]() { this->deleteLater() ; },
+    [ this ]() { m_function() ; this->deleteLater() ; })
     {
     }
-    future_1 &taskContinuation(void)
+    future< void >& Future()
     {
-        m_future.setActions([ this ]() { this->start() ; },
-        [ this ]() { this->deleteLater() ; }) ;
         return m_future ;
     }
 private:
-    ~ThreadHelper_1()
+    ~ThreadHelper()
     {
         m_future.run() ;
     }
-    void run(void)
+    void run()
     {
         m_function() ;
     }
-    std::function< void (void) > m_function ;
-    future_1 m_future ;
+    std::function< void() > m_function ;
+    future< void > m_future ;
 };
 
 /*
- * Below APIs runs two tasks,the first one will be run in a different thread and
- * the second one will be run on the original thread after the completion of the
- * first one.
+ * Below API's wrappes a function around a future and then returns the future.
  */
-
 template< typename T >
-future<T>& run(std::function< T(void) > function)
+future<T>& run(std::function< T() > function)
 {
-    auto t = new ThreadHelper<T>(function) ;
-    return t->taskContinuation() ;
+    auto t = new ThreadHelper<T>(std::move(function)) ;
+    return t->Future() ;
 }
 
-static inline future_1 &run(std::function< void(void) > function)
+static inline future< void >& run(std::function< void() > function)
 {
-    auto t = new ThreadHelper_1(function) ;
-    return t->taskContinuation() ;
-}
-
-static inline void exec(std::function< void(void) > function)
-{
-    Task::run(function).start() ;
+    auto t = new ThreadHelper< void >(std::move(function)) ;
+    return t->Future() ;
 }
 
 /*
- * Below APIs implements resumable functions where a function will be "blocked"
- * waiting for the function to return without "hanging" the current thread.
- *
- * recommending reading up on C#'s await keyword to get a sense of what is being
- * discussed below.
+ * A few useful helper functions
  */
 
-static inline void await(Task::future_1 &t)
+static inline void await(Task::future<void>& e)
 {
-    QEventLoop p ;
-
-    t.then([ & ]() { p.exit() ; }) ;
-
-    p.exec() ;
+    e.await() ;
 }
 
-static inline void await(std::function< void(void) > function)
+static inline void await(std::function< void() > function)
 {
-    Task::await(Task::run(function)) ;
+    Task::run(std::move(function)).await() ;
 }
 
 template< typename T >
-T await(Task::future<T>& t)
+T await(std::function< T() > function)
 {
-    QEventLoop p ;
-    T q ;
-
-    t.then([ & ](const T & r) {  q = r ; p.exit() ; }) ;
-
-    p.exec() ;
-
-    return q ;
+    return Task::run<T>(std::move(function)).await() ;
 }
 
 template< typename T >
-T await(std::function< T(void) > function)
+T await(Task::future<T>& e)
 {
-    return Task::await(Task::run(function)) ;
-}
-}
-
+    return e.await() ;
 }
 
+template< typename T >
+T await(std::future<T> && t)
+{
+    return Task::await<T>([ & ]() { return t.get() ; }) ;
 }
-
-#if 0
 
 /*
- * templated version that passes a return value of one function to another function
+ * This method runs its argument in a separate thread and does not offer
+ * continuation feature.Useful when wanting to just run a function in a
+ * different thread.
  */
-auto _a = []()
+static inline void exec(std::function< void() > function)
+{
+    Task::run(std::move(function)).start() ;
+}
+}
+
+}
+
+}
+
+#if 0 // start example block
+
+Examples on how to use the library
+
+******************************************************** **
+* Example use cases on how to use Task::run().then() API
+******************************************************** **
+
+templated version that passes a return value of one function to another function
+                                       -------------------------------------------------------------------------------- -
+
+                                       auto _a = []()
 {
     /*
-     * task _a does what task _a does here.
-     *
-     * This function body will run on a different thread
+     * This task will run on a different thread
+     * This tasks returns a result
      */
     return 0 ;
 }
 
-auto _b = [](const int &r)
+auto _b = [](int r)
 {
     /*
-     * task _b does what task _b does here.
-     *
-     * r is a const reference to a value returned by _a
-     *
-     * This function body will run on the original thread
+     * This task will run on the original thread.
+     * This tasks takes an argument returned by task _a
      */
 }
 
 Task::run<int>(_a).then(_b) ;
 
-/*
- * Non templated version that does not pass around return value
- */
-auto _c = []()
+alternatively,
+
+Task::future<int>& e = Task::run(_a) ;
+
+e.then(_b) ;
+
+
+Non templated version that does not pass around return value
+        ----------------------------------------------------------------
+        auto _c = []()
 {
     /*
-     * task _a does what task _a does here.
-     *
-     * This function body will run on a different thread
+     * This task will run on a different thread
+     * This tasks returns with no result
      */
 }
 
 auto _d = []()
 {
     /*
-     * task _b does what task _b does here.
-     *
-     * r is a const reference to a value returned by _a
-     *
-     * This function body will run on the original thread
+     * This task will run on the original thread.
+     * This tasks takes no argument
      */
 }
 
 Task::run(_c).then(_d) ;
 
-/*
- * if no continuation
- */
-Task::exec(_c) ;
+alternatively,
 
-/*
- * Task::await() is used to "block" the calling thread until the function returns.
- *
- * Its use case is to do sync programming without hanging the calling thread.
- *
- * example use case for it is to "block" on function in a GUI thread withough blocking the GUI thread
- * hanging the application.
- */
+Task::future<void>& e = Task::run(_c) ;
 
-/*
- * await example when the called function return no result
- */
-Task::await(_c) ;
+e.then(_d) ;
 
-/*
- * await example when the called function return a result
- */
+******************************************************** **
+* Example use cases on how to use Task::run().await() API
+******************************************************** **
+
 int r = Task::await<int>(_a) ;
 
-#endif
+alternatively,
 
-#endif // TASK_H
+Task::future<int>& e = Task::run<int>(_a) ;
+
+int r = e.await() ;
+
+alternatively,
+
+int r = Task::run<int>(_a).await() ;
+
+#endif //end example block
+
+#endif //__TASK_H_INCLUDED__

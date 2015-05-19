@@ -40,6 +40,10 @@
 #include <QStringList>
 #include <QDir>
 
+/*
+ * An example of how to use the API is at the end of this header file.
+ */
+
 namespace LxQt
 {
 
@@ -51,11 +55,11 @@ class walletKeyValues
 public:
     walletKeyValues() {}
     walletKeyValues(const QString &key, const QByteArray &value) : m_key(key), m_value(value) {}
-    const QString &getKey(void) const { return m_key ; }
-    const QByteArray &getValue(void) const { return m_value ; }
+    const QString &getKey(void) const { return m_key; }
+    const QByteArray &getValue(void) const { return m_value; }
 private:
-    QString m_key ;
-    QByteArray m_value ;
+    QString m_key;
+    QByteArray m_value;
 };
 
 typedef enum
@@ -68,23 +72,23 @@ typedef enum
 /*
  * forward declare the Wallet class
  */
-class Wallet ;
+class Wallet;
 
 /*
  * check if there is a support for a backend and return true if the back end is supported
  */
-Q_DECL_EXPORT bool backEndIsSupported(LxQt::Wallet::walletBackEnd) ;
+Q_DECL_EXPORT bool backEndIsSupported(LxQt::Wallet::walletBackEnd);
 
 /*
  * delete a wallet
  * KWallet backend does not use the applicationName argument
  */
-Q_DECL_EXPORT bool deleteWallet(LxQt::Wallet::walletBackEnd, const QString &walletName, const QString &applicationName = QString()) ;
+Q_DECL_EXPORT bool deleteWallet(LxQt::Wallet::walletBackEnd, const QString &walletName, const QString &applicationName = QString());
 
 /*
  * check if a particular wallet exists
  */
-Q_DECL_EXPORT bool walletExists(LxQt::Wallet::walletBackEnd, const QString &walletName, const QString &applicationName = QString()) ;
+Q_DECL_EXPORT bool walletExists(LxQt::Wallet::walletBackEnd, const QString &walletName, const QString &applicationName = QString());
 
 /*
  * get a pointer to a requested backend to be used to gain access to the API.It is advised to call
@@ -92,13 +96,13 @@ Q_DECL_EXPORT bool walletExists(LxQt::Wallet::walletBackEnd, const QString &wall
  * 0 is returned if there is no support for requested backend.
  * A caller is responsible for the returned object and must delete it when done with it
  */
-Q_DECL_EXPORT LxQt::Wallet::Wallet *getWalletBackend(LxQt::Wallet::walletBackEnd = LxQt::Wallet::internalBackEnd) ;
+Q_DECL_EXPORT LxQt::Wallet::Wallet *getWalletBackend(LxQt::Wallet::walletBackEnd = LxQt::Wallet::internalBackEnd);
 
 /*
  * return a list of all wallets
  * returned value is undefined if the backend is not supported
  */
-QStringList walletList(LxQt::Wallet::walletBackEnd) ;
+QStringList walletList(LxQt::Wallet::walletBackEnd);
 
 /*
  * Below class is the interface that implements various backends.
@@ -108,60 +112,60 @@ QStringList walletList(LxQt::Wallet::walletBackEnd) ;
 class Q_DECL_EXPORT Wallet : public QWidget
 {
 public:
-    Wallet() ;
-    virtual ~Wallet() ;
+    Wallet();
+    virtual ~Wallet();
 
     /*
      * add an entry to the wallet
      */
-    virtual bool addKey(const QString &key, const QByteArray &value) = 0 ;
+    virtual bool addKey(const QString &key, const QByteArray &value) = 0;
 
     /*
      * get a value through a key
      */
-    virtual QByteArray readValue(const QString &key) = 0 ;
+    virtual QByteArray readValue(const QString &key) = 0;
 
     /*
      * get all keys and their respective values from the wallet
      */
-    virtual QVector<LxQt::Wallet::walletKeyValues> readAllKeyValues(void) = 0 ;
+    virtual QVector<LxQt::Wallet::walletKeyValues> readAllKeyValues(void) = 0;
 
     /*
      * get all keys in the wallet
      */
-    virtual QStringList readAllKeys(void) = 0 ;
+    virtual QStringList readAllKeys(void) = 0;
 
     /*
      * delete a key in a wallet
      */
-    virtual void deleteKey(const QString &key) = 0 ;
+    virtual void deleteKey(const QString &key) = 0;
 
     /*
      * return the number of entries in the wallet
      */
-    virtual int walletSize(void) = 0 ;
+    virtual int walletSize(void) = 0;
 
     /*
      * close the a wallet
      */
-    virtual void closeWallet(bool option = false) = 0 ;
+    virtual void closeWallet(bool option = false) = 0;
 
     /*
      * return the backend in use
      */
-    virtual LxQt::Wallet::walletBackEnd backEnd(void) = 0 ;
+    virtual LxQt::Wallet::walletBackEnd backEnd(void) = 0;
 
     /*
      * check if a wallet is opened or not
      * If the wallet is not open,secretService backend will block while the user is prompted for a key to inlock it
      */
-    virtual bool walletIsOpened(void) = 0 ;
+    virtual bool walletIsOpened(void) = 0;
 
     /*
      * return QObject pointer of the backend,not sure why you would want this as communication btw a backend and a user of the
      * API is done through setInterfaceObject() method.
      */
-    virtual QObject *qObject(void) = 0 ;
+    virtual QObject *qObject(void) = 0;
 
     /*
      * Behavior of the method according to different back ends.
@@ -191,48 +195,51 @@ public:
      * Calling this open() method without a password will generate a GUI prompt for a password
      */
     virtual void open(const QString &walletName, const QString &applicationName = QString(),
-                      const QString &password = QString(), const QString &displayApplicationName = QString()) = 0 ;
+                      const QString &password = QString(), const QString &displayApplicationName = QString()) = 0;
+
+    virtual bool await_open(const QString &walletName, const QString &applicationName = QString(),
+                            const QString &password = QString(), const QString &displayApplicationName = QString()) = 0;
 
     /*
      * This method is used as a mean of communication between the backend and the user of the library.see open() method documentation above
      * for a use case of this API
      */
-    virtual void setInterfaceObject(QWidget *) = 0 ;
+    virtual void setInterfaceObject(QWidget *) = 0;
 
     /*
      * This method is defined only with internal backend.
      * This method is used to set an icon image to be used when the backend produces GUI windows.
      */
-    virtual void setImage(const QString &) = 0 ;
+    virtual void setImage(const QString &) = 0;
 
     /*
      * this method returns PasswordFolder() in kwallet backend and is undefined in other backends
      */
-    virtual QString storagePath(void) = 0 ;
+    virtual QString storagePath(void) = 0;
 
     /*
      * change the wallet key to newWalletKey
      * internal backend will emit "walletpassWordChanged(bool)" to notify if the password was changed or not
      * This method is undefined in secretService backend
      */
-    virtual void changeWalletPassWord(const QString &walletName, const QString &applicationName = QString()) = 0 ;
+    virtual void changeWalletPassWord(const QString &walletName, const QString &applicationName = QString()) = 0;
 
     /*
      * list all wallets managed by an application.
      * This method is equivalent to kwallet's "folderList()"
      * This method is undefined in secretService backend
      */
-    virtual QStringList managedWalletList(void) = 0 ;
+    virtual QStringList managedWalletList(void) = 0;
 
     /*
      * This medhod is defined only with kwallet backend and it returns the name of the kwallet default local wallet name
      */
-    virtual QString localDefaultWalletName(void) = 0 ;
+    virtual QString localDefaultWalletName(void) = 0;
 
     /*
      * This medhod is defined only with kwallet backend and it returns the name of the kwallet default network wallet name
      */
-    virtual QString networkDefaultWalletName(void) = 0 ;
+    virtual QString networkDefaultWalletName(void) = 0;
 };
 
 } // namespace lxqt
@@ -250,24 +257,24 @@ void TestClass::walletIsOpen(bool walletIsOpen)
 {
     if (walletIsOpen)
     {
-        QVector<LxQt::Wallet::walletKeyValues> s = m_wallet->readAllKeyValues() ;
-        size_t j = s.size() ;
-        for (size_t i = 0 ; i < j ; i++)
+        QVector<LxQt::Wallet::walletKeyValues> s = m_wallet->readAllKeyValues();
+        size_t j = s.size();
+        for (size_t i = 0; i < j; i++)
         {
-            const QString &key      = s.at(i).getKey() ;
-            const QByteArray &value = s.at(i).getValue() ;
-            qDebug() << "key=" << key << ":value=" << value ;
+            const QString &key      = s.at(i).getKey();
+            const QByteArray &value = s.at(i).getValue();
+            qDebug() << "key=" << key << ":value=" << value;
         }
     }
     else
     {
-        qDebug() << "failed to open wallet" ;
+        qDebug() << "failed to open wallet";
     }
 
     /*
      * Delete the wallet object when done with it
      */
-    m_wallet->deleteLater() ;
+    m_wallet->deleteLater();
 }
 
 void TestClass::testWallet()
@@ -275,18 +282,18 @@ void TestClass::testWallet()
     /*
      * open a default backend( internal one )
      */
-    m_wallet = LxQt::Wallet::getWalletBackend() ;
+    m_wallet = LxQt::Wallet::getWalletBackend();
 
     /*
      * set the QObject with "walletIsOpen(bool)" slot
      */
-    m_wallet->setInterfaceObject(this) ;
+    m_wallet->setInterfaceObject(this);
 
     /*
      * open a wallet.
      * This method will return the result of the attempt though a slot on an object set above.
      */
-    m_wallet->open("test_wallet_name", "test_application_name") ;
+    m_wallet->open("test_wallet_name", "test_application_name");
 }
 
 #endif

@@ -56,29 +56,29 @@ class changePassWordDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit changePassWordDialog(QWidget *parent = 0, const QString &walletName = QString(), const QString &applicationName = QString()) ;
-    void ShowUI(void) ;
-    void HideUI(void) ;
-    void ShowUI_1(void) ;
-    ~changePassWordDialog() ;
+    explicit changePassWordDialog(QWidget *parent = 0, const QString &walletName = QString(), const QString &applicationName = QString());
+    void ShowUI(void);
+    void HideUI(void);
+    void ShowUI_1(void);
+    ~changePassWordDialog();
 signals:
-    void password(QString, bool) ;
-    void walletpassWordChanged(bool) ;
+    void password(QString, bool);
+    void walletpassWordChanged(bool);
 private slots:
-    void create(void) ;
-    void change(void) ;
-    void cancel(void) ;
-    void ok(void) ;
-    void ok_1(void) ;
+    void create(void);
+    void change(void);
+    void cancel(void);
+    void ok(void);
+    void ok_1(void);
 private:
-    void closeEvent(QCloseEvent *) ;
-    bool eventFilter(QObject *watched, QEvent *event) ;
-    Ui::changePassWordDialog *m_ui ;
-    lxqt_wallet_t m_wallet ;
-    QString m_walletName ;
-    QString m_applicationName ;
-    QString m_banner ;
-    bool m_walletPassWordChanged ;
+    void closeEvent(QCloseEvent *);
+    bool eventFilter(QObject *watched, QEvent *event);
+    Ui::changePassWordDialog *m_ui;
+    lxqt_wallet_t m_wallet;
+    QString m_walletName;
+    QString m_applicationName;
+    QString m_banner;
+    bool m_walletPassWordChanged;
 };
 
 }
