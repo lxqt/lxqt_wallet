@@ -881,7 +881,7 @@ int lxqt_wallet_read_key_value(lxqt_wallet_t wallet, const char *key, u_int32_t 
 
     if (key == NULL || wallet == NULL || key_value == NULL)
     {
-       ;
+        ;
     }
     else
     {
@@ -1440,7 +1440,7 @@ static gcry_error_t _create_temp_key(char *output_key, u_int32_t output_key_size
     }
     else
     {
-       ;
+        ;
     }
 
     return r;

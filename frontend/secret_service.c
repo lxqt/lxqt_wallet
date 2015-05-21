@@ -133,7 +133,7 @@ gboolean lxqt_secret_service_password_store_sync(const char *key, const char *va
 
     if (!lxqt_secret_service_wallet_is_open(keyValues))
     {
-        return 0;
+        return FALSE;
     }
 
     c = secret_password_lookup_sync(keyValues, NULL, NULL, "string", "lxqt_wallet_size", NULL);
@@ -157,8 +157,14 @@ gboolean lxqt_secret_service_password_store_sync(const char *key, const char *va
             c = secret_password_lookup_sync(keyID, NULL, NULL, "integer", i, NULL);
             if (c == NULL)
             {
-                secret_password_store_sync(keyID, "default", walletLabel, key, NULL, NULL, "integer", i, NULL);
-                break;
+                if (secret_password_store_sync(keyID, "default", walletLabel, key, NULL, NULL, "integer", i, NULL))
+                {
+                    break;
+                }
+                else
+                {
+                    return FALSE;
+                }
             }
             else
             {
@@ -187,7 +193,7 @@ gboolean lxqt_secret_service_clear_sync(const char *key, const void *p, const vo
 
     if (!lxqt_secret_service_wallet_is_open(keyValues))
     {
-        return 0;
+        return FALSE;
     }
 
     while (i <= j)
@@ -202,8 +208,14 @@ gboolean lxqt_secret_service_clear_sync(const char *key, const void *p, const vo
                 c = secret_password_lookup_sync(keyValues, NULL, NULL, "string", "lxqt_wallet_size", NULL);
                 snprintf(wallet_size, BUFFER_SIZE, "%d", atoi(c) - 1);
                 free(c);
-                secret_password_store_sync(keyValues, "default", walletLabel, wallet_size, NULL, NULL, "string", "lxqt_wallet_size", NULL);
-                break;
+                if (secret_password_store_sync(keyValues, "default", walletLabel, wallet_size, NULL, NULL, "string", "lxqt_wallet_size", NULL))
+                {
+                    break;
+                }
+                else
+                {
+                    return FALSE;
+                }
             }
             else
             {
@@ -246,7 +258,7 @@ char **lxqt_secret_get_all_keys(const void *p, const void *q, int *count)
                 e = secret_password_lookup_sync(keyID, NULL, NULL, "integer", k, NULL);
                 if (e != NULL)
                 {
-                    c[ i ] =  e;
+                    *(c + i) = e;
                     *count += 1;
                     i++;
                     k++;
