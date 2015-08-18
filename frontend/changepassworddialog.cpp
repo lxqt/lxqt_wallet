@@ -1,5 +1,5 @@
 /*
- * copyright: 2013
+ * copyright: 2013-2015
  * name : Francis Banyikwa
  * email: mhogomchungu@gmail.com
  *
@@ -34,7 +34,7 @@
 namespace Task = LxQt::Wallet::Task;
 
 LxQt::Wallet::changePassWordDialog::changePassWordDialog(QWidget *parent, const QString &walletName, const QString &applicationName):
-    QDialog(parent), m_ui(new Ui::changePassWordDialog), m_wallet(0), m_walletName(walletName),
+    QDialog(parent), m_ui(new Ui::changePassWordDialog), m_walletName(walletName),
     m_applicationName(applicationName)
 {
     m_ui->setupUi(this);
@@ -63,7 +63,7 @@ bool LxQt::Wallet::changePassWordDialog::eventFilter(QObject *watched, QEvent *e
     {
         if (event->type() == QEvent::KeyPress)
         {
-            QKeyEvent *keyEvent = static_cast< QKeyEvent * >(event);
+            QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
             if (keyEvent->key() == Qt::Key_Escape)
             {
                 this->HideUI();
@@ -111,7 +111,6 @@ void LxQt::Wallet::changePassWordDialog::ShowUI_1()
 LxQt::Wallet::changePassWordDialog::~changePassWordDialog()
 {
     delete m_ui;
-    lxqt_wallet_close(&m_wallet);
 }
 
 void LxQt::Wallet::changePassWordDialog::create()
@@ -154,25 +153,47 @@ void LxQt::Wallet::changePassWordDialog::change()
 
     if (m_ui->lineEditNewPassWord->text() == m_ui->lineEditNewPassWord_2->text())
     {
-        Task::run<bool>([this]()
+        class wallet
+        {
+        public:
+            wallet()
+            {
+            }
+            wallet(const QString &password, const QString &walletName, const QString &applicationName)
+            {
+                m_error = lxqt_wallet_open(&m_wallet, password.toLatin1().constData(),
+                                           password.size(), walletName.toLatin1().constData(),
+                                           applicationName.toLatin1().constData());
+            }
+            operator bool()
+            {
+                return m_error == lxqt_wallet_no_error;
+            }
+            bool changePassword(const QString &newPassword)
+            {
+                QByteArray q = newPassword.toLatin1();
+                m_error = lxqt_wallet_change_wallet_password(m_wallet, q.constData(), q.size());
+                return m_error == lxqt_wallet_no_error;
+            }
+            void close()
+            {
+                lxqt_wallet_close(&m_wallet);
+            }
+        private:
+            lxqt_wallet_t m_wallet = 0;
+            lxqt_wallet_error m_error;
+        };
+
+        Task::run<wallet>([this]()
         {
             QString password = m_ui->lineEditCurrentPassWord->text();
+            return wallet(password, m_walletName, m_applicationName);
 
-            auto r = lxqt_wallet_open(&m_wallet, password.toLatin1().constData(),
-                                      password.size(), m_walletName.toLatin1().constData(),
-                                      m_applicationName.toLatin1().constData());
-
-            return r == lxqt_wallet_no_error;
-
-        }).then([this](bool opened)
+        }).then([this](wallet w)
         {
-            if (opened)
+            if (w)
             {
-                QByteArray e = m_ui->lineEditNewPassWord->text().toLatin1();
-
-                auto r = lxqt_wallet_change_wallet_password(m_wallet, e.constData(), e.size());
-
-                if (r == lxqt_wallet_no_error)
+                if (w.changePassword(m_ui->lineEditNewPassWord->text()))
                 {
                     m_walletPassWordChanged = true;
                     this->HideUI();
@@ -198,6 +219,7 @@ void LxQt::Wallet::changePassWordDialog::change()
                 m_ui->pushButtonOK->setVisible(true);
                 m_ui->pushButtonOK->setFocus();
             }
+            w.close();
         });
     }
     else
@@ -238,21 +260,24 @@ void LxQt::Wallet::changePassWordDialog::ok()
 
 void LxQt::Wallet::changePassWordDialog::ok_1()
 {
-    m_ui->lineEditCurrentPassWord->setEnabled(false);
-    m_ui->lineEditNewPassWord->setEnabled(true);
-    m_ui->lineEditNewPassWord->setFocus();
-    m_ui->lineEditNewPassWord_2->setEnabled(true);
-    m_ui->label->setEnabled(true);
-    m_ui->label_2->setEnabled(true);
-    m_ui->label_2->setEnabled(true);
-    m_ui->label_3->setEnabled(true);
-    m_ui->label_4->setEnabled(true);
-    m_ui->pushButtonOK->setVisible(false);
-    m_ui->pushButtonCancel->setVisible(true);
-    m_ui->pushButtonChange->setVisible(true);
-    m_ui->pushButtonCancel->setEnabled(true);
-    m_ui->pushButtonChange->setEnabled(true);
-    m_ui->label->setText(m_banner);
+    if (m_ui->label->text() == tr("Passwords do not match"))
+    {
+        m_ui->lineEditCurrentPassWord->setEnabled(false);
+        m_ui->lineEditNewPassWord->setEnabled(true);
+        m_ui->lineEditNewPassWord->setFocus();
+        m_ui->lineEditNewPassWord_2->setEnabled(true);
+        m_ui->label->setEnabled(true);
+        m_ui->label_2->setEnabled(true);
+        m_ui->label_2->setEnabled(true);
+        m_ui->label_3->setEnabled(true);
+        m_ui->label_4->setEnabled(true);
+        m_ui->pushButtonOK->setVisible(false);
+        m_ui->pushButtonCancel->setVisible(true);
+        m_ui->pushButtonChange->setVisible(true);
+        m_ui->pushButtonCancel->setEnabled(true);
+        m_ui->pushButtonChange->setEnabled(true);
+        m_ui->label->setText(m_banner);
+    }
 }
 
 void LxQt::Wallet::changePassWordDialog::closeEvent(QCloseEvent *e)

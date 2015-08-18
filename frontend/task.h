@@ -317,14 +317,14 @@ static inline void exec(std::function< void() > function)
 
 Examples on how to use the library
 
-******************************************************** **
+** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
 * Example use cases on how to use Task::run().then() API
-******************************************************** **
+** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
 
 templated version that passes a return value of one function to another function
--------------------------------------------------------------------------------- -
+                                       -------------------------------------------------------------------------------- -
 
-auto _a = []()
+                                       auto _a = []()
 {
     /*
      * This task will run on a different thread
@@ -351,8 +351,8 @@ e.then(_b);
 
 
 Non templated version that does not pass around return value
-----------------------------------------------------------------
-auto _c = []()
+        ----------------------------------------------------------------
+        auto _c = []()
 {
     /*
      * This task will run on a different thread
@@ -376,9 +376,9 @@ Task::future<void>& e = Task::run(_c);
 
 e.then(_d);
 
-******************************************************** **
+** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
 * Example use cases on how to use Task::run().await() API
-******************************************************** **
+** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
 
 int r = Task::await<int>(_a);
 
