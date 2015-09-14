@@ -34,24 +34,56 @@
 #include <string.h>
 #include <stdio.h>
 
-/*
- * Its a bit tricky to use stable part of libsecret API to add our secrets the way that will agree with out API that is consistent with
- * libsecret backend,kwallet backend and the internal back end.
- *
- * The biggest problem is how to get information you do not know about in the wallet.For our usecase,how to get a list of all keys
- * in the wallet.KeyID schema is used to solve this problem.
- *
- * This problem is solved by having two schemas.
- *
- * Schema "s" holds attributes of the wallet.These attributes are:
- * 1. wallet size
- * 2. key and their associated key values
- *
- * "lxqt_wallet_open" is another attributes that is used to try to write to the wallet to check if its open or not
- *
- * Schema "keyID" is used to store a list of keys in the wallet in a way that make it easy to retrieve them.When a key is added
- * in the wallet,a smallest number is seached to attach it to the volume.Seaching is necessary to reuse numbers vacated by removed keys
- */
+#if 0
+
+libsecret API we are using has two shortcommings:
+
+1. It doesnt tell us how many entries we have in the store.
+2. We are storing key-value pairs but it doesnt tell us what keys we have in the store.
+
+We want to keep everything in the store and we solve the above two shortcommings by
+managing two schemas called "s" and "keyID".
+
+Let say we want to store the following key-value pairs:
+
+key        value
+alice      123
+peter      444
+john       745
+
+internall we will store the above key-value pairs as follows:
+
+key               value
+
+keyID:0           lxqt_wallet_size
+lxqt_wallet_size  3
+
+keyID:1           alice
+alice             123
+
+keyID:2           peter
+peter             444
+
+keyID:3           john
+john              745
+
+"keyID:N" is a unique number that uniquely identify each key.
+
+schema "keyID" hold key-value pairs made up of internally managed unique keys and user provided keys.
+schema "s" hold key-value paris made up of user provided keys and user provided values.
+
+FAQ:
+
+1.  How do we get a list of all keys in the store?
+
+    We iterate over all internally managed keys and return their respective values.
+
+2.  How do we get a list of values in the store?
+
+    We use the above step to get a list of keys and then we interate over obtained keys
+    to get their respective values.
+
+#endif
 
 #define BUFFER_SIZE 32
 
