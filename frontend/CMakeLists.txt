@@ -24,6 +24,8 @@ if(QT5)
 
 	set( KF5 "true" )
 else()
+	set( KF5 "false" )
+
 	find_package(Qt4 REQUIRED)
 
 	SET(QT_USE_QTCORE TRUE)
