@@ -294,6 +294,12 @@ else()
 	set(LIB_PATH "${CMAKE_INSTALL_PREFIX}/${LIB_SUFFIX}")
 endif()
 
+install( FILES ../translations.qm/german_DE.qm   DESTINATION share/lxqt_wallet/translations.qm/ )
+install( FILES ../translations.qm/greek_GR.qm    DESTINATION share/lxqt_wallet/translations.qm/ )
+install( FILES ../translations.qm/dutch_NL.qm    DESTINATION share/lxqt_wallet/translations.qm/ )
+install( FILES ../translations.qm/french_FR.qm   DESTINATION share/lxqt_wallet/translations.qm/ )
+install( FILES ../translations.qm/spanish_ES.qm   DESTINATION share/lxqt_wallet/translations.qm/ )
+
 if(BUILD_SHARED)
 	install(TARGETS lxqtwallet RUNTIME LIBRARY DESTINATION "${LIB_PATH}")
 
