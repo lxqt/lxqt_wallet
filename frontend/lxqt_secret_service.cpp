@@ -1,5 +1,5 @@
 /*
- * copyright: 2013
+ * copyright: 2013-2015
  * name : Francis Banyikwa
  * email: mhogomchungu@gmail.com
  *
@@ -31,6 +31,9 @@
 #include "lxqt_secret_service.h"
 
 #include "task.h"
+
+#include <stdlib.h>
+
 /*
  * adding libsecret header file together with C++ header files doesnt seem to work.
  * as a workaround,a static library that interfaces with libsecret is used and a "pure" C interface of the
@@ -48,16 +51,12 @@ extern "C" {
 
 namespace Task = LxQt::Wallet::Task;
 
-LxQt::Wallet::secretService::secretService()
+LxQt::Wallet::secretService::secretService(): m_schema(nullptr, free), m_schema_1(nullptr, free)
 {
-    m_schema   = nullptr;
-    m_schema_1 = nullptr;
 }
 
 LxQt::Wallet::secretService::~secretService()
 {
-    free(m_schema);
-    free(m_schema_1);
 }
 
 void LxQt::Wallet::secretService::setImage(const QString &image)
@@ -75,7 +74,8 @@ bool LxQt::Wallet::secretService::addKey(const QString &key, const QByteArray &v
     {
         if (m_schema && m_schema_1)
         {
-            return lxqt_secret_service_password_store_sync(key.toLatin1().constBegin(), value.constData(), m_schema, m_schema_1);
+
+            return lxqt_secret_service_password_store_sync(key.toLatin1().constBegin(), value.constData(), m_schema.get(), m_schema_1.get());
         }
         else
         {
@@ -125,14 +125,14 @@ void LxQt::Wallet::secretService::open(const QString &walletName, const QString 
         m_byteArraySchemaName = QString("lxqt.Wallet.%1.%2").arg(walletName, applicationName).toLatin1();
     }
 
-    m_schema   = lxqt_secret_service_create_schema(m_byteArraySchemaName.constData(), "string");
-    m_schema_1 = lxqt_secret_service_create_schema(m_byteArraySchemaName.constData(), "integer");
+    m_schema.reset(lxqt_secret_service_create_schema(m_byteArraySchemaName.constData(), "string"));
+    m_schema_1.reset(lxqt_secret_service_create_schema(m_byteArraySchemaName.constData(), "integer"));
 
-    Task::run<bool>([this]()
+    Task::run<bool>([ this ]()
     {
-        return lxqt_secret_service_wallet_is_open(m_schema);
+        return lxqt_secret_service_wallet_is_open(m_schema.get());
 
-    }).then([this](bool opened)
+    }).then([ this ](bool opened)
     {
         this->walletOpened(opened);
     });
@@ -151,12 +151,11 @@ QByteArray LxQt::Wallet::secretService::readValue(const QString &key)
     {
         QByteArray r;
 
-        char *e = lxqt_secret_service_get_value(key.toLatin1().constData(), m_schema);
+        std::unique_ptr<char> e(lxqt_secret_service_get_value(key.toLatin1().constData(), m_schema.get()));
 
         if (e)
         {
-            r = QByteArray(e);
-            free(e);
+            r = QByteArray(e.get());
         }
 
         return r;
@@ -184,21 +183,25 @@ QStringList LxQt::Wallet::secretService::readAllKeys(void)
     if (m_schema && m_schema_1)
     {
         int count;
+
         QStringList l;
-        char **c = lxqt_secret_get_all_keys(m_schema, m_schema_1, &count);
-        char *e;
+
+        std::unique_ptr< char * > p(lxqt_secret_get_all_keys(m_schema.get(), m_schema_1.get(), &count));
+
+        auto c = p.get();
 
         if (c)
         {
             for (int i = 0; i < count; i++)
             {
-                e = *(c + i);
+                auto e = *(c + i);
+
                 l.append(e);
+
                 free(e);
             }
-
-            free(c);
         }
+
         return l;
     }
     else
@@ -213,7 +216,7 @@ void LxQt::Wallet::secretService::deleteKey(const QString &key)
     {
         if (!key.isEmpty())
         {
-            lxqt_secret_service_clear_sync(key.toLatin1().constData(), m_schema, m_schema_1);
+            lxqt_secret_service_clear_sync(key.toLatin1().constData(), m_schema.get(), m_schema_1.get());
         }
     }
 }
@@ -222,7 +225,7 @@ int LxQt::Wallet::secretService::walletSize(void)
 {
     if (m_schema)
     {
-        return lxqt_secret_service_wallet_size(m_schema);
+        return lxqt_secret_service_wallet_size(m_schema.get());
     }
     else
     {
@@ -244,7 +247,7 @@ bool LxQt::Wallet::secretService::walletIsOpened(void)
 {
     if (m_schema)
     {
-        return lxqt_secret_service_wallet_is_open(m_schema);
+        return lxqt_secret_service_wallet_is_open(m_schema.get());
     }
     else
     {

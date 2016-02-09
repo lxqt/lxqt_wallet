@@ -1,5 +1,5 @@
 /*
- * copyright: 2013
+ * copyright: 2013-2015
  * name : Francis Banyikwa
  * email: mhogomchungu@gmail.com
  *
@@ -38,6 +38,8 @@
 #include <QDebug>
 #include <QEventLoop>
 
+#include <memory>
+
 class QWidget;
 
 namespace LxQt
@@ -61,7 +63,7 @@ public:
     QVector<LxQt::Wallet::walletKeyValues> readAllKeyValues(void);
     QStringList readAllKeys(void);
     void deleteKey(const QString &key);
-    int walletSize(void) ;
+    int walletSize(void);
     void closeWallet(bool);
     LxQt::Wallet::walletBackEnd backEnd(void);
     bool walletIsOpened(void);
@@ -88,8 +90,8 @@ private:
     QString m_password;
     QWidget *m_interfaceObject;
 
-    void *m_schema;
-    void *m_schema_1;
+    std::unique_ptr<void, void( *)(void *)> m_schema;
+    std::unique_ptr<void, void( *)(void *)> m_schema_1;
 
     QEventLoop m_loop;
 

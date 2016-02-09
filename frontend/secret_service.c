@@ -1,5 +1,5 @@
 /*
- * copyright: 2013
+ * copyright: 2013-2015
  * name : Francis Banyikwa
  * email: mhogomchungu@gmail.com
  *
@@ -34,60 +34,28 @@
 #include <string.h>
 #include <stdio.h>
 
-#if 0
-
-libsecret API we are using has two shortcommings:
-
-1. It doesnt tell us how many entries we have in the store.
-2. We are storing key-value pairs but it doesnt tell us what keys we have in the store.
-
-We want to keep everything in the store and we solve the above two shortcommings by
-managing two schemas called "s" and "keyID".
-
-Let say we want to store the following key-value pairs:
-
-key        value
-alice      123
-peter      444
-john       745
-
-internall we will store the above key-value pairs as follows:
-
-key               value
-
-keyID:0           lxqt_wallet_size
-lxqt_wallet_size  3
-
-keyID:1           alice
-alice             123
-
-keyID:2           peter
-peter             444
-
-keyID:3           john
-john              745
-
-"keyID:N" is a unique number that uniquely identify each key.
-
-schema "keyID" hold key-value pairs made up of internally managed unique keys and user provided keys.
-schema "s" hold key-value paris made up of user provided keys and user provided values.
-
-FAQ:
-
-1.  How do we get a list of all keys in the store?
-
-    We iterate over all internally managed keys and return their respective values.
-
-2.  How do we get a list of values in the store?
-
-    We use the above step to get a list of keys and then we interate over obtained keys
-    to get their respective values.
-
-#endif
+/*
+ * Its a bit tricky to use stable part of libsecret API to add our secrets the way that will agree with out API that is consistent with
+ * libsecret backend,kwallet backend and the internal back end.
+ *
+ * The biggest problem is how to get information you do not know about in the wallet.For our usecase,how to get a list of all keys
+ * in the wallet.KeyID schema is used to solve this problem.
+ *
+ * This problem is solved by having two schemas.
+ *
+ * Schema "s" holds attributes of the wallet.These attributes are:
+ * 1. wallet size
+ * 2. key and their associated key values
+ *
+ * "lxqt_wallet_open" is another attributes that is used to try to write to the wallet to check if its open or not
+ *
+ * Schema "keyID" is used to store a list of keys in the wallet in a way that make it easy to retrieve them.When a key is added
+ * in the wallet,a smallest number is seached to attach it to the volume.Seaching is necessary to reuse numbers vacated by removed keys
+ */
 
 #define BUFFER_SIZE 32
 
-static char *_get_string_value_0(const SecretSchema *s, const char *key)
+static char   *_get_string_value_0(const SecretSchema *s, const char *key)
 {
     return secret_password_lookup_sync(s, NULL, NULL, "string", key, NULL);
 }
@@ -209,77 +177,97 @@ void *lxqt_secret_service_create_schema(const char *schemaName, const char *type
     return s;
 }
 
-gboolean lxqt_secret_service_password_store_sync(const char *key,
-        const char *value,
-        const void *p, const void *q)
+static gboolean _password_store_sync(const char *key,
+                                     const char *value,
+                                     const void *kv,
+                                     const void *id,
+                                     int ws)
 {
-    const SecretSchema *keyValues = p;
-    const SecretSchema *keyID     = q;
+    const SecretSchema *keyValues = kv;
+    const SecretSchema *keyID     = id;
 
     int i = 0;
     int k;
-    int j;
 
-    const char *walletLabel = keyValues->name;
     char wallet_size[ BUFFER_SIZE ];
 
-    if (!lxqt_secret_service_wallet_is_open(keyValues))
+    const char *walletLabel = keyValues->name;
+
+    snprintf(wallet_size, BUFFER_SIZE, "%d", ws);
+
+    _set_string_value(keyValues, walletLabel, wallet_size, "lxqt_wallet_size");
+
+    while (i < ws)
     {
-        return FALSE;
-    }
+        k = _get_integer_value(keyID, i);
 
-    j = _get_string_value(keyValues, "lxqt_wallet_size");
-
-    if (j == -1)
-    {
-        _set_string_value(keyValues, walletLabel, "1", "lxqt_wallet_size");
-        _set_integer_value(keyID, walletLabel, key, 0);
-    }
-    else
-    {
-        j = j + 1;
-
-        snprintf(wallet_size, BUFFER_SIZE, "%d", j);
-
-        _set_string_value(keyValues, walletLabel, wallet_size, "lxqt_wallet_size");
-
-        while (i < j)
+        if (k == -1)
         {
-            k = _get_integer_value(keyID, i);
-
-            if (k == -1)
+            if (_set_integer_value(keyID, walletLabel, key, i))
             {
-                if (_set_integer_value(keyID, walletLabel, key, i))
+                if (_set_string_value(keyValues, walletLabel, value, key))
                 {
-                    if (_set_string_value(keyValues, walletLabel, value, key))
-                    {
-                        return TRUE;
-                    }
-                    else
-                    {
-                        _clear_integer_value(keyID, i);
-                        return FALSE;
-                    }
+                    return TRUE;
                 }
                 else
                 {
+                    _clear_integer_value(keyID, i);
                     return FALSE;
                 }
             }
             else
             {
-                i++;
+                return FALSE;
             }
+        }
+        else
+        {
+            i++;
         }
     }
 
     return FALSE;
 }
 
-gboolean lxqt_secret_service_clear_sync(const char *key, const void *p, const void *q)
+gboolean lxqt_secret_service_password_store_sync(const char *key,
+        const char *value,
+        const void *keyValues,
+        const void *keyID)
 {
-    const SecretSchema *keyValues = p;
-    const SecretSchema *keyID     = q;
+    int j;
+
+    if (lxqt_secret_service_wallet_is_open(keyValues))
+    {
+        j = _get_string_value(keyValues, "lxqt_wallet_size");
+
+        if (j == -1)
+        {
+            return _password_store_sync(key, value, keyValues, keyID, 1);
+        }
+        else
+        {
+            return _password_store_sync(key, value, keyValues, keyID, j + 1);
+        }
+    }
+    else
+    {
+        return FALSE;
+    }
+}
+
+static gboolean _exceeded_limit(int k)
+{
+    /*
+     * We dont expect to manage 10000 entries and getting this far most likely means we are
+     * stuck in an endless loop
+     */
+    return k == 10000;
+}
+
+gboolean lxqt_secret_service_clear_sync(const char *key, const void *kv, const void *id)
+{
+    const SecretSchema *keyValues = kv;
+    const SecretSchema *keyID     = id;
 
     int i = 0;
     int k = 0;
@@ -291,59 +279,62 @@ gboolean lxqt_secret_service_clear_sync(const char *key, const void *p, const vo
 
     int j = _number_of_entries_in_the_wallet(keyValues);
 
-    if (!lxqt_secret_service_wallet_is_open(keyValues))
+    if (lxqt_secret_service_wallet_is_open(keyValues))
     {
-        return FALSE;
-    }
-
-    while (i <= j)
-    {
-        c = _get_integer_value_0(keyID, k);
-
-        if (c != NULL)
+        while (i <= j)
         {
-            e = strcmp(c, key);
+            c = _get_integer_value_0(keyID, k);
 
-            free(c);
-
-            if (e == 0)
+            if (c != NULL)
             {
-                _clear_integer_value(keyID, k);
+                e = strcmp(c, key);
 
-                e = _get_string_value(keyValues, "lxqt_wallet_size");
-                snprintf(wallet_size, BUFFER_SIZE, "%d", e - 1);
+                free(c);
 
-                _set_string_value(keyValues, walletLabel, wallet_size, "lxqt_wallet_size");
+                if (e == 0)
+                {
+                    _clear_integer_value(keyID, k);
 
-                _clear_string_value(keyValues, key);
+                    e = _get_string_value(keyValues, "lxqt_wallet_size");
+                    snprintf(wallet_size, BUFFER_SIZE, "%d", e - 1);
 
-                return TRUE;
+                    _set_string_value(keyValues, walletLabel, wallet_size, "lxqt_wallet_size");
+
+                    _clear_string_value(keyValues, key);
+
+                    return TRUE;
+                }
+                else
+                {
+                    i++;
+                    k++;
+                }
             }
             else
             {
-                i++;
                 k++;
+
+                if (_exceeded_limit(k))
+                {
+                    break;
+                }
             }
-        }
-        else
-        {
-            k++;
         }
     }
 
     return FALSE;
 }
 
-char **lxqt_secret_get_all_keys(const void *p, const void *q, int *count)
+char **lxqt_secret_get_all_keys(const void *kv, const void *id, int *count)
 {
-    const SecretSchema *keyValues = p;
-    const SecretSchema *keyID     = q;
+    const SecretSchema *keyValues = kv;
+    const SecretSchema *keyID     = id;
 
     int k = 0;
     int i = 0;
     int j;
 
-    char **c = NULL ;
+    char **c = NULL;
     char *e  = NULL;
 
     *count = 0;
@@ -369,6 +360,11 @@ char **lxqt_secret_get_all_keys(const void *p, const void *q, int *count)
                 else
                 {
                     k++;
+
+                    if (_exceeded_limit(k))
+                    {
+                        break;
+                    }
                 }
             }
         }

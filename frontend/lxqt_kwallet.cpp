@@ -1,5 +1,5 @@
 /*
- * copyright: 2013
+ * copyright: 2013-2015
  * name : Francis Banyikwa
  * email: mhogomchungu@gmail.com
  *
@@ -74,7 +74,7 @@ bool LxQt::Wallet::kwallet::await_open(const QString &walletName, const QString 
 
     m_kwallet = _task([ this ]() { return KWallet::Wallet::openWallet(m_walletName, 0, KWallet::Wallet::Synchronous); });
 
-    if (m_kwallet)
+    if (m_kwallet != nullptr)
     {
         if (m_applicationName.isEmpty())
         {
@@ -227,3 +227,4 @@ QString LxQt::Wallet::kwallet::networkDefaultWalletName()
 {
     return m_kwallet->NetworkWallet();
 }
+

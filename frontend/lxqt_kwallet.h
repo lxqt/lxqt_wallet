@@ -1,5 +1,5 @@
 /*
- * copyright: 2013
+ * copyright: 2013-2015
  * name : Francis Banyikwa
  * email: mhogomchungu@gmail.com
  *
@@ -62,7 +62,7 @@ public:
     QVector<LxQt::Wallet::walletKeyValues> readAllKeyValues(void);
     QStringList readAllKeys(void);
     void deleteKey(const QString &key);
-    int walletSize(void);
+    int walletSize(void) ;
     void closeWallet(bool);
     LxQt::Wallet::walletBackEnd backEnd(void);
     bool walletIsOpened(void);

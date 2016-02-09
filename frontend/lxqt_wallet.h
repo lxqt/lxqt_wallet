@@ -1,5 +1,5 @@
 /*
- * copyright: 2013
+ * copyright: 2013-2015
  * name : Francis Banyikwa
  * email: mhogomchungu@gmail.com
  *
@@ -39,10 +39,6 @@
 #include <QVector>
 #include <QStringList>
 #include <QDir>
-
-/*
- * An example of how to use the API is at the end of this header file.
- */
 
 namespace LxQt
 {

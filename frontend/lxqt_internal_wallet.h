@@ -1,5 +1,5 @@
 /*
- * copyright: 2013
+ * copyright: 2013-2015
  * name : Francis Banyikwa
  * email: mhogomchungu@gmail.com
  *
@@ -46,6 +46,9 @@
 #include <QDir>
 #include <QEventLoop>
 
+#include <functional>
+#include <utility>
+
 class QWidget;
 
 namespace LxQt
@@ -69,7 +72,7 @@ public:
     QVector<LxQt::Wallet::walletKeyValues> readAllKeyValues(void);
     QStringList readAllKeys(void);
     void deleteKey(const QString &key);
-    int walletSize(void) ;
+    int walletSize(void);
     void closeWallet(bool);
     LxQt::Wallet::walletBackEnd backEnd(void);
     bool walletIsOpened(void);
@@ -83,16 +86,12 @@ public:
     void setImage(const QString &);
 signals:
     void walletIsOpen(bool);
-    void passwordIsCorrect(bool);
-    void walletpassWordChanged(bool);
     void getPassWord(QString);
-private slots:
-    bool openWallet(QString);
-    void cancelled(void);
-    void password(QString, bool);
 private:
-    void taskResult(bool);
-    bool openWallet(void);
+    void openWallet(QString);
+    void createWallet(void);
+    void openWallet();
+    void opened(bool);
     lxqt_wallet_t m_wallet;
     QString m_walletName;
     QString m_applicationName;
@@ -102,6 +101,8 @@ private:
     QWidget *m_interfaceObject;
     QEventLoop m_loop;
     bool m_opened;
+
+    std::function< void(bool) > m_correctPassword = [](bool e) { Q_UNUSED(e) };
 };
 
 }
