@@ -452,13 +452,11 @@ int r = Task::run<int>(_a).await();
 
 std::function< int(int) > meaw = [](int x)
 {
-
     return x + 1;
 };
 
 Task::run(meaw, 6).then([](int r)
 {
-
     qDebug() << r;
 });
 
