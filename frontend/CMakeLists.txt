@@ -283,17 +283,6 @@ else()
 	TARGET_LINK_LIBRARIES(lxqtwallet "${link_libraries}" lxqtwallet-backend ${QT_LIBRARIES} )
 endif()
 
-if("${LIB_SUFFIX}" STREQUAL "default")
-
-	if(CMAKE_SIZEOF_VOID_P EQUAL 8)
-		set(LIB_PATH "${CMAKE_INSTALL_PREFIX}/lib64")
-	else()
-		set(LIB_PATH "${CMAKE_INSTALL_PREFIX}/lib")
-	endif()
-else()
-	set(LIB_PATH "${CMAKE_INSTALL_PREFIX}/${LIB_SUFFIX}")
-endif()
-
 install( FILES ../translations.qm/german_DE.qm   DESTINATION share/lxqt_wallet/translations.qm/ )
 install( FILES ../translations.qm/greek_GR.qm    DESTINATION share/lxqt_wallet/translations.qm/ )
 install( FILES ../translations.qm/dutch_NL.qm    DESTINATION share/lxqt_wallet/translations.qm/ )

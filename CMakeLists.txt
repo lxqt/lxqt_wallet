@@ -15,5 +15,28 @@ configure_file(
 add_custom_target( uninstall
 COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake )
 
+if( NOT BUILD_SHARED )
+	set( BUILD_SHARED "true" )
+endif()
+
+if( LIB_SUFFIX )
+	if("${LIB_SUFFIX}" STREQUAL "default")
+
+		if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+			set(LIB_PATH "${CMAKE_INSTALL_PREFIX}/lib64")
+		else()
+			set(LIB_PATH "${CMAKE_INSTALL_PREFIX}/lib")
+		endif()
+	else()
+		set(LIB_PATH "${CMAKE_INSTALL_PREFIX}/${LIB_SUFFIX}")
+	endif()
+else()
+	if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+		set(LIB_PATH "${CMAKE_INSTALL_PREFIX}/lib64")
+	else()
+		set(LIB_PATH "${CMAKE_INSTALL_PREFIX}/lib")
+	endif()
+endif()
+
 add_subdirectory(backend)
 add_subdirectory(frontend)
