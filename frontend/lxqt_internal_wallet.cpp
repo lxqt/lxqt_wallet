@@ -60,7 +60,6 @@ void LxQt::Wallet::internalWallet::openWallet(QString password)
 
     }).then([this](lxqt_wallet_error r)
     {
-
         this->opened(r == lxqt_wallet_no_error);
     });
 }
@@ -189,7 +188,7 @@ void LxQt::Wallet::internalWallet::createWallet()
         {
             m_password = password;
 
-            Task::run< lxqt_wallet_error >([this]()
+            Task::run<lxqt_wallet_error>([this]()
             {
                 return lxqt_wallet_create(m_password.toLatin1().constData(),
                                           m_password.size(),
@@ -327,7 +326,7 @@ QString LxQt::Wallet::internalWallet::storagePath()
 
 QStringList LxQt::Wallet::internalWallet::managedWalletList()
 {
-    char path[ 4096 ];
+    char path[4096];
     lxqt_wallet_application_wallet_path(path, 4096, m_applicationName.toLatin1().constData());
     QDir d(path);
     QStringList l = d.entryList();
