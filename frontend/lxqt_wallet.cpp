@@ -65,7 +65,7 @@ LxQt::Wallet::Wallet *LxQt::Wallet::getWalletBackend(LxQt::Wallet::walletBackEnd
 #if HAS_KWALLET_SUPPORT
         return new LxQt::Wallet::kwallet();
 #else
-        return NULL;
+	return nullptr;
 #endif
     }
 
@@ -74,11 +74,11 @@ LxQt::Wallet::Wallet *LxQt::Wallet::getWalletBackend(LxQt::Wallet::walletBackEnd
 #if HAS_SECRET_SUPPORT
         return new LxQt::Wallet::secretService();
 #else
-        return NULL;
+	return nullptr;
 #endif
     }
 
-    return NULL;
+    return nullptr;
 }
 
 bool LxQt::Wallet::backEndIsSupported(LxQt::Wallet::walletBackEnd bk)
@@ -90,20 +90,12 @@ bool LxQt::Wallet::backEndIsSupported(LxQt::Wallet::walletBackEnd bk)
 
     if (bk == LxQt::Wallet::kwalletBackEnd)
     {
-#if HAS_KWALLET_SUPPORT
-        return true;
-#else
-        return false;
-#endif
+	return HAS_KWALLET_SUPPORT;
     }
 
     if (bk == LxQt::Wallet::secretServiceBackEnd)
     {
-#if HAS_SECRET_SUPPORT
-        return true;
-#else
-        return false;
-#endif
+	return HAS_SECRET_SUPPORT;
     }
 
     return false;

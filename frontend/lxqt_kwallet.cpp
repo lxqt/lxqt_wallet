@@ -146,13 +146,13 @@ QByteArray LxQt::Wallet::kwallet::readValue(const QString &key)
 QVector<LxQt::Wallet::walletKeyValues> LxQt::Wallet::kwallet::readAllKeyValues(void)
 {
     QVector<LxQt::Wallet::walletKeyValues> p;
-    QStringList l = m_kwallet->entryList();
+    auto l = m_kwallet->entryList();
     QString value;
-    int j = l.size();
+    auto j = l.size();
 
     for (int i = 0; i < j; i++)
     {
-        auto &e = l.at(i);
+	const auto &e = l.at(i);
         m_kwallet->readPassword(e, value);
         p.append(LxQt::Wallet::walletKeyValues(e, value.toLatin1()));
     }
@@ -171,8 +171,7 @@ void LxQt::Wallet::kwallet::deleteKey(const QString &key)
 
 int LxQt::Wallet::kwallet::walletSize(void)
 {
-    QStringList l = m_kwallet->entryList();
-    return l.size();
+    return this->readAllKeys().size();
 }
 
 void LxQt::Wallet::kwallet::closeWallet(bool b)

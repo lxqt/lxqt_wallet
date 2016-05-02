@@ -287,7 +287,7 @@ void LxQt::Wallet::internalWallet::deleteKey(const QString &key)
 
 int LxQt::Wallet::internalWallet::walletSize(void)
 {
-    return lxqt_wallet_wallet_size(m_wallet);
+    return lxqt_wallet_wallet_entry_count(m_wallet);
 }
 
 void LxQt::Wallet::internalWallet::closeWallet(bool b)
@@ -329,7 +329,7 @@ QStringList LxQt::Wallet::internalWallet::managedWalletList()
     char path[4096];
     lxqt_wallet_application_wallet_path(path, 4096, m_applicationName.toLatin1().constData());
     QDir d(path);
-    QStringList l = d.entryList();
+    auto l = d.entryList();
     l.removeOne(".");
     l.removeOne("..");
 
