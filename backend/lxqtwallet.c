@@ -1438,10 +1438,6 @@ static gcry_error_t _create_temp_key(char *output_key, u_int32_t output_key_size
         }
         gcry_md_close(md);
     }
-    else
-    {
-        ;
-    }
 
     return r;
 }

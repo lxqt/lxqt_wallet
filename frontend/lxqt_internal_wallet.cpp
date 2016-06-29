@@ -41,17 +41,16 @@ LxQt::Wallet::internalWallet::~internalWallet()
     lxqt_wallet_close(&m_wallet);
 }
 
-void LxQt::Wallet::internalWallet::setImage(const QString &image)
+void LxQt::Wallet::internalWallet::setImage(const QIcon &image)
 {
-    m_image = image;
-    this->setWindowIcon(QIcon(image));
+    this->setWindowIcon(image);
 }
 
 void LxQt::Wallet::internalWallet::openWallet(QString password)
 {
     m_password = password;
 
-    Task::run< lxqt_wallet_error >([this]()
+    Task::run<lxqt_wallet_error>([this]()
     {
         return lxqt_wallet_open(&m_wallet,
                                 m_password.toLatin1().constData(),
@@ -79,8 +78,10 @@ void LxQt::Wallet::internalWallet::opened(bool opened)
     }
 }
 
-bool LxQt::Wallet::internalWallet::await_open(const QString &walletName, const QString &applicationName,
-        const QString &password, const QString &displayApplicationName)
+bool LxQt::Wallet::internalWallet::await_open(const QString &walletName,
+        const QString &applicationName,
+        const QString &password,
+        const QString &displayApplicationName)
 {
     this->open(walletName, applicationName, password, displayApplicationName);
 
@@ -89,8 +90,10 @@ bool LxQt::Wallet::internalWallet::await_open(const QString &walletName, const Q
     return m_opened;
 }
 
-void LxQt::Wallet::internalWallet::open(const QString &walletName, const QString &applicationName,
-                                        const QString &password, const QString &displayApplicationName)
+void LxQt::Wallet::internalWallet::open(const QString &walletName,
+                                        const QString &applicationName,
+                                        const QString &password,
+                                        const QString &displayApplicationName)
 {
     m_walletName      = walletName;
     m_applicationName = applicationName;
@@ -129,7 +132,7 @@ void LxQt::Wallet::internalWallet::openWallet()
          * prompt on failure,this will allow a silent opening of the wallet set without a password.
          */
 
-        Task::run< lxqt_wallet_error >([this]()
+        Task::run<lxqt_wallet_error>([ this ]()
         {
             return lxqt_wallet_open(&m_wallet,
                                     m_password.toLatin1().constData(),
@@ -182,7 +185,7 @@ void LxQt::Wallet::internalWallet::createWallet()
     const auto &w = m_walletName;
     const auto &d = m_displayApplicationName;
 
-    cbd::instance(this, w, d).ShowUI([this](const QString & password, bool create)
+    cbd::instance(this, w, d, [this](const QString & password, bool create)
     {
         if (create)
         {
@@ -216,7 +219,7 @@ void LxQt::Wallet::internalWallet::createWallet()
 
 void LxQt::Wallet::internalWallet::changeWalletPassWord(const QString &walletName, const QString &applicationName)
 {
-    LxQt::Wallet::changePassWordDialog::instance(this, walletName, applicationName).ShowUI([this](bool c)
+    LxQt::Wallet::changePassWordDialog::instance_1(this, walletName, applicationName, [this](bool c)
     {
         QMetaObject::invokeMethod(m_interfaceObject, "walletpassWordChanged", Q_ARG(bool, c));
     });
@@ -287,7 +290,7 @@ void LxQt::Wallet::internalWallet::deleteKey(const QString &key)
 
 int LxQt::Wallet::internalWallet::walletSize(void)
 {
-    return lxqt_wallet_wallet_entry_count(m_wallet);
+    return lxqt_wallet_wallet_size(m_wallet);
 }
 
 void LxQt::Wallet::internalWallet::closeWallet(bool b)
@@ -306,11 +309,16 @@ bool LxQt::Wallet::internalWallet::walletIsOpened()
     return m_wallet != 0;
 }
 
-void LxQt::Wallet::internalWallet::setInterfaceObject(QWidget *interfaceObject)
+void LxQt::Wallet::internalWallet::setInterfaceObject(QWidget *interfaceObject, bool w)
 {
     this->setParent(interfaceObject);
+
     m_interfaceObject = interfaceObject;
-    connect(this, SIGNAL(walletIsOpen(bool)), m_interfaceObject, SLOT(walletIsOpen(bool)));
+
+    if (w)
+    {
+        connect(this, SIGNAL(walletIsOpen(bool)), m_interfaceObject, SLOT(walletIsOpen(bool)));
+    }
 }
 
 QObject *LxQt::Wallet::internalWallet::qObject()
@@ -326,10 +334,10 @@ QString LxQt::Wallet::internalWallet::storagePath()
 
 QStringList LxQt::Wallet::internalWallet::managedWalletList()
 {
-    char path[4096];
+    char path[ 4096 ];
     lxqt_wallet_application_wallet_path(path, 4096, m_applicationName.toLatin1().constData());
     QDir d(path);
-    auto l = d.entryList();
+    QStringList l = d.entryList();
     l.removeOne(".");
     l.removeOne("..");
 

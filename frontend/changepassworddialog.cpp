@@ -35,7 +35,9 @@
 
 namespace Task = LxQt::Wallet::Task;
 
-LxQt::Wallet::changePassWordDialog::changePassWordDialog(QWidget *parent, const QString &walletName, const QString &applicationName):
+LxQt::Wallet::changePassWordDialog::changePassWordDialog(QWidget *parent,
+        const QString &walletName,
+        const QString &applicationName):
     QDialog(parent), m_ui(new Ui::changePassWordDialog), m_walletName(walletName),
     m_applicationName(applicationName)
 {
@@ -65,7 +67,7 @@ bool LxQt::Wallet::changePassWordDialog::eventFilter(QObject *watched, QEvent *e
     {
         if (event->type() == QEvent::KeyPress)
         {
-            auto keyEvent = static_cast< QKeyEvent * >(event);
+            auto keyEvent = static_cast<QKeyEvent *>(event);
 
             if (keyEvent->key() == Qt::Key_Escape)
             {
@@ -88,7 +90,7 @@ void LxQt::Wallet::changePassWordDialog::HideUI()
     this->deleteLater();
 }
 
-void LxQt::Wallet::changePassWordDialog::ShowUI(std::function< void(bool) > && change)
+void LxQt::Wallet::changePassWordDialog::ShowUI_1(std::function< void(bool) > && change)
 {
     m_change = std::move(change);
 
@@ -201,11 +203,11 @@ void LxQt::Wallet::changePassWordDialog::change()
 
         auto password = m_ui->lineEditCurrentPassWord->text();
 
-        Task::run< wallet >([ this, password ]()
+        Task::run<wallet>([ this, password ]()
         {
             return wallet(password, m_walletName, m_applicationName);
 
-        }).then([ this ](wallet w)
+        }).then([this](wallet w)
         {
             if (w)
             {

@@ -67,14 +67,14 @@ public:
     void closeWallet(bool);
     LxQt::Wallet::walletBackEnd backEnd(void);
     bool walletIsOpened(void);
-    void setInterfaceObject(QWidget *parent);
+    void setInterfaceObject(QWidget *parent, bool = true);
     QObject *qObject(void);
     QString storagePath(void);
     void changeWalletPassWord(const QString &walletName, const QString &applicationName = QString());
     QStringList managedWalletList(void);
     QString localDefaultWalletName(void);
     QString networkDefaultWalletName(void);
-    void setImage(const QString &);
+    void setImage(const QIcon &);
 signals:
     void walletIsOpen(bool);
 private slots:
@@ -88,7 +88,7 @@ private:
     const char *m_applicationName;
 
     QString m_password;
-    QWidget *m_interfaceObject;
+    QWidget *m_interfaceObject = nullptr;
 
     std::unique_ptr<void, void( *)(void *)> m_schema;
     std::unique_ptr<void, void( *)(void *)> m_schema_1;

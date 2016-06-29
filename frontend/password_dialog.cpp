@@ -61,7 +61,7 @@ LxQt::Wallet::password_dialog::password_dialog(QWidget *parent,
     m_ui->labelWalletDoesNotExist->setVisible(false);
     m_ui->labelHeader->setText(m_banner);
 
-    *z = [ this ](bool correctPassword)
+    *z = [this](bool correctPassword)
     {
         if (correctPassword)
         {

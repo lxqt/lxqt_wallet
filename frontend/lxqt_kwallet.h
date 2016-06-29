@@ -62,21 +62,18 @@ public:
     QVector<LxQt::Wallet::walletKeyValues> readAllKeyValues(void);
     QStringList readAllKeys(void);
     void deleteKey(const QString &key);
-    int walletSize(void) ;
+    int walletSize(void);
     void closeWallet(bool);
     LxQt::Wallet::walletBackEnd backEnd(void);
     bool walletIsOpened(void);
-    void setInterfaceObject(QWidget *parent);
+    void setInterfaceObject(QWidget *parent, bool = true);
     QObject *qObject(void);
     QString storagePath(void);
     void changeWalletPassWord(const QString &walletName, const QString &applicationName = QString());
     QStringList managedWalletList(void);
     QString localDefaultWalletName(void);
     QString networkDefaultWalletName(void);
-    void setImage(const QString &);
-signals:
-    void walletpassWordChanged(bool);
-    void walletOpened_1(bool);
+    void setImage(const QIcon &);
 private slots:
     void walletOpened(bool);
 private:
@@ -84,7 +81,8 @@ private:
     QString m_walletName;
     QString m_applicationName;
     QString m_password;
-    QWidget *m_interfaceObject;
+    QWidget *m_interfaceObject = nullptr;
+    bool m_announceInterfaceEvents = true;
 };
 
 }

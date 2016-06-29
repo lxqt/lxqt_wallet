@@ -359,14 +359,14 @@ void exec(std::function< T(Args ...) > function, Args ... args)
 
 Examples on how to use the library
 
-** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
+******************************************************** **
 * Example use cases on how to use Task::run().then() API
-** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
+******************************************************** **
 
 templated version that passes a return value of one function to another function
--------------------------------------------------------------------------------- -
+                                       -------------------------------------------------------------------------------- -
 
-int _a()
+                                       int _a()
 {
     /*
      * This task will run on a different thread
@@ -393,8 +393,8 @@ e.then(_b);
 
 
 Non templated version that does not pass around return value
-----------------------------------------------------------------
-void _c()
+        ----------------------------------------------------------------
+        void _c()
 {
     /*
      * This task will run on a different thread
@@ -418,9 +418,9 @@ Task::future<void>& e = Task::run(_c);
 
 e.then(_d);
 
-** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
+******************************************************** **
 * Example use cases on how to use Task::run().await() API
-** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
+******************************************************** **
 
 int r = Task::await<int>(_a);
 
@@ -434,9 +434,9 @@ alternatively,
 
 int r = Task::run<int>(_a).await();
 
-** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** *
+****************************************************************** *
 * Example use cases on how to use lambda that requires an argument
-** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** *
+****************************************************************** *
 
 /*
  * declaring "meaw" with an auto keyword will not be sufficient here

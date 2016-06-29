@@ -44,7 +44,7 @@ LxQt::Wallet::kwallet::~kwallet()
     }
 }
 
-void LxQt::Wallet::kwallet::setImage(const QString &image)
+void LxQt::Wallet::kwallet::setImage(const QIcon &image)
 {
     Q_UNUSED(image);
 }
@@ -54,8 +54,10 @@ bool LxQt::Wallet::kwallet::addKey(const QString &key, const QByteArray &value)
     return m_kwallet->writePassword(key, value) == 0;
 }
 
-bool LxQt::Wallet::kwallet::await_open(const QString &walletName, const QString &applicationName,
-                                       const QString &password, const QString &displayApplicationName)
+bool LxQt::Wallet::kwallet::await_open(const QString &walletName,
+                                       const QString &applicationName,
+                                       const QString &password,
+                                       const QString &displayApplicationName)
 {
     if (walletName == "default")
     {
@@ -65,6 +67,7 @@ bool LxQt::Wallet::kwallet::await_open(const QString &walletName, const QString 
     {
         m_walletName = walletName;
     }
+
     m_applicationName   = applicationName;
     m_password          = password;
 
@@ -72,9 +75,9 @@ bool LxQt::Wallet::kwallet::await_open(const QString &walletName, const QString 
 
 #define _task LxQt::Wallet::Task::await<KWallet::Wallet*>
 
-    m_kwallet = _task([ this ]() { return KWallet::Wallet::openWallet(m_walletName, 0, KWallet::Wallet::Synchronous); });
+    m_kwallet = _task([this]() { return KWallet::Wallet::openWallet(m_walletName, 0, KWallet::Wallet::Synchronous); });
 
-    if (m_kwallet != nullptr)
+    if (m_kwallet)
     {
         if (m_applicationName.isEmpty())
         {
@@ -95,8 +98,10 @@ bool LxQt::Wallet::kwallet::await_open(const QString &walletName, const QString 
     }
 }
 
-void LxQt::Wallet::kwallet::open(const QString &walletName, const QString &applicationName,
-                                 const QString &password, const QString &displayApplicationName)
+void LxQt::Wallet::kwallet::open(const QString &walletName,
+                                 const QString &applicationName,
+                                 const QString &password,
+                                 const QString &displayApplicationName)
 {
     if (walletName == "default")
     {
@@ -106,6 +111,7 @@ void LxQt::Wallet::kwallet::open(const QString &walletName, const QString &appli
     {
         m_walletName = walletName;
     }
+
     m_applicationName   = applicationName;
     m_password          = password;
 
@@ -132,30 +138,41 @@ void LxQt::Wallet::kwallet::walletOpened(bool opened)
         }
     }
 
-    connect(this, SIGNAL(walletOpened_1(bool)), m_interfaceObject, SLOT(walletIsOpen(bool)));
-    emit walletOpened_1(opened);
+    if (m_announceInterfaceEvents && m_interfaceObject)
+    {
+        QMetaObject::invokeMethod(m_interfaceObject,
+                                  "walletIsOpen",
+                                  Qt::QueuedConnection,
+                                  Q_ARG(bool, opened));
+    }
 }
 
 QByteArray LxQt::Wallet::kwallet::readValue(const QString &key)
 {
     QString value;
+
     m_kwallet->readPassword(key, value);
+
     return value.toLatin1();
 }
 
 QVector<LxQt::Wallet::walletKeyValues> LxQt::Wallet::kwallet::readAllKeyValues(void)
 {
     QVector<LxQt::Wallet::walletKeyValues> p;
+
     auto l = m_kwallet->entryList();
+
     QString value;
-    auto j = l.size();
+
+    int j = l.size();
 
     for (int i = 0; i < j; i++)
     {
-	const auto &e = l.at(i);
+        const auto &e = l.at(i);
         m_kwallet->readPassword(e, value);
         p.append(LxQt::Wallet::walletKeyValues(e, value.toLatin1()));
     }
+
     return p;
 }
 
@@ -171,7 +188,7 @@ void LxQt::Wallet::kwallet::deleteKey(const QString &key)
 
 int LxQt::Wallet::kwallet::walletSize(void)
 {
-    return this->readAllKeys().size();
+    return m_kwallet->entryList().size();
 }
 
 void LxQt::Wallet::kwallet::closeWallet(bool b)
@@ -189,8 +206,10 @@ bool LxQt::Wallet::kwallet::walletIsOpened(void)
     return m_kwallet->isOpen();
 }
 
-void LxQt::Wallet::kwallet::setInterfaceObject(QWidget *interfaceObject)
+void LxQt::Wallet::kwallet::setInterfaceObject(QWidget *interfaceObject, bool e)
 {
+    m_announceInterfaceEvents = e;
+
     m_interfaceObject = interfaceObject;
 }
 
@@ -207,9 +226,8 @@ QString LxQt::Wallet::kwallet::storagePath()
 void LxQt::Wallet::kwallet::changeWalletPassWord(const QString &walletName, const QString &applicationName)
 {
     Q_UNUSED(applicationName);
+
     m_kwallet->changePassword(walletName, 0);
-    connect(this, SIGNAL(walletpassWordChanged(bool)), m_interfaceObject, SLOT(walletpassWordChanged(bool)));
-    emit walletpassWordChanged(false);
 }
 
 QStringList LxQt::Wallet::kwallet::managedWalletList()

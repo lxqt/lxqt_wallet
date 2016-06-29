@@ -171,6 +171,7 @@ void *lxqt_secret_service_create_schema(const char *schemaName, const char *type
 
     if (strcmp(type, "string") == 0)
     {
+
         s->attributes[0].type = SECRET_SCHEMA_ATTRIBUTE_STRING;
     }
     else
@@ -323,6 +324,7 @@ gboolean lxqt_secret_service_clear_sync(const char *key, const void *kv, const v
 
                 if (_exceeded_limit(k))
                 {
+
                     break;
                 }
             }
@@ -370,6 +372,7 @@ char **lxqt_secret_get_all_keys(const void *kv, const void *id, int *count)
 
                     if (_exceeded_limit(k))
                     {
+
                         break;
                     }
                 }
