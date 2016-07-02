@@ -2,41 +2,41 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="el_GR" sourcelanguage="en_US">
 <context>
-    <name>LxQt::Wallet::changePassWordDialog</name>
+    <name>LXQt::Wallet::changePassWordDialog</name>
     <message>
-        <location filename="../frontend/changepassworddialog.cpp" line="110"/>
+        <location filename="../frontend/changepassworddialog.cpp" line="108"/>
         <source>Create a new wallet</source>
         <translation>Δημιουργία νέου πορτοφολιού</translation>
     </message>
     <message>
-        <location filename="../frontend/changepassworddialog.cpp" line="112"/>
+        <location filename="../frontend/changepassworddialog.cpp" line="110"/>
         <source>Create</source>
         <translation>Δημιουργία</translation>
     </message>
     <message>
-        <location filename="../frontend/changepassworddialog.cpp" line="140"/>
-        <location filename="../frontend/changepassworddialog.cpp" line="282"/>
+        <location filename="../frontend/changepassworddialog.cpp" line="138"/>
+        <location filename="../frontend/changepassworddialog.cpp" line="280"/>
         <source>Passwords do not match</source>
         <translation>Οι κωδικοί πρόσβασης δεν ταιριάζουν</translation>
     </message>
     <message>
-        <location filename="../frontend/changepassworddialog.cpp" line="246"/>
-        <source>New passwords do not match</source>
-        <translation>Οι νέοι κωδικοί πρόσβασης δεν ταιριάζουν</translation>
-    </message>
-    <message>
-        <location filename="../frontend/changepassworddialog.cpp" line="223"/>
+        <location filename="../frontend/changepassworddialog.cpp" line="221"/>
         <source>Wallet password could not be changed</source>
         <translation>Δεν ήταν δυνατή η αλλαγή κωδικού πρόσβασης του πορτοφολιού</translation>
     </message>
     <message>
-        <location filename="../frontend/changepassworddialog.cpp" line="234"/>
+        <location filename="../frontend/changepassworddialog.cpp" line="232"/>
         <source>Wallet could not be opened with the presented key</source>
         <translation>Το πορτοφόλι δεν ήταν δυνατόν να ανοιχθεί με το δοσμένο κλειδί</translation>
     </message>
+    <message>
+        <location filename="../frontend/changepassworddialog.cpp" line="244"/>
+        <source>New passwords do not match</source>
+        <translation>Οι νέοι κωδικοί πρόσβασης δεν ταιριάζουν</translation>
+    </message>
 </context>
 <context>
-    <name>LxQt::Wallet::password_dialog</name>
+    <name>LXQt::Wallet::password_dialog</name>
     <message>
         <location filename="../frontend/password_dialog.cpp" line="72"/>
         <source>Wallet could not be opened with the presented key</source>

@@ -2,41 +2,41 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="de_DE">
 <context>
-    <name>LxQt::Wallet::changePassWordDialog</name>
+    <name>LXQt::Wallet::changePassWordDialog</name>
     <message>
-        <location filename="../frontend/changepassworddialog.cpp" line="110"/>
+        <location filename="../frontend/changepassworddialog.cpp" line="108"/>
         <source>Create a new wallet</source>
         <translation>Eine neue Brieftasche erzeugen</translation>
     </message>
     <message>
-        <location filename="../frontend/changepassworddialog.cpp" line="112"/>
+        <location filename="../frontend/changepassworddialog.cpp" line="110"/>
         <source>Create</source>
         <translation>Erzeugen</translation>
     </message>
     <message>
-        <location filename="../frontend/changepassworddialog.cpp" line="140"/>
-        <location filename="../frontend/changepassworddialog.cpp" line="282"/>
+        <location filename="../frontend/changepassworddialog.cpp" line="138"/>
+        <location filename="../frontend/changepassworddialog.cpp" line="280"/>
         <source>Passwords do not match</source>
         <translation>Die Passwörter stimmen nicht überein</translation>
     </message>
     <message>
-        <location filename="../frontend/changepassworddialog.cpp" line="246"/>
-        <source>New passwords do not match</source>
-        <translation>Die neuen Passwörter stimmen nicht überein</translation>
-    </message>
-    <message>
-        <location filename="../frontend/changepassworddialog.cpp" line="223"/>
+        <location filename="../frontend/changepassworddialog.cpp" line="221"/>
         <source>Wallet password could not be changed</source>
         <translation>Das Brieftaschenpasswort konnte nicht geändert werden</translation>
     </message>
     <message>
-        <location filename="../frontend/changepassworddialog.cpp" line="234"/>
+        <location filename="../frontend/changepassworddialog.cpp" line="232"/>
         <source>Wallet could not be opened with the presented key</source>
         <translation>Die Brieftasche konnte nicht mit dem präsentierten Schlüssel geöffnet werden</translation>
     </message>
+    <message>
+        <location filename="../frontend/changepassworddialog.cpp" line="244"/>
+        <source>New passwords do not match</source>
+        <translation>Die neuen Passwörter stimmen nicht überein</translation>
+    </message>
 </context>
 <context>
-    <name>LxQt::Wallet::password_dialog</name>
+    <name>LXQt::Wallet::password_dialog</name>
     <message>
         <location filename="../frontend/password_dialog.cpp" line="72"/>
         <source>Wallet could not be opened with the presented key</source>

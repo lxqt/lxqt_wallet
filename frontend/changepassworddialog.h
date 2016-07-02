@@ -48,7 +48,7 @@ namespace Ui
 class changePassWordDialog;
 }
 
-namespace LxQt
+namespace LXQt
 {
 
 namespace Wallet
@@ -80,9 +80,9 @@ public:
 
         return e;
     }
-    changePassWordDialog(QWidget *parent = 0,
-                         const QString &walletName = QString(),
-                         const QString &applicationName = QString());
+    explicit changePassWordDialog(QWidget *parent = 0,
+				  const QString &walletName = QString(),
+				  const QString &applicationName = QString());
     void ShowUI(std::function< void(const QString &, bool) > &&);
     void ShowUI_1(std::function< void(bool) > &&);
 

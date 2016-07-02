@@ -33,11 +33,9 @@
 
 #include <utility>
 
-namespace Task = LxQt::Wallet::Task;
+namespace Task = LXQt::Wallet::Task;
 
-LxQt::Wallet::changePassWordDialog::changePassWordDialog(QWidget *parent,
-        const QString &walletName,
-        const QString &applicationName):
+LXQt::Wallet::changePassWordDialog::changePassWordDialog(QWidget *parent, const QString &walletName, const QString &applicationName):
     QDialog(parent), m_ui(new Ui::changePassWordDialog), m_walletName(walletName),
     m_applicationName(applicationName)
 {
@@ -61,13 +59,13 @@ LxQt::Wallet::changePassWordDialog::changePassWordDialog(QWidget *parent,
     this->installEventFilter(this);
 }
 
-bool LxQt::Wallet::changePassWordDialog::eventFilter(QObject *watched, QEvent *event)
+bool LXQt::Wallet::changePassWordDialog::eventFilter(QObject *watched, QEvent *event)
 {
     if (watched == this)
     {
         if (event->type() == QEvent::KeyPress)
         {
-            auto keyEvent = static_cast<QKeyEvent *>(event);
+            auto keyEvent = static_cast< QKeyEvent * >(event);
 
             if (keyEvent->key() == Qt::Key_Escape)
             {
@@ -81,7 +79,7 @@ bool LxQt::Wallet::changePassWordDialog::eventFilter(QObject *watched, QEvent *e
     return false;
 }
 
-void LxQt::Wallet::changePassWordDialog::HideUI()
+void LXQt::Wallet::changePassWordDialog::HideUI()
 {
     m_change(m_walletPassWordChanged);
 
@@ -90,7 +88,7 @@ void LxQt::Wallet::changePassWordDialog::HideUI()
     this->deleteLater();
 }
 
-void LxQt::Wallet::changePassWordDialog::ShowUI_1(std::function< void(bool) > && change)
+void LXQt::Wallet::changePassWordDialog::ShowUI_1(std::function< void(bool) > && change)
 {
     m_change = std::move(change);
 
@@ -103,7 +101,7 @@ void LxQt::Wallet::changePassWordDialog::ShowUI_1(std::function< void(bool) > &&
     this->show();
 }
 
-void LxQt::Wallet::changePassWordDialog::ShowUI(std::function< void(const QString &, bool) > && create)
+void LXQt::Wallet::changePassWordDialog::ShowUI(std::function< void(const QString &, bool) > && create)
 {
     m_create = std::move(create);
 
@@ -123,12 +121,12 @@ void LxQt::Wallet::changePassWordDialog::ShowUI(std::function< void(const QStrin
     this->show();
 }
 
-LxQt::Wallet::changePassWordDialog::~changePassWordDialog()
+LXQt::Wallet::changePassWordDialog::~changePassWordDialog()
 {
     delete m_ui;
 }
 
-void LxQt::Wallet::changePassWordDialog::create()
+void LXQt::Wallet::changePassWordDialog::create()
 {
     if (m_ui->lineEditNewPassWord->text() == m_ui->lineEditNewPassWord_2->text())
     {
@@ -153,7 +151,7 @@ void LxQt::Wallet::changePassWordDialog::create()
     }
 }
 
-void LxQt::Wallet::changePassWordDialog::change()
+void LXQt::Wallet::changePassWordDialog::change()
 {
     m_ui->lineEditCurrentPassWord->setEnabled(false);
     m_ui->lineEditNewPassWord->setEnabled(false);
@@ -203,7 +201,7 @@ void LxQt::Wallet::changePassWordDialog::change()
 
         auto password = m_ui->lineEditCurrentPassWord->text();
 
-        Task::run<wallet>([ this, password ]()
+        Task::run<wallet>([this, password]()
         {
             return wallet(password, m_walletName, m_applicationName);
 
@@ -251,13 +249,13 @@ void LxQt::Wallet::changePassWordDialog::change()
     }
 }
 
-void LxQt::Wallet::changePassWordDialog::cancel()
+void LXQt::Wallet::changePassWordDialog::cancel()
 {
     m_create(QString(), false);
     this->HideUI();
 }
 
-void LxQt::Wallet::changePassWordDialog::ok()
+void LXQt::Wallet::changePassWordDialog::ok()
 {
     m_ui->lineEditCurrentPassWord->setEnabled(true);
     m_ui->lineEditCurrentPassWord->clear();
@@ -277,7 +275,7 @@ void LxQt::Wallet::changePassWordDialog::ok()
     m_ui->label->setText(m_banner);
 }
 
-void LxQt::Wallet::changePassWordDialog::ok_1()
+void LXQt::Wallet::changePassWordDialog::ok_1()
 {
     if (m_ui->label->text() == tr("Passwords do not match"))
     {
@@ -299,7 +297,7 @@ void LxQt::Wallet::changePassWordDialog::ok_1()
     }
 }
 
-void LxQt::Wallet::changePassWordDialog::closeEvent(QCloseEvent *e)
+void LXQt::Wallet::changePassWordDialog::closeEvent(QCloseEvent *e)
 {
     e->ignore();
     this->cancel();

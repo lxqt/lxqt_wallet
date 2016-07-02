@@ -171,7 +171,6 @@ void *lxqt_secret_service_create_schema(const char *schemaName, const char *type
 
     if (strcmp(type, "string") == 0)
     {
-
         s->attributes[0].type = SECRET_SCHEMA_ATTRIBUTE_STRING;
     }
     else
