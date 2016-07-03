@@ -92,12 +92,8 @@ bool LXQt::Wallet::secretService::await_open(const QString &walletName,
         const QString &password,
         const QString &displayApplicationName)
 {
-    this->open(walletName,
-               applicationName,
-    [](bool e) { Q_UNUSED(e); },
-    parent,
-    password,
-    displayApplicationName);
+    this->open(walletName,applicationName,[](bool e) { Q_UNUSED(e); },parent,password,
+               displayApplicationName);
 
     m_loop.exec();
 
@@ -111,7 +107,11 @@ void LXQt::Wallet::secretService::open(const QString &walletName,
                                        const QString &password,
                                        const QString &displayApplicationName)
 {
-    this->setParent(parent);
+    if (parent)
+    {
+        this->setParent(parent);
+    }
+
     m_walletOpened = std::move(function);
 
     Q_UNUSED(password);
