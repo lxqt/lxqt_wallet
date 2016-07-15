@@ -147,18 +147,18 @@ static int _clear_string_value(const SecretSchema *s, const char *k)
  * If the wallet is not open,the operation will block while a user is prompted for a key to unlock it.
  * If the user fail to unlock it,the operation will fail.
  */
-int lxqt_secret_service_wallet_is_open(const void *s)
+int lxqt_libsecret_wallet_is_open(const void *s)
 {
     const SecretSchema *e = s;
     return _set_string_value(e, e->name, "lxqt_wallet_open", "lxqt_wallet_open");
 }
 
-char *lxqt_secret_service_get_value(const char *key, const void *s)
+char *lxqt_libsecret_get_value(const char *key, const void *s)
 {
     return _get_string_value_0(s, key);
 }
 
-void *lxqt_secret_service_create_schema(const char *schemaName, const char *type)
+void *lxqt_libsecret_create_schema(const char *schemaName, const char *type)
 {
     SecretSchema *s = malloc(sizeof(SecretSchema));
 
@@ -236,14 +236,14 @@ static gboolean _password_store_sync(const char *key,
     return FALSE;
 }
 
-gboolean lxqt_secret_service_password_store_sync(const char *key,
+gboolean lxqt_libsecret_password_store_sync(const char *key,
         const char *value,
         const void *keyValues,
         const void *keyID)
 {
     int j;
 
-    if (lxqt_secret_service_wallet_is_open(keyValues))
+    if (lxqt_libsecret_wallet_is_open(keyValues))
     {
         j = _get_string_value(keyValues, "lxqt_wallet_size");
 
@@ -271,7 +271,7 @@ static gboolean _exceeded_limit(int k)
     return k == 10000;
 }
 
-gboolean lxqt_secret_service_clear_sync(const char *key, const void *kv, const void *id)
+gboolean lxqt_libsecret_clear_sync(const char *key, const void *kv, const void *id)
 {
     const SecretSchema *keyValues = kv;
     const SecretSchema *keyID     = id;
@@ -286,7 +286,7 @@ gboolean lxqt_secret_service_clear_sync(const char *key, const void *kv, const v
 
     int j = _number_of_entries_in_the_wallet(keyValues);
 
-    if (lxqt_secret_service_wallet_is_open(keyValues))
+    if (lxqt_libsecret_wallet_is_open(keyValues))
     {
         while (i <= j)
         {
@@ -333,7 +333,7 @@ gboolean lxqt_secret_service_clear_sync(const char *key, const void *kv, const v
     return FALSE;
 }
 
-char **lxqt_secret_get_all_keys(const void *kv, const void *id, int *count)
+char **lxqt_secret_get_all_keys(const void *kv, const void *id, size_t *count)
 {
     const SecretSchema *keyValues = kv;
     const SecretSchema *keyID     = id;
@@ -347,7 +347,7 @@ char **lxqt_secret_get_all_keys(const void *kv, const void *id, int *count)
 
     *count = 0;
 
-    if (lxqt_secret_service_wallet_is_open(keyValues))
+    if (lxqt_libsecret_wallet_is_open(keyValues))
     {
         j = _number_of_entries_in_the_wallet(keyValues);
         c = malloc(sizeof(char *) * j);
@@ -382,7 +382,7 @@ char **lxqt_secret_get_all_keys(const void *kv, const void *id, int *count)
     return c;
 }
 
-int lxqt_secret_service_wallet_size(const void *s)
+int lxqt_libsecret_wallet_size(const void *s)
 {
     return _number_of_entries_in_the_wallet(s);
 }

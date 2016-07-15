@@ -107,6 +107,14 @@ public:
     virtual bool addKey(const QString &key, const QByteArray &value) = 0;
 
     /*
+     * overloaded method to add a key to the wallet.
+     */
+    bool addKey(const QString &key,const QString &value)
+    {
+        return this->addKey(key, value.toLatin1());
+    }
+
+    /*
      * Get a value through a key.
      */
     virtual QByteArray readValue(const QString &key) = 0;
@@ -192,6 +200,7 @@ public:
      * If "password" argument is given,it will be used to unlock the wallet.
      * If "password" argument is not given,a GUI window will be generated to ask the user for the password.
      *
+     * The "widget" argument can also be set through setParent() method inherited from QWidget.
      */
     virtual void open(const QString &walletName,
                       const QString &applicationName,
@@ -265,40 +274,65 @@ public:
 
 #if 0
 
-void TestClass::testWallet()
+class test : public QWidget
 {
-    /*
-     * open a default backend( internal one )
-     */
-    m_wallet = LXQt::Wallet::getWalletBackend(LXQt::Wallet::BackEnd::internal);
+    Q_OBJECT
 
-    /*
-     * Open the wallet and read its contents
-     */
-    m_wallet->open("test_wallet_name", "test_application_name", [this](bool walletIsOpen)
+public:
+
+    ~test()
     {
-        if (walletIsOpen)
-        {
-            for (const auto & it : m_wallet->readAllKeyValues())
-            {
-                const auto &key   = it.first;
-                const auto &value = it.second;
-
-                qDebug() << "key=" << key << " : value=" << value;
-            }
-        }
-        else
-        {
-            qDebug() << "failed to open wallet";
-        }
-
-        /*
-         * Delete the wallet object when done with it
-         */
         m_wallet->deleteLater();
+    }
 
-    }, this);
-}
+    void print()
+    {
+        for (const auto & it : m_wallet->readAllKeyValues())
+        {
+            std::cout << it.first.toLatin1().constData();
+            std::cout << " : ";
+            std::cout << it.second.constData() << "\n";
+        }
+    }
+
+    void addKey()
+    {
+        m_wallet->addKey("test key", QByteArray("test value"));
+    }
+
+    void deleteKey()
+    {
+        m_wallet->deleteKey("test key");
+    }
+
+public slots:
+    void run()
+    {
+        m_wallet = LXQt::Wallet::getWalletBackend(LXQt::Wallet::BackEnd::internal);
+
+        m_wallet->setParent(this);
+
+        m_wallet->open("test", "test", [ this ](bool walletIsOpen)
+        {
+            if (walletIsOpen)
+            {
+		std::cout << "wallet is open.\n";
+		this->addKey();
+		this->print();
+		this->deleteKey();
+                QCoreApplication::quit();
+            }
+            else
+            {
+                std::cout << "Failed to unlock wallet.\n";
+                QCoreApplication::quit();
+            }
+        });
+    }
+
+private:
+    LXQt::Wallet::Wallet *m_wallet;
+};
 
 #endif
 

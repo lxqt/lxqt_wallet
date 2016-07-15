@@ -48,11 +48,11 @@ namespace LXQt
 namespace Wallet
 {
 
-class secretService : public LXQt::Wallet::Wallet
+class libsecret : public LXQt::Wallet::Wallet
 {
 public:
-    secretService();
-    ~secretService();
+    libsecret();
+    ~libsecret();
 
     void open(const QString &walletName,
               const QString &applicationName,
