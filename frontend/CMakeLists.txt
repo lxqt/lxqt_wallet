@@ -4,7 +4,7 @@ cmake_policy(SET CMP0017 OLD)
 
 INCLUDE(FindPkgConfig)
 
-set(LIBRARY_VERSION "2.0.0")
+set(LIBRARY_VERSION "3.0.0")
 
 add_definitions(-I${PROJECT_BINARY_DIR}/frontend)
 add_definitions(-I${PROJECT_BINARY_DIR}/backend)
