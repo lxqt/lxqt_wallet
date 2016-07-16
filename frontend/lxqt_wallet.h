@@ -109,9 +109,18 @@ public:
     /*
      * overloaded method to add a key to the wallet.
      */
+
     bool addKey(const QString &key,const QString &value)
     {
         return this->addKey(key, value.toLatin1());
+    }
+
+    /*
+     * overloaded method to add a key to the wallet.
+     */
+    bool addKey(const QString &key,const char *value)
+    {
+        return this->addKey(key, QByteArray(value));
     }
 
     /*
@@ -297,7 +306,7 @@ public:
 
     void addKey()
     {
-        m_wallet->addKey("test key", QByteArray("test value"));
+        m_wallet->addKey("test key", "test value");
     }
 
     void deleteKey()
