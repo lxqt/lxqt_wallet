@@ -297,9 +297,9 @@ public:
     {
         for (const auto & it : m_wallet->readAllKeyValues())
         {
-            std::cout << it.first.toLatin1().constData();
-            std::cout << " : ";
-            std::cout << it.second.constData() << "\n";
+            qDebug() << it.first;
+            qDebug() << " : ";
+            qDebug() << it.second << "\n";
         }
     }
 
@@ -320,14 +320,15 @@ public slots:
 
         m_wallet->setParent(this);
 
-        m_wallet->open("test", "test", [ this ](bool walletIsOpen)
+        m_wallet->open("test", "test", [this](bool walletIsOpen)
         {
             if (walletIsOpen)
             {
-		std::cout << "wallet is open.\n";
-		this->addKey();
-		this->print();
-		this->deleteKey();
+                qDebug() << "wallet is open.\n";
+                this->addKey();
+                this->print();
+                this->deleteKey();
+                this->print();
                 QCoreApplication::quit();
             }
             else

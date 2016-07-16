@@ -276,12 +276,6 @@ bool LXQt::Wallet::libsecret::walletIsOpened(void)
     }
 }
 
-void LXQt::Wallet::libsecret::setInterfaceObject(QWidget *w, std::function< void(bool) > f)
-{
-    Q_UNUSED(w);
-    m_walletOpened = std::move(f);
-}
-
 QObject *LXQt::Wallet::libsecret::qObject(void)
 {
     return this;
