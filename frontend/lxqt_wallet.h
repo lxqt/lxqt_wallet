@@ -109,7 +109,6 @@ public:
     /*
      * overloaded method to add a key to the wallet.
      */
-
     bool addKey(const QString &key,const QString &value)
     {
         return this->addKey(key, value.toLatin1());
