@@ -268,7 +268,7 @@ bool LXQt::Wallet::libsecret::walletIsOpened(void)
 {
     if (m_schema)
     {
-	return lxqt_libsecret_wallet_is_open(m_schema.get());
+	return Task::await<bool>([&](){return lxqt_libsecret_wallet_is_open(m_schema.get());});
     }
     else
     {

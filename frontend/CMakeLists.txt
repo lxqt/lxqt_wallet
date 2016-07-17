@@ -116,6 +116,11 @@ target_link_libraries(lxqtwallet ${Qt5Core_LIBRARIES})
 set_target_properties(lxqtwallet PROPERTIES COMPILE_FLAGS "-D_FILE_OFFSET_BITS=64 -Wextra -Wall -s -fPIC -pedantic ")
 set_target_properties(lxqtwallet PROPERTIES SOVERSION "${LIBRARY_VERSION}")
 
+file( WRITE ${PROJECT_BINARY_DIR}/translations_path.h
+"
+#define TRANSLATIONS_PATH \"${CMAKE_INSTALL_PREFIX}/share/lxqt_wallet/translations.qm/\"
+")
+
 install(FILES ../translations.qm/german_DE.qm   DESTINATION share/lxqt_wallet/translations.qm/)
 install(FILES ../translations.qm/greek_GR.qm    DESTINATION share/lxqt_wallet/translations.qm/)
 install(FILES ../translations.qm/dutch_NL.qm    DESTINATION share/lxqt_wallet/translations.qm/)

@@ -95,6 +95,17 @@ QStringList walletList(LXQt::Wallet::BackEnd);
  * See example at the end of this header file to see an example of how to use the interface.
  */
 
+/*
+ * Get a list of supported languages.
+ */
+QStringList translations();
+
+/*
+ * Set language of texts on GUI elements.
+ * See translations() API to get a list of supported languages.
+ */
+void setTranslationLanguage(const QString &language);
+
 class Q_DECL_EXPORT Wallet : public QWidget
 {
 public:

@@ -31,6 +31,7 @@
 #include "lxqt_wallet.h"
 #include "lxqt_internal_wallet.h"
 #include "../backend/lxqtwallet.h"
+#include "translations_path.h"
 
 #include "storage_manager.h"
 
@@ -41,6 +42,10 @@
 #if HAS_SECRET_SUPPORT
 #include "lxqt_libsecret.h"
 #endif
+
+#include <QCoreApplication>
+#include <QTranslator>
+#include <QFile>
 
 LXQt::Wallet::Wallet::Wallet()
 {
@@ -180,7 +185,7 @@ QStringList LXQt::Wallet::walletList(LXQt::Wallet::BackEnd bk)
 {
     if (bk == LXQt::Wallet::BackEnd::internal)
     {
-        char path[ 4096 ];
+	char path[4096];
 
         lxqt_wallet_application_wallet_path(path, 4096, "");
 
@@ -208,5 +213,35 @@ QStringList LXQt::Wallet::walletList(LXQt::Wallet::BackEnd bk)
     else
     {
         return QStringList();
+    }
+}
+
+QStringList LXQt::Wallet::translations()
+{
+    QDir d(TRANSLATIONS_PATH);
+
+    auto l = d.entryList();
+
+    l.removeOne(".");
+    l.removeOne("..");
+
+    for (auto& it : l)
+    {
+	it.remove(".qm");
+    }
+
+    return l;
+}
+
+void LXQt::Wallet::setTranslationLanguage(const QString &language)
+{
+    if (QFile::exists(TRANSLATIONS_PATH + language + ".qm"))
+    {
+	QCoreApplication::installTranslator([&]()
+	{
+	    auto e = new QTranslator();
+	    e->load(language, TRANSLATIONS_PATH);
+	    return e;
+	}());
     }
 }
