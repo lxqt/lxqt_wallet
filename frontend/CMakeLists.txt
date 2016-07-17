@@ -116,22 +116,24 @@ target_link_libraries(lxqtwallet ${Qt5Core_LIBRARIES})
 set_target_properties(lxqtwallet PROPERTIES COMPILE_FLAGS "-D_FILE_OFFSET_BITS=64 -Wextra -Wall -s -fPIC -pedantic ")
 set_target_properties(lxqtwallet PROPERTIES SOVERSION "${LIBRARY_VERSION}")
 
+set_target_properties(lxqtwallet PROPERTIES OUTPUT_NAME lxqt-wallet)
+
 file( WRITE ${PROJECT_BINARY_DIR}/translations_path.h
 "
-#define TRANSLATIONS_PATH \"${CMAKE_INSTALL_PREFIX}/share/lxqt_wallet/translations.qm/\"
+#define TRANSLATIONS_PATH \"${CMAKE_INSTALL_PREFIX}/share/lxqt-wallet/translations.qm/\"
 ")
 
-install(FILES ../translations.qm/german_DE.qm   DESTINATION share/lxqt_wallet/translations.qm/)
-install(FILES ../translations.qm/greek_GR.qm    DESTINATION share/lxqt_wallet/translations.qm/)
-install(FILES ../translations.qm/dutch_NL.qm    DESTINATION share/lxqt_wallet/translations.qm/)
-install(FILES ../translations.qm/french_FR.qm   DESTINATION share/lxqt_wallet/translations.qm/)
-install(FILES ../translations.qm/spanish_ES.qm   DESTINATION share/lxqt_wallet/translations.qm/)
+install(FILES ../translations.qm/german_DE.qm   DESTINATION share/lxqt-wallet/translations.qm/)
+install(FILES ../translations.qm/greek_GR.qm    DESTINATION share/lxqt-wallet/translations.qm/)
+install(FILES ../translations.qm/dutch_NL.qm    DESTINATION share/lxqt-wallet/translations.qm/)
+install(FILES ../translations.qm/french_FR.qm   DESTINATION share/lxqt-wallet/translations.qm/)
+install(FILES ../translations.qm/spanish_ES.qm  DESTINATION share/lxqt-wallet/translations.qm/)
 
 install(TARGETS lxqtwallet RUNTIME LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}")
 
 install(FILES lxqt_wallet.h DESTINATION "${CMAKE_INSTALL_PREFIX}/include/lxqt")
 
-file( WRITE ${PROJECT_BINARY_DIR}/lxqtwallet.pc
+file( WRITE ${PROJECT_BINARY_DIR}/lxqt-wallet.pc
 "prefix=${CMAKE_INSTALL_PREFIX}
 exec_prefix=${CMAKE_INSTALL_PREFIX}
 libdir=${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}
@@ -141,8 +143,8 @@ Name: lxqt_wallet
 Description: lxqt secure storage system
 Version: ${LIBRARY_VERSION}
 Requires: Qt5Core Qt5Widgets
-Libs: -L${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR} -llxqtwallet
+Libs: -L${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR} -llxqt-wallet
 Cflags: -I${CMAKE_INSTALL_PREFIX}/include/lxqt
 \n")
 
-install(FILES ${PROJECT_BINARY_DIR}/lxqtwallet.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig/ PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ)
+install(FILES ${PROJECT_BINARY_DIR}/lxqt-wallet.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig/ PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ)
