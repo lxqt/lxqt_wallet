@@ -24,7 +24,5 @@ configure_file(
 add_custom_target( uninstall
 COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake )
 
-set(LIB_PATH "${CMAKE_INSTALL_FULL_LIBDIR}")
-
 add_subdirectory(backend)
 add_subdirectory(frontend)

@@ -8,21 +8,22 @@ find_file(GCRYPT_INCLUDE_FILE gcrypt.h)
 find_library(GCRYPT_LIBRARY gcrypt)
 
 if(NOT GCRYPT_INCLUDE_FILE)
-    MESSAGE(FATAL_ERROR "could not find gcrypt header file")
+    MESSAGE(FATAL_ERROR "Could not find gcrypt header file")
 else()
-    MESSAGE(STATUS "found gcrypt header file: ${GCRYPT_INCLUDE_FILE}")
+    MESSAGE(STATUS "Found gcrypt header file: ${GCRYPT_INCLUDE_FILE}")
 endif()
 
 if(NOT GCRYPT_LIBRARY)
-    MESSAGE(FATAL_ERROR "could not find gcrypt library(libgcrypt.so)")
+    MESSAGE(FATAL_ERROR "Could not find gcrypt library(libgcrypt.so)")
 else()
-    MESSAGE(STATUS "found gcrypt library: ${GCRYPT_LIBRARY}")
+    MESSAGE(STATUS "Found gcrypt library: ${GCRYPT_LIBRARY}")
 endif()
 
 add_library(lxqtwallet-backend STATIC lxqtwallet.c)
 set_target_properties(lxqtwallet-backend PROPERTIES COMPILE_FLAGS "-D_FILE_OFFSET_BITS=64 -Wall -s -fPIC -pedantic ")
 set_target_properties(lxqtwallet-backend PROPERTIES LINK_FLAGS "-pie")
-TARGET_LINK_LIBRARIES(lxqtwallet-backend "${GCRYPT_LIBRARY}")
+
+target_link_libraries(lxqtwallet-backend "${GCRYPT_LIBRARY}")
 
 install(FILES lxqtwallet.h DESTINATION "${CMAKE_INSTALL_PREFIX}/include/lxqt")
 
