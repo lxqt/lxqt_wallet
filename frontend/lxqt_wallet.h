@@ -88,24 +88,23 @@ Q_DECL_EXPORT LXQt::Wallet::Wallet *getWalletBackend(LXQt::Wallet::BackEnd);
  * Return a list of all wallets.
  * Returned value is undefined if the backend is not supported.
  */
-QStringList walletList(LXQt::Wallet::BackEnd);
-
-/*
- * Below class is the interface that implements various backends.
- * See example at the end of this header file to see an example of how to use the interface.
- */
+Q_DECL_EXPORT QStringList walletList(LXQt::Wallet::BackEnd);
 
 /*
  * Get a list of supported languages.
  */
-QStringList translations();
+Q_DECL_EXPORT QStringList translations();
 
 /*
  * Set language of texts on GUI elements.
  * See translations() API to get a list of supported languages.
  */
-void setTranslationLanguage(const QString &language);
+Q_DECL_EXPORT void setTranslationLanguage(const QString &language);
 
+/*
+ * Below class is the interface that implements various backends.
+ * See example at the end of this header file to see an example of how to use the interface.
+ */
 class Q_DECL_EXPORT Wallet : public QWidget
 {
 public:
