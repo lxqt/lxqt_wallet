@@ -98,6 +98,8 @@ Q_DECL_EXPORT QStringList translations();
 /*
  * Set language of texts on GUI elements.
  * See translations() API to get a list of supported languages.
+ *
+ * Setting a language will make a difference only with an internal backend.
  */
 Q_DECL_EXPORT void setTranslationLanguage(const QString &language);
 
@@ -182,13 +184,11 @@ public:
     virtual QObject *qObject() = 0;
 
     /*
-     * open() and await_open() both unlocks a wallet.
-     *
-     * open() will return immediately and the status of the unlocking attempt will be returned
+     * First open() will return immediately and the status of the unlocking attempt will be returned
      * through the passed in lambda( third argument ).The lambda will be called with "true" if
      * the attempt was successful and with "false" otherwise.
      *
-     * await_open() will block the call waiting for the result of the unlocking attempt.
+     * Second open() will block the call waiting for the result of the unlocking attempt.
      * "true" will be returned if the attempt was successful and "false" will be returned otherwise.
      * The blocking will be done in a way that does not hang the GUI.
      *
@@ -227,11 +227,11 @@ public:
                       const QString &password = QString(),
                       const QString &displayApplicationName = QString()) = 0;
 
-    virtual bool await_open(const QString &walletName,
-                            const QString &applicationName,
-                            QWidget * = nullptr,
-                            const QString &password = QString(),
-                            const QString &displayApplicationName = QString()) = 0;
+    virtual bool open(const QString &walletName,
+		      const QString &applicationName,
+		      QWidget * = nullptr,
+		      const QString &password = QString(),
+		      const QString &displayApplicationName = QString()) = 0;
 
     /*
      * This method is defined only with internal backend.
@@ -308,7 +308,6 @@ public:
         for (const auto & it : m_wallet->readAllKeyValues())
         {
             qDebug() << it.first;
-            qDebug() << " : ";
             qDebug() << it.second << "\n";
         }
     }

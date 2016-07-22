@@ -86,11 +86,11 @@ bool LXQt::Wallet::libsecret::addKey(const QString &key, const QByteArray &value
     }
 }
 
-bool LXQt::Wallet::libsecret::await_open(const QString &walletName,
-        const QString &applicationName,
-        QWidget *parent,
-        const QString &password,
-        const QString &displayApplicationName)
+bool LXQt::Wallet::libsecret::open(const QString &walletName,
+				   const QString &applicationName,
+				   QWidget *parent,
+				   const QString &password,
+				   const QString &displayApplicationName)
 {
     this->open(walletName,applicationName,[](bool e) { Q_UNUSED(e); },parent,password,
                displayApplicationName);
@@ -101,11 +101,11 @@ bool LXQt::Wallet::libsecret::await_open(const QString &walletName,
 }
 
 void LXQt::Wallet::libsecret::open(const QString &walletName,
-                                       const QString &applicationName,
-                                       std::function< void(bool) > function,
-                                       QWidget *parent,
-                                       const QString &password,
-                                       const QString &displayApplicationName)
+				   const QString &applicationName,
+				   std::function< void(bool) > function,
+				   QWidget *parent,
+				   const QString &password,
+				   const QString &displayApplicationName)
 {
     if (parent)
     {
@@ -215,7 +215,7 @@ QStringList LXQt::Wallet::libsecret::readAllKeys(void)
                     free(e);
                 }
 
-                return l ;
+                return l;
 	    }
 	    ~allKeys()
 	    {

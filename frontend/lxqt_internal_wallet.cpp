@@ -77,11 +77,11 @@ void LXQt::Wallet::internalWallet::opened(bool opened)
     }
 }
 
-bool LXQt::Wallet::internalWallet::await_open(const QString &walletName,
-                                              const QString &applicationName,
-                                              QWidget *parent,
-                                              const QString &password,
-                                              const QString &displayApplicationName)
+bool LXQt::Wallet::internalWallet::open(const QString &walletName,
+					const QString &applicationName,
+					QWidget *parent,
+					const QString &password,
+					const QString &displayApplicationName)
 {
     this->open(walletName,applicationName,[](bool e) { Q_UNUSED(e); },parent,password,
                displayApplicationName);
@@ -176,9 +176,9 @@ void LXQt::Wallet::internalWallet::openWallet()
                 pwd::instance(this,
                               m_walletName,
                               m_displayApplicationName,
-                [this](const QString & p) { this->openWallet(p); },
-                std::move(_cancelled),
-                &m_correctPassword);
+			      [this](const QString & p) { this->openWallet(p); },
+			      std::move(_cancelled),
+			      &m_correctPassword);
             }
         });
     }
