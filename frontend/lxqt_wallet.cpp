@@ -227,6 +227,7 @@ QStringList LXQt::Wallet::translations()
 
     for (auto& it : l)
     {
+	it.remove("lxqt-wallet_");
 	it.remove(".qm");
     }
 
@@ -235,12 +236,14 @@ QStringList LXQt::Wallet::translations()
 
 void LXQt::Wallet::setTranslationLanguage(const QString &language)
 {
-    if (QFile::exists(TRANSLATIONS_PATH + language + ".qm"))
+    auto l = "lxqt-wallet_" + language + ".qm";
+
+    if (QFile::exists(TRANSLATIONS_PATH + l))
     {
 	QCoreApplication::installTranslator([&]()
 	{
 	    auto e = new QTranslator();
-	    e->load(language, TRANSLATIONS_PATH);
+	    e->load(l, TRANSLATIONS_PATH);
 	    return e;
 	}());
     }

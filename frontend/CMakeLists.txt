@@ -10,13 +10,15 @@ include_directories(${PROJECT_BINARY_DIR})
 
 include_directories(${CMAKE_BINARY_DIR})
 
-message(STATUS "Checking for modules 'Qt5Widgets' and 'Qt5Core'")
+message(STATUS "Checking for modules 'Qt5Widgets','Qt5Core' and 'Qt5LinguistTools'")
 
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5Core REQUIRED)
+find_package(Qt5LinguistTools REQUIRED)
 
 message(STATUS "  Found Qt5Widgets, version ${Qt5Widgets_VERSION}")
 message(STATUS "  Found Qt5Core, version ${Qt5Core_VERSION}")
+message(STATUS "  Found Qt5LinguistTools, version ${Qt5LinguistTools_VERSION}")
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -120,14 +122,26 @@ set_target_properties(lxqtwallet PROPERTIES OUTPUT_NAME lxqt-wallet)
 
 file( WRITE ${PROJECT_BINARY_DIR}/translations_path.h
 "
-#define TRANSLATIONS_PATH \"${CMAKE_INSTALL_PREFIX}/share/lxqt-wallet/translations.qm/\"
+#define TRANSLATIONS_PATH \"${CMAKE_INSTALL_PREFIX}/share/lxqt/translations/lxqt-wallet/\"
 ")
 
-install(FILES ../translations.qm/german_DE.qm   DESTINATION share/lxqt-wallet/translations.qm/)
-install(FILES ../translations.qm/greek_GR.qm    DESTINATION share/lxqt-wallet/translations.qm/)
-install(FILES ../translations.qm/dutch_NL.qm    DESTINATION share/lxqt-wallet/translations.qm/)
-install(FILES ../translations.qm/french_FR.qm   DESTINATION share/lxqt-wallet/translations.qm/)
-install(FILES ../translations.qm/spanish_ES.qm  DESTINATION share/lxqt-wallet/translations.qm/)
+SET(TRANSLATIONS
+   ../translations/lxqt-wallet_nl_NL.ts
+   ../translations/lxqt-wallet_fr_FR.ts
+   ../translations/lxqt-wallet_de_DE.ts
+   ../translations/lxqt-wallet_gr_GR.ts
+   ../translations/lxqt-wallet_es_ES.ts
+)
+
+QT5_ADD_TRANSLATION(QM_FILES ${TRANSLATIONS})
+SET(QM_FILES ${QM_FILES} PARENT_SCOPE)
+ADD_CUSTOM_TARGET(translations ALL DEPENDS ${QM_FILES})
+
+install(FILES ${CMAKE_BINARY_DIR}/frontend/lxqt-wallet_de_DE.qm DESTINATION share/lxqt/translations/lxqt-wallet/)
+install(FILES ${CMAKE_BINARY_DIR}/frontend/lxqt-wallet_gr_GR.qm DESTINATION share/lxqt/translations/lxqt-wallet/)
+install(FILES ${CMAKE_BINARY_DIR}/frontend/lxqt-wallet_nl_NL.qm DESTINATION share/lxqt/translations/lxqt-wallet/)
+install(FILES ${CMAKE_BINARY_DIR}/frontend/lxqt-wallet_fr_FR.qm DESTINATION share/lxqt/translations/lxqt-wallet/)
+install(FILES ${CMAKE_BINARY_DIR}/frontend/lxqt-wallet_es_ES.qm DESTINATION share/lxqt/translations/lxqt-wallet/)
 
 install(TARGETS lxqtwallet RUNTIME LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}")
 

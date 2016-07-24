@@ -91,7 +91,11 @@ class Thread : public QThread
 public:
     Thread()
     {
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
         connect(this, SIGNAL(finished()), this, SLOT(deleteLater()));
+#else
+        connect(this, &QThread::finished, this, &QThread::deleteLater);
+#endif
     }
 protected:
     virtual ~Thread()
@@ -174,8 +178,8 @@ public:
         m_function(std::move(function)),
         m_future(this,
                  [this]() { this->start(); },
-    [this]() { this->deleteLater(); },
-    [this](T &r) { r = m_function(); this->deleteLater(); })
+                 [this]() { this->deleteLater(); },
+                 [this](T &r) { r = m_function(); this->deleteLater(); })
     {
     }
     future<T>& Future()
@@ -261,8 +265,8 @@ public:
         m_function(std::move(function)),
         m_future(this,
                  [this]() { this->start(); },
-    [this]() { this->deleteLater(); },
-    [this]() { m_function(); this->deleteLater(); })
+                 [this]() { this->deleteLater(); },
+                 [this]() { m_function(); this->deleteLater(); })
     {
     }
     future< void >& Future()

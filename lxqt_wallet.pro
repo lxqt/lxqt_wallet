@@ -52,9 +52,9 @@ FORMS += \
     frontend/changepassworddialog.ui \
     /home/ink/src/build-lxde-wallet/mainwindow.ui
 
-    TRANSLATIONS += translations.ts/translations.ts
-    TRANSLATIONS += translations.ts/greek_GR.ts
-    TRANSLATIONS += translations.ts/german_DE.ts
-    TRANSLATIONS += translations.ts/dutch_NL.ts
-    TRANSLATIONS += translations.ts/spanish_ES.ts
-    TRANSLATIONS += translations.ts/french_FR.ts
+    TRANSLATIONS += translations/translations.ts
+    TRANSLATIONS += translations/lxqt-wallet_de_DE.ts
+    TRANSLATIONS += translations/lxqt-wallet_gr_GR.ts
+    TRANSLATIONS += translations/lxqt-wallet_nl_NL.ts
+    TRANSLATIONS += translations/lxqt-wallet_fr_FR.ts
+    TRANSLATIONS += translations/lxqt-wallet_es_ES.ts
