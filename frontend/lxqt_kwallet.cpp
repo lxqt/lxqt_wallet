@@ -69,7 +69,7 @@ bool LXQt::Wallet::kwallet::open(const QString &walletName,
 		   parent,
 		   password,
 		   displayApplicationName);
-	loop.exec() ;
+	loop.exec();
 	return opened;
 }
 

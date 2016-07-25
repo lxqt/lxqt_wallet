@@ -88,7 +88,7 @@ bool LXQt::Wallet::internalWallet::open(const QString &walletName,
 	       parent,
 	       password,
 	       displayApplicationName);
-    loop.exec() ;
+    loop.exec();
     return m_opened;
 }
 
