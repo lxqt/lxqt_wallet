@@ -54,39 +54,23 @@ bool LXQt::Wallet::kwallet::addKey(const QString &key, const QByteArray &value)
     return m_kwallet->writePassword(key, value) == 0;
 }
 
+
 bool LXQt::Wallet::kwallet::open(const QString &walletName,
 				 const QString &applicationName,
 				 QWidget *parent,
 				 const QString &password,
 				 const QString &displayApplicationName)
 {
-    if (walletName == "default")
-    {
-        m_walletName = KWallet::Wallet::LocalWallet();
-    }
-    else
-    {
-        m_walletName = walletName;
-    }
-
-    m_applicationName   = applicationName;
-    m_password          = password;
-
-    if (parent)
-    {
-        this->setParent(parent);
-    }
-
-    Q_UNUSED(displayApplicationName);
-
-    m_kwallet = LXQt::Wallet::Task::await< KWallet::Wallet * >([this]()
-    {
-        return KWallet::Wallet::openWallet(m_walletName, 0, KWallet::Wallet::Synchronous);
-    });
-
-    this->openedWallet(m_kwallet);
-
-    return m_kwallet;
+	QEventLoop loop;
+	bool opened;
+	this->open(walletName,
+		   applicationName,
+		   [&](bool e) {opened = e;loop.exit();},
+		   parent,
+		   password,
+		   displayApplicationName);
+	loop.exec() ;
+	return opened;
 }
 
 void LXQt::Wallet::kwallet::openedWallet(bool e)
