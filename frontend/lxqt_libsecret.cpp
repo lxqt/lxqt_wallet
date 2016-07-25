@@ -92,11 +92,14 @@ bool LXQt::Wallet::libsecret::open(const QString &walletName,
 				   const QString &password,
 				   const QString &displayApplicationName)
 {
-    this->open(walletName,applicationName,[](bool e) { Q_UNUSED(e); },parent,password,
+    QEventLoop loop;
+    this->open(walletName,
+	       applicationName,
+	       [&](bool e) {m_opened = e;loop.exit();},
+	       parent,
+	       password,
                displayApplicationName);
-
-    m_loop.exec();
-
+    loop.exec() ;
     return m_opened;
 }
 
@@ -154,7 +157,6 @@ void LXQt::Wallet::libsecret::open(const QString &walletName,
 void LXQt::Wallet::libsecret::walletOpened(bool opened)
 {
     m_opened = opened;
-    m_loop.exit();
     m_walletOpened(opened);
 }
 

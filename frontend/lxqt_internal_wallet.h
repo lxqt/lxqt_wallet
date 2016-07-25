@@ -104,7 +104,7 @@ public:
 private:
     void walletIsOpen(bool);
 
-    void openWallet(QString);
+    void openWallet(const QString &);
     void createWallet(void);
     void openWallet();
     void opened(bool);
@@ -115,7 +115,6 @@ private:
     QString m_applicationName;
     QString m_displayApplicationName;
     QString m_password;
-    QEventLoop m_loop;
     bool m_opened;
 
     std::function< void(bool) > m_correctPassword = [](bool e) { Q_UNUSED(e) };

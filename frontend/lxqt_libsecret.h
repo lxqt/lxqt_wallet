@@ -108,8 +108,6 @@ private:
     std::unique_ptr<void, void( *)(void *)> m_schema;
     std::unique_ptr<void, void( *)(void *)> m_schema_1;
 
-    QEventLoop m_loop;
-
     bool m_opened;
 
     std::function< void(bool) > m_walletOpened = [](bool e) { Q_UNUSED(e); };
