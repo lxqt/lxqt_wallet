@@ -317,7 +317,6 @@ bool LXQt::Wallet::internalWallet::walletIsOpened()
 
 QObject *LXQt::Wallet::internalWallet::qObject()
 {
-    this->setObjectName(m_password);
     return this;
 }
 

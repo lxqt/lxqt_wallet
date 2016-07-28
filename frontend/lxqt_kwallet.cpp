@@ -185,7 +185,14 @@ LXQt::Wallet::BackEnd LXQt::Wallet::kwallet::backEnd(void)
 
 bool LXQt::Wallet::kwallet::walletIsOpened(void)
 {
-    return m_kwallet->isOpen();
+    if (m_kwallet)
+    {
+        return m_kwallet->isOpen();
+    }
+    else
+    {
+        return false;
+    }
 }
 
 QObject *LXQt::Wallet::kwallet::qObject(void)
