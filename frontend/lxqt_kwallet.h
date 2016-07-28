@@ -68,7 +68,7 @@ public:
 	      const QString &displayApplicationName = QString());
 
     bool addKey(const QString &key, const QByteArray &value);
-    bool walletIsOpened(void);
+    bool opened(void);
 
     QByteArray readValue(const QString &key);
 
