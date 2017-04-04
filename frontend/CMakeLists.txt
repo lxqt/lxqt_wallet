@@ -118,6 +118,12 @@ target_link_libraries(lxqtwallet lxqtwallet-backend)
 target_link_libraries(lxqtwallet ${Qt5Widgets_LIBRARIES})
 target_link_libraries(lxqtwallet ${Qt5Core_LIBRARIES})
 
+if( APPLE )
+    find_library( COREFOUNDATION_LIBRARY CoreFoundation REQUIRED )
+    find_library( SECURITY_LIBRARY Security REQUIRED )
+    target_link_libraries(lxqtwallet ${COREFOUNDATION_LIBRARY} ${SECURITY_LIBRARY})
+endif()
+
 set_target_properties(lxqtwallet PROPERTIES COMPILE_FLAGS "-D_FILE_OFFSET_BITS=64 -Wextra -Wall -s -fPIC -pedantic ")
 set_target_properties(lxqtwallet PROPERTIES SOVERSION "${LIBRARY_VERSION}")
 
