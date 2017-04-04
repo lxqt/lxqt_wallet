@@ -47,6 +47,9 @@
 #include <QTranslator>
 #include <QFile>
 
+#include "lxqt_osx_keychain.h"
+#include "osx_keychain.h"
+
 LXQt::Wallet::Wallet::Wallet()
 {
 }
@@ -79,7 +82,12 @@ LXQt::Wallet::Wallet *LXQt::Wallet::getWalletBackend(LXQt::Wallet::BackEnd bk)
         return nullptr;
 #endif
     }
-
+    if(bk == LXQt::Wallet::BackEnd::osxkeychain)
+    {
+#if OSX_KEYCHAIN
+        return new LXQt::Wallet::osxKeyChain();
+#endif
+    }
     return nullptr;
 }
 
@@ -98,6 +106,11 @@ bool LXQt::Wallet::backEndIsSupported(LXQt::Wallet::BackEnd bk)
     if (bk == LXQt::Wallet::BackEnd::libsecret)
     {
         return HAS_SECRET_SUPPORT;
+    }
+
+    if (bk == LXQt::Wallet::BackEnd::osxkeychain )
+    {
+        return OSX_KEYCHAIN;
     }
 
     return false;

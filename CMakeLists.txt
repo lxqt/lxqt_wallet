@@ -7,7 +7,7 @@ set_property(GLOBAL PROPERTY ALLOW_DUPLICATE_CUSTOM_TARGETS ON)
 
 project(lxqt_wallet)
 
-set(LIBRARY_VERSION "3.0.0")
+set(LIBRARY_VERSION "3.1.0")
 
 add_definitions(-Wextra -Wall -pedantic)
 

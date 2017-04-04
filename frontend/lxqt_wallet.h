@@ -1,5 +1,5 @@
 /*
- * copyright: 2013-2016
+ * copyright: 2013-2017
  * name : Francis Banyikwa
  * email: mhogomchungu@gmail.com
  *
@@ -48,7 +48,7 @@ namespace LXQt
 namespace Wallet
 {
 
-enum class BackEnd { internal, kwallet, libsecret };
+enum class BackEnd { internal, kwallet, libsecret, osxkeychain } ;
 
 /*
  * Forward declare the Wallet class
@@ -194,6 +194,12 @@ public:
      *
      * Optional arguments are not necessary in all backends:
      *
+     * osx keychain backend:
+     * "password" argument is ignored.
+     * "applicationName" argument is ignored.
+     * "displayApplicationName" argument is ignored.
+     * "widget" argument is ignored.
+     *
      * libsecret backend:
      * "password" argument is ignored.
      * "applicationName" argument is ignored.
@@ -247,12 +253,12 @@ public:
     /*
      * Change the wallet key.
      *
-     * The passed in lamba will be called with internal wallet with "true" if the password was
+     * The passed in lambda will be called with internal wallet with "true" if the password was
      * successfully changed and with "false" otherwise.
      *
      * The passed in lambda will not be called with kwallet backend.
      *
-     * This method is undefined in libsecret backend.
+     * This method is defined only in the internal backend.
      */
     virtual void changeWalletPassWord(const QString &walletName,
                                       const QString &applicationName = QString(),
@@ -263,7 +269,7 @@ public:
      *
      * This method is equivalent to kwallet's "folderList()".
      *
-     * This method is undefined in libsecret backend.
+     * This method is defined in internal and kwallet backends.
      */
     virtual QStringList managedWalletList() = 0;
 
