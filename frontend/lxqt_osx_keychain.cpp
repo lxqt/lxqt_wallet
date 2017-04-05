@@ -44,85 +44,12 @@
 
 #else
 
-using OSStatus = int ;
-
-class foo ;
-using SecKeychainItemRef = foo *;
-
-#define noErr 0
-#define errSecSuccess 0
-
-void SecKeychainItemFreeContent(void *e, void *f)
-{
-    Q_UNUSED(e) ;
-    Q_UNUSED(f) ;
-}
-
-void CFRelease(void *e)
-{
-    Q_UNUSED(e) ;
-}
-
-OSStatus SecKeychainItemDelete(void *e)
-{
-    Q_UNUSED(e) ;
-    return 0 ;
-}
-
-OSStatus SecKeychainFindGenericPassword(void *foo,
-                                        quint32 serviceNameLength,
-                                        const char *serviceName,
-                                        quint32 accountNameLength,
-                                        const char *accountName,
-                                        quint32 *passwordLength,
-                                        void **passwordData,
-                                        SecKeychainItemRef *itemRef)
-{
-    Q_UNUSED(foo) ;
-    Q_UNUSED(serviceNameLength) ;
-    Q_UNUSED(serviceName) ;
-    Q_UNUSED(passwordLength) ;
-    Q_UNUSED(passwordData) ;
-    Q_UNUSED(accountName) ;
-    Q_UNUSED(accountNameLength) ;
-    Q_UNUSED(itemRef) ;
-
-    return 0 ;
-}
-
-OSStatus SecKeychainAddGenericPassword(void *foo,
-                                       quint32 serviceNameLength,
-                                       const char *serviceName,
-                                       quint32 accountNameLength,
-                                       const char *accountName,
-                                       quint32 passwordLength,
-                                       const void *passwordData,
-                                       SecKeychainItemRef *itemRef)
-{
-    Q_UNUSED(foo) ;
-    Q_UNUSED(serviceNameLength) ;
-    Q_UNUSED(serviceName) ;
-    Q_UNUSED(passwordLength) ;
-    Q_UNUSED(passwordData) ;
-    Q_UNUSED(accountName) ;
-    Q_UNUSED(accountNameLength) ;
-    Q_UNUSED(itemRef) ;
-
-    return 0 ;
-}
-
-void SecKeychainItemModifyContent(void *a, void *b, quint32 c, const void *d)
-{
-    Q_UNUSED(a) ;
-    Q_UNUSED(b) ;
-    Q_UNUSED(c) ;
-    Q_UNUSED(d) ;
-}
+#include "lxqt_osx_keychain_private.h"
 
 #endif
 
-static const char *WALLET_KEYS = "LXQt.Wallet.WalletKeys" ;
-static const char *_walletPrefix = "LXQt.Wallet." ;
+static const char *WALLET_KEYS = "LXQt.Wallet.WalletKeys";
+static const char *_walletPrefix = "LXQt.Wallet.";
 
 LXQt::Wallet::osxKeyChain::osxKeyChain()
 {
@@ -139,15 +66,15 @@ void LXQt::Wallet::osxKeyChain::open(const QString &walletName,
                                      const QString &password,
                                      const QString &displayApplicationName)
 {
-    Q_UNUSED(widget) ;
-    Q_UNUSED(password) ;
-    Q_UNUSED(displayApplicationName) ;
+    Q_UNUSED(widget);
+    Q_UNUSED(password);
+    Q_UNUSED(displayApplicationName);
 
-    m_walletName = _walletPrefix + walletName.toLatin1() + "." + applicationName.toLatin1() ;
+    m_walletName = _walletPrefix + walletName.toLatin1() + "." + applicationName.toLatin1();
 
-    m_opened = true ;
+    m_opened = true;
 
-    function(m_opened) ;
+    function(m_opened);
 }
 
 bool LXQt::Wallet::osxKeyChain::open(const QString &walletName,
@@ -156,46 +83,71 @@ bool LXQt::Wallet::osxKeyChain::open(const QString &walletName,
                                      const QString &password,
                                      const QString &displayApplicationName)
 {
-    Q_UNUSED(widget) ;
-    Q_UNUSED(password) ;
-    Q_UNUSED(displayApplicationName) ;
+    Q_UNUSED(widget);
+    Q_UNUSED(password);
+    Q_UNUSED(displayApplicationName);
 
-    m_walletName = _walletPrefix + walletName.toLatin1() + "." + applicationName.toLatin1() ;
+    m_walletName = _walletPrefix + walletName.toLatin1() + "." + applicationName.toLatin1();
 
-    m_opened = true ;
+    m_opened = true;
 
-    return m_opened ;
+    return m_opened;
 }
 
 struct passwordData
 {
+    passwordData() = default;
+
+    passwordData(passwordData &&other)
+    {
+        this->init(std::move(other));
+    }
+
+    passwordData& operator=(passwordData &&other)
+    {
+        return this->init(std::move(other));
+    }
+
     ~passwordData()
     {
         if (data)
         {
-
-            SecKeychainItemFreeContent(nullptr, data) ;
+            SecKeychainItemFreeContent(nullptr, data);
         }
         if (ref)
         {
-
-            CFRelease(ref) ;
+            CFRelease(ref);
         }
     }
-    OSStatus status = 0 ;
-    void *data = nullptr ;
-    quint32 len = 0 ;
-    SecKeychainItemRef ref = 0 ;
+    OSStatus status = 0;
+    void *data = nullptr;
+    quint32 len = 0;
+    SecKeychainItemRef ref = 0;
+private:
+    passwordData& init( passwordData&& other )
+    {
+        status = other.status;
+
+        len    = other.len;
+
+        data   = other.data;
+        other.data = nullptr;
+
+        ref = other.ref;
+        other.ref = nullptr;
+
+        return *this;
+    }
 };
 
 static bool _status(OSStatus e)
 {
-    return e == noErr || e == errSecSuccess ;
+    return e == noErr || e == errSecSuccess;
 }
 
 static passwordData _find_password(const QString &key, const QByteArray &walletName)
 {
-    passwordData s ;
+    passwordData s;
 
     s.status = SecKeychainFindGenericPassword(nullptr,
                walletName.size(),
@@ -204,21 +156,21 @@ static passwordData _find_password(const QString &key, const QByteArray &walletN
                key.toLatin1().constData(),
                &s.len,
                &s.data,
-               &s.ref) ;
-    return s ;
+               &s.ref);
+    return s;
 }
 
 static bool _delete_key(const QString &key, const QByteArray &walletName)
 {
-    auto s = _find_password(key, walletName) ;
+    auto s = _find_password(key, walletName);
 
     if (s.ref)
     {
-        return _status(SecKeychainItemDelete(s.ref)) ;
+        return _status(SecKeychainItemDelete(s.ref));
     }
     else
     {
-        return false ;
+        return false;
     }
 }
 
@@ -231,23 +183,23 @@ static bool _add_key(const QString &key, const QByteArray &value, const QByteArr
                   key.toLatin1().constData(),
                   value.size(),
                   value.constData(),
-                  nullptr) ;
-    return _status(status) ;
+                  nullptr);
+    return _status(status);
 }
 
 static void _update_wallet_keys(const QStringList &e, const QByteArray &walletName)
 {
-    auto s = _find_password(WALLET_KEYS, walletName) ;
+    auto s = _find_password(WALLET_KEYS, walletName);
 
-    auto z = e.join("\n").toLatin1() ;
+    auto z = e.join("\n").toLatin1();
 
     if (s.ref)
     {
-        SecKeychainItemModifyContent(s.ref, nullptr, z.size(), z.constData()) ;
+        SecKeychainItemModifyContent(s.ref, nullptr, z.size(), z.constData());
     }
     else
     {
-        _add_key(WALLET_KEYS, z, walletName) ;
+        _add_key(WALLET_KEYS, z, walletName);
     }
 }
 
@@ -255,13 +207,13 @@ void LXQt::Wallet::osxKeyChain::deleteKey(const QString &key)
 {
     if (_delete_key(key, m_walletName))
     {
-        QString s = this->readValue(WALLET_KEYS) ;
+        QString s = this->readValue(WALLET_KEYS);
 
-        auto e = s.split('\n', QString::SkipEmptyParts) ;
+        auto e = s.split('\n', QString::SkipEmptyParts);
 
-        e.removeOne(key) ;
+        e.removeOne(key);
 
-        _update_wallet_keys(e, m_walletName) ;
+        _update_wallet_keys(e, m_walletName);
     }
 }
 
@@ -269,104 +221,104 @@ bool LXQt::Wallet::osxKeyChain::addKey(const QString &key, const QByteArray &val
 {
     if (_add_key(key, value, m_walletName))
     {
-        QString s = this->readValue(WALLET_KEYS) ;
+        QString s = this->readValue(WALLET_KEYS);
 
-        s += "\n" + key ;
+        s += "\n" + key;
 
-        _update_wallet_keys(s.split("\n", QString::SkipEmptyParts), m_walletName) ;
+        _update_wallet_keys(s.split("\n", QString::SkipEmptyParts), m_walletName);
 
-        return true ;
+        return true;
     }
     else
     {
-        return false ;
+        return false;
     }
 }
 
 bool LXQt::Wallet::osxKeyChain::opened()
 {
-    return m_opened ;
+    return m_opened;
 }
 
 QByteArray LXQt::Wallet::osxKeyChain::readValue(const QString &key)
 {
-    auto s = _find_password(key, m_walletName) ;
+    auto s = _find_password(key, m_walletName);
 
-    auto e = reinterpret_cast< const char * >(s.data) ;
-    auto z = static_cast< int >(s.len) ;
+    auto e = reinterpret_cast< const char * >(s.data);
+    auto z = static_cast< int >(s.len);
 
-    return QByteArray(e, z) ;
+    return QByteArray(e, z);
 }
 
 QVector< std::pair< QString, QByteArray > > LXQt::Wallet::osxKeyChain::readAllKeyValues()
 {
-    QVector< std::pair< QString, QByteArray > > e ;
+    QVector< std::pair< QString, QByteArray > > e;
 
 for (const auto & it : this->readAllKeys())
     {
-        e.append( { it, this->readValue(it) }) ;
+        e.append( { it, this->readValue(it) });
     }
 
-    return e ;
+    return e;
 }
 
 QStringList LXQt::Wallet::osxKeyChain::readAllKeys()
 {
-    QString s = this->readValue(WALLET_KEYS) ;
+    QString s = this->readValue(WALLET_KEYS);
 
-    return s.split('\n', QString::SkipEmptyParts) ;
+    return s.split('\n', QString::SkipEmptyParts);
 }
 
 QStringList LXQt::Wallet::osxKeyChain::managedWalletList()
 {
-    return QStringList() ;
+    return QStringList();
 }
 
 QString LXQt::Wallet::osxKeyChain::storagePath()
 {
-    return QString() ;
+    return QString();
 }
 
 QString LXQt::Wallet::osxKeyChain::localDefaultWalletName()
 {
-    return QString() ;
+    return QString();
 }
 
 QString LXQt::Wallet::osxKeyChain::networkDefaultWalletName()
 {
-    return QString() ;
+    return QString();
 }
 
 void LXQt::Wallet::osxKeyChain::closeWallet(bool e)
 {
-    Q_UNUSED(e) ;
+    Q_UNUSED(e);
 }
 
 void LXQt::Wallet::osxKeyChain::changeWalletPassWord(const QString &walletName,
         const QString &applicationName,
         std::function< void(bool)> function)
 {
-    Q_UNUSED(walletName) ;
-    Q_UNUSED(applicationName) ;
-    Q_UNUSED(function) ;
+    Q_UNUSED(walletName);
+    Q_UNUSED(applicationName);
+    Q_UNUSED(function);
 }
 
 void LXQt::Wallet::osxKeyChain::setImage(const QIcon &e)
 {
-    Q_UNUSED(e) ;
+    Q_UNUSED(e);
 }
 
 int LXQt::Wallet::osxKeyChain::walletSize()
 {
-    return this->readAllKeys().size() ;
+    return this->readAllKeys().size();
 }
 
 LXQt::Wallet::BackEnd LXQt::Wallet::osxKeyChain::backEnd()
 {
-    return LXQt::Wallet::BackEnd::osxkeychain ;
+    return LXQt::Wallet::BackEnd::osxkeychain;
 }
 
 QObject *LXQt::Wallet::osxKeyChain::qObject()
 {
-    return nullptr ;
+    return nullptr;
 }
