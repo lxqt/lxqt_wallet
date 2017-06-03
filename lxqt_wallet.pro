@@ -58,3 +58,4 @@ FORMS += \
     TRANSLATIONS += translations/lxqt-wallet_nl_NL.ts
     TRANSLATIONS += translations/lxqt-wallet_fr_FR.ts
     TRANSLATIONS += translations/lxqt-wallet_es_ES.ts
+    TRANSLATIONS += translations/lxqt-wallet_pl_PL.ts

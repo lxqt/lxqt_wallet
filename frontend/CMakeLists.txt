@@ -140,6 +140,7 @@ SET(TRANSLATIONS
    ../translations/lxqt-wallet_de_DE.ts
    ../translations/lxqt-wallet_gr_GR.ts
    ../translations/lxqt-wallet_es_ES.ts
+   ../translations/lxqt-wallet_pl_PL.ts
 )
 
 QT5_ADD_TRANSLATION(QM_FILES ${TRANSLATIONS})
@@ -151,6 +152,7 @@ install(FILES ${CMAKE_BINARY_DIR}/frontend/lxqt-wallet_gr_GR.qm DESTINATION shar
 install(FILES ${CMAKE_BINARY_DIR}/frontend/lxqt-wallet_nl_NL.qm DESTINATION share/lxqt/translations/lxqt-wallet/)
 install(FILES ${CMAKE_BINARY_DIR}/frontend/lxqt-wallet_fr_FR.qm DESTINATION share/lxqt/translations/lxqt-wallet/)
 install(FILES ${CMAKE_BINARY_DIR}/frontend/lxqt-wallet_es_ES.qm DESTINATION share/lxqt/translations/lxqt-wallet/)
+install(FILES ${CMAKE_BINARY_DIR}/frontend/lxqt-wallet_pl_PL.qm DESTINATION share/lxqt/translations/lxqt-wallet/)
 
 install(TARGETS lxqtwallet RUNTIME LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}")
 
