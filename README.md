@@ -16,9 +16,9 @@ The front end is build on Qt/C++ and has an optional dependency on KDE's kwallet
 The project allows other Qt based project's to target one API and use it for secure storage of information in different
 secure storage systems.
 
-GUI windows produced by the internat backend are <a href="https://github.com/mhogomchungu/lxqt_wallet/blob/master/images/lxqt_wallet.jpeg">here, </a><a href="https://github.com/mhogomchungu/lxqt_wallet/blob/master/images/lxqt_wallet1.jpeg">here</a> and <a href="https://github.com/mhogomchungu/lxqt_wallet/blob/master/images/lxqt_wallet2.jpeg">here.</a>
+GUI windows produced by the internat backend are <a href="https://github.com/mhogomchungu/lxqt_wallet/blob/master/images/lxqt_wallet.jpeg">here</a>, <a href="https://github.com/mhogomchungu/lxqt_wallet/blob/master/images/lxqt_wallet1.jpeg">here</a> and <a href="https://github.com/mhogomchungu/lxqt_wallet/blob/master/images/lxqt_wallet2.jpeg">here</a>.
 
-An example of how to use the library is below. Full API is located <a href="https://github.com/mhogomchungu/lxqt_wallet/blob/master/frontend/lxqt_wallet.h">here.</a>
+An example of how to use the library is below. Full API is located <a href="https://github.com/mhogomchungu/lxqt_wallet/blob/master/frontend/lxqt_wallet.h">here</a>.
 
 ===========
 
@@ -31,7 +31,7 @@ LXQt::Wallet::Wallet * m_wallet = LXQt::Wallet::getWalletBackend(LXQt::Wallet::B
 ```
 m_wallet->setParent(this);
 ```
-**3. Open a wallet. Full documentation of what options to pass to this method is <a href="https://github.com/mhogomchungu/lxqt_wallet/blob/777d85735a1149c143a4d8933194d24fa5445174/frontend/lxqt_wallet.h#L186">here.</a>**
+**3. Open a wallet. Full documentation of what options to pass to this method is <a href="https://github.com/mhogomchungu/lxqt_wallet/blob/777d85735a1149c143a4d8933194d24fa5445174/frontend/lxqt_wallet.h#L186">here</a>.**
 ```
 bool opened = m_wallet->open("walletName","applicationName");
 ```
