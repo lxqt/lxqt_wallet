@@ -18,8 +18,10 @@ secure storage systems.
 
 GUI windows produced by the internat backend are <a href="https://github.com/mhogomchungu/lxqt_wallet/blob/master/images/lxqt_wallet.jpeg">here</a>, <a href="https://github.com/mhogomchungu/lxqt_wallet/blob/master/images/lxqt_wallet1.jpeg">here</a> and <a href="https://github.com/mhogomchungu/lxqt_wallet/blob/master/images/lxqt_wallet2.jpeg">here</a>.
 
-An example of how to use the library is below. Full API is located <a href="https://github.com/mhogomchungu/lxqt_wallet/blob/master/frontend/lxqt_wallet.h">here</a>.
+An example of how to use the library is below.
 ===========
+
+**Full API is located <a href="https://github.com/mhogomchungu/lxqt_wallet/blob/master/frontend/lxqt_wallet.h">here</a>.**
 
 **1. Create an instance of the backend you want to use. A list of supported backends is <a href="https://github.com/mhogomchungu/lxqt_wallet/blob/777d85735a1149c143a4d8933194d24fa5445174/frontend/lxqt_wallet.h#L51">here</a>. Call <a href="https://github.com/mhogomchungu/lxqt_wallet/blob/777d85735a1149c143a4d8933194d24fa5445174/frontend/lxqt_wallet.h#L61">this</a> method first to make sure the backend you want to use was enabled at compile time. User of this API is responsible for the returned object and must delete it when done with it.**
 
