@@ -32,7 +32,7 @@ LXQt::Wallet::Wallet * m_wallet = LXQt::Wallet::getWalletBackend(LXQt::Wallet::B
 ```
 m_wallet->setParent(this);
 ```
-**3. Open a wallet. Full documentation of what options to pass to this method is <a href="https://github.com/mhogomchungu/lxqt_wallet/blob/777d85735a1149c143a4d8933194d24fa5445174/frontend/lxqt_wallet.h#L186">here</a>.**
+**3. Open a wallet. Full documentation of this API is <a href="https://github.com/mhogomchungu/lxqt_wallet/blob/777d85735a1149c143a4d8933194d24fa5445174/frontend/lxqt_wallet.h#L186">here</a>.**
 ```
 bool opened = m_wallet->open("walletName","applicationName");
 ```
