@@ -26,21 +26,10 @@ https://github.com/mhogomchungu/lxqt_wallet/blob/master/images/lxqt_wallet2.jpeg
 
 
 An example of how to use the library
-**Below examples use the following references.**
-
-[0] https://github.com/mhogomchungu/lxqt_wallet/blob/777d85735a1149c143a4d8933194d24fa5445174/frontend/lxqt_wallet.h
-
-[1] https://github.com/mhogomchungu/lxqt_wallet/blob/777d85735a1149c143a4d8933194d24fa5445174/frontend/lxqt_wallet.h#L51
-
-[2] https://github.com/mhogomchungu/lxqt_wallet/blob/777d85735a1149c143a4d8933194d24fa5445174/frontend/lxqt_wallet.h#L61
-
-[3]
-
-The library API is here[0] and below is a simple example of how to use it.
 
 ===========
 
-**1. Create an instance of the backend you want to use. A list of supported backends is here[1]. Call this[2] method first to make sure the backend you want to use was enabled at compile time.User of this API is responsible for the returned object and must delete it when done with it.**
+**1. Create an instance of the backend you want to use. A list of supported backends is <a href="https://github.com/mhogomchungu/lxqt_wallet/blob/777d85735a1149c143a4d8933194d24fa5445174/frontend/lxqt_wallet.h#L51">here</a>. Call <a href="https://github.com/mhogomchungu/lxqt_wallet/blob/777d85735a1149c143a4d8933194d24fa5445174/frontend/lxqt_wallet.h#L61">this</a> method first to make sure the backend you want to use was enabled at compile time. User of this API is responsible for the returned object and must delete it when done with it.**
 
 ```
 LXQt::Wallet::Wallet * m_wallet = LXQt::Wallet::getWalletBackend(LXQt::Wallet::BackEnd::internal);
@@ -49,7 +38,7 @@ LXQt::Wallet::Wallet * m_wallet = LXQt::Wallet::getWalletBackend(LXQt::Wallet::B
 ```
 m_wallet->setParent(this);
 ```
-**3. Open a wallet. Full documentation of what options to pass to this method is <a href="https://github.com/mhogomchungu/lxqt_wallet/blob/777d85735a1149c143a4d8933194d24fa5445174/frontend/lxqt_wallet.h#L186">here</a>**
+**3. Open a wallet. Full documentation of what options to pass to this method is <a href="https://github.com/mhogomchungu/lxqt_wallet/blob/777d85735a1149c143a4d8933194d24fa5445174/frontend/lxqt_wallet.h#L186">here.</a>**
 ```
 bool opened = m_wallet->open("walletName","applicationName");
 ```
