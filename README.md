@@ -16,16 +16,9 @@ The front end is build on Qt/C++ and has an optional dependency on KDE's kwallet
 The project allows other Qt based project's to target one API and use it for secure storage of information in different
 secure storage systems.
 
-GUI windows produced by the the project are below:
+GUI windows produced by the internat backend are <a href="https://github.com/mhogomchungu/lxqt_wallet/blob/master/images/lxqt_wallet.jpeg">here </a><a href="https://github.com/mhogomchungu/lxqt_wallet/blob/master/images/lxqt_wallet1.jpeg">here and</a><a href="https://github.com/mhogomchungu/lxqt_wallet/blob/master/images/lxqt_wallet2.jpeg">here.</a>
 
-https://github.com/mhogomchungu/lxqt_wallet/blob/master/images/lxqt_wallet.jpeg
-
-https://github.com/mhogomchungu/lxqt_wallet/blob/master/images/lxqt_wallet1.jpeg
-
-https://github.com/mhogomchungu/lxqt_wallet/blob/master/images/lxqt_wallet2.jpeg
-
-
-An example of how to use the library
+An example of how to use the library is below. Full API is located <a href="https://github.com/mhogomchungu/lxqt_wallet/blob/master/frontend/lxqt_wallet.h">here.</a>
 
 ===========
 
