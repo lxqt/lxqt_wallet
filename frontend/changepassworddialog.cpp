@@ -58,6 +58,18 @@ LXQt::Wallet::changePassWordDialog::changePassWordDialog(QWidget *parent, const 
 
     m_walletPassWordChanged = false;
 
+    /*
+     * When a user click the close button on the title bar, the window disappears(expected behavior)
+     * and "changePassWordDialog::closeEvent" method is called(expected behavior) causing the window to work
+     * as expected.
+     *
+     * When the user press the ESC key, the window disappears(expected behavior) but
+     * "changePassWordDialog::closeEvent" method is NOT called(unexpected behavior) causing the window to not work
+     * as expected.
+     *
+     * Code below registers a listerner(changePassWordDialog::eventFilter) and this listerner monitors for the
+     * ESC key press by the user and then act as if the user clicked the close button on the title bar.
+     */
     this->installEventFilter(this);
 }
 
