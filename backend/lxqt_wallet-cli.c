@@ -55,18 +55,28 @@
 #define StringsAreEqual( x,y ) strcmp( x,y ) == 0
 #define StringsAreNotEqual( x,y ) strcmp( x,y ) != 0
 
+/*
+ * This method should return a translated version of the input text.
+ *
+ * It just returns the input text because we currently dont offer translation support.
+ */
+static const char *lxqt_wallet_gettext(const char *text)
+{
+    return text;
+}
+
 static void _help(void)
 {
     const char *help2;
     const char *help1;
     const char *help3;
 
-    help1 = gettext("\n\n\
+    help1 = lxqt_wallet_gettext("\n\n\
 This is a simple tool for secure storage of files in a wallet.Added files to the wallet\n\
 will be stored in a secured file located at \"~/.config/lxqt/wallets/lxqt_wallet-cli/YYY.lwt\" where YYY is\n\
 wallet name\n\n");
 
-    help2 = gettext("\
+    help2 = lxqt_wallet_gettext("\
 To add a file to a wallet,run            : lxqt_wallet-cli --add    <path to file>\n\
 To delete a file in a wallet,run         : lxqt_wallet-cli --delete <file name>\n\
 To get a file from the wallet,run        : lxqt_wallet-cli --get    <file name>\n\
@@ -74,7 +84,7 @@ To add all files in a folder,run         : lxqt_wallet-cli --add-all <folder pat
 To get a list of files in the wallet,run : lxqt_wallet-cli --list\n\
 To get all files from the wallet,run     : lxqt_wallet-cli --get-all");
 
-    help3 =  gettext("\
+    help3 =  lxqt_wallet_gettext("\
 To get a list of wallets,run             : lxqt_wallet-cli --wallets\n");
 
     printf("\n%s%s\n%s\n%s", VERSION_STRING, help1, help2, help3);
@@ -147,7 +157,7 @@ static int _getPassWordFromUser(char *password, size_t size, size_t *len)
 
     if (_terminalEchoOff(&old, &new) == 1)
     {
-        puts(gettext("failed to read password"));
+        puts(lxqt_wallet_gettext("failed to read password"));
         return 1;
     }
     else
@@ -163,7 +173,7 @@ static int _open_wallet(lxqt_wallet_t *wallet, const char *password, size_t pass
     lxqt_wallet_error r = lxqt_wallet_open(wallet, password, password_length, wallet_name, APPLICATION_NAME);
     if (r != lxqt_wallet_no_error)
     {
-        puts(gettext("wrong password,failed to open wallet"));
+        puts(lxqt_wallet_gettext("wrong password,failed to open wallet"));
         return 1;
     }
     else
@@ -184,25 +194,25 @@ static int _openWallet(lxqt_wallet_t *wallet)
 
     char wallet_name[ WALLET_NAME_SIZE + 1 ];
 
-    printf(gettext("enter wallet name: "));
+    printf(lxqt_wallet_gettext("enter wallet name: "));
     _getInputFromUser(wallet_name, WALLET_NAME_SIZE, NULL);
 
     if (lxqt_wallet_exists(wallet_name, APPLICATION_NAME) != 0)
     {
-        printf(gettext("wallet \"%s\" does not exist,do you want to create it?(y/n): "), wallet_name);
+        printf(lxqt_wallet_gettext("wallet \"%s\" does not exist,do you want to create it?(y/n): "), wallet_name);
         c = getchar();
         _clearKeyBoardBuffer();
         if (c == 'y')
         {
-            printf(gettext("enter wallet password: "));
+            printf(lxqt_wallet_gettext("enter wallet password: "));
             _getPassWordFromUser(password, PASSWORD_SIZE, &password_length);
             puts("");
-            printf(gettext("re enter wallet password: "));
+            printf(lxqt_wallet_gettext("re enter wallet password: "));
             _getPassWordFromUser(password_1, PASSWORD_SIZE, NULL);
             puts("");
             if (StringsAreNotEqual(password, password_1))
             {
-                puts(gettext("passwords did not match"));
+                puts(lxqt_wallet_gettext("passwords did not match"));
                 return 1;
             }
             else
@@ -210,20 +220,20 @@ static int _openWallet(lxqt_wallet_t *wallet)
                 r = lxqt_wallet_create(password, password_length, wallet_name, APPLICATION_NAME);
                 if (r != lxqt_wallet_no_error)
                 {
-                    puts(gettext("failed to create wallet"));
+                    puts(lxqt_wallet_gettext("failed to create wallet"));
                     return 1;
                 }
             }
         }
         else
         {
-            puts(gettext("volume not created per user request"));
+            puts(lxqt_wallet_gettext("volume not created per user request"));
             return 1;
         }
     }
     else
     {
-        printf(gettext("enter wallet password: "));
+        printf(lxqt_wallet_gettext("enter wallet password: "));
         _getPassWordFromUser(password, PASSWORD_SIZE, &password_length);
         puts("");
     }
@@ -266,7 +276,7 @@ static int _addFileToWallet_1(lxqt_wallet_t wallet, int fd, const char *filePath
     e = malloc(st->st_size);
     if (e == NULL)
     {
-        puts(gettext("failed to allocate memory"));
+        puts(lxqt_wallet_gettext("failed to allocate memory"));
         return 1;
     }
     else
@@ -276,7 +286,7 @@ static int _addFileToWallet_1(lxqt_wallet_t wallet, int fd, const char *filePath
         free(e);
         if (r != lxqt_wallet_no_error)
         {
-            puts(gettext("failed to add file to the wallet"));
+            puts(lxqt_wallet_gettext("failed to add file to the wallet"));
             return 1;
         }
         else
@@ -297,7 +307,7 @@ static int _addFileToWallet(lxqt_wallet_t wallet, const char *filePath)
 
     if (lxqt_wallet_wallet_has_key(wallet, _file(fileName)))
     {
-        printf(gettext("wallet already has \"%s\" entry\n"), fileName);
+        printf(lxqt_wallet_gettext("wallet already has \"%s\" entry\n"), fileName);
         return 1;
     }
     else
@@ -305,7 +315,7 @@ static int _addFileToWallet(lxqt_wallet_t wallet, const char *filePath)
         fd = open(filePath, O_RDONLY);
         if (fd == -1)
         {
-            puts(gettext("failed to open file for reading"));
+            puts(lxqt_wallet_gettext("failed to open file for reading"));
             return 1;
         }
         else
@@ -322,7 +332,7 @@ static int _addFileToWallet(lxqt_wallet_t wallet, const char *filePath)
                 munmap(map, st.st_size);
                 if (r != lxqt_wallet_no_error)
                 {
-                    puts(gettext("failed to add file to the wallet"));
+                    puts(lxqt_wallet_gettext("failed to add file to the wallet"));
                     k = 1;
                 }
                 else
@@ -355,14 +365,14 @@ static int _getFileFromWallet(lxqt_wallet_t wallet, const char *filePath)
     r = lxqt_wallet_read_key_value(wallet, _file(fileName), &k);
     if (r != 1)
     {
-        puts(gettext("file not found in the wallet"));
+        puts(lxqt_wallet_gettext("file not found in the wallet"));
         return 1;
     }
     else
     {
         if (stat(filePath, &st) == 0)
         {
-            printf(gettext("path ./\"%s\" already occupied\n"), fileName);
+            printf(lxqt_wallet_gettext("path ./\"%s\" already occupied\n"), fileName);
             return 1;
         }
         else
@@ -370,7 +380,7 @@ static int _getFileFromWallet(lxqt_wallet_t wallet, const char *filePath)
             fd = open(filePath, O_WRONLY | O_CREAT, 0644);
             if (fd == -1)
             {
-                puts(gettext("failed to open file for writing"));
+                puts(lxqt_wallet_gettext("failed to open file for writing"));
                 return 1;
             }
             else
@@ -406,7 +416,7 @@ static int _addAllFilesToTheWallet(lxqt_wallet_t wallet, const char *path)
 
     if (dir == NULL)
     {
-        puts(gettext("failed to open directory for reading"));
+        puts(lxqt_wallet_gettext("failed to open directory for reading"));
         return 1;
     }
     else
