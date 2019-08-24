@@ -405,7 +405,7 @@ lxqt_wallet_error lxqt_wallet_create_encrypted_file(const char *password, u_int3
         write(fd_dest, iv, IV_SIZE);
 
         fstat(fd_src, &st);
-        size = st.st_size;
+	size = (u_int64_t)st.st_size;
 
         _create_magic_string_header(buffer);
 
@@ -424,7 +424,7 @@ lxqt_wallet_error lxqt_wallet_create_encrypted_file(const char *password, u_int3
 
         while (1)
         {
-            k = read(fd_src, file_buffer, FILE_BLOCK_SIZE);
+            k = (int)read(fd_src, file_buffer, FILE_BLOCK_SIZE);
             if (k == 0)
             {
                 break;
@@ -439,7 +439,7 @@ lxqt_wallet_error lxqt_wallet_create_encrypted_file(const char *password, u_int3
             j = (i * 100 / size);
             if (j > l)
             {
-                if (function(j, v))
+                if (function((int)j, v))
                 {
                     break;
                 }
@@ -638,7 +638,7 @@ lxqt_wallet_error lxqt_wallet_create_decrypted_file(const char *password, u_int3
             j = (i * 100 / size);
             if (j > l)
             {
-                if (function(j, v))
+                if (function((int)j, v))
                 {
                     break;
                 }
@@ -777,9 +777,9 @@ lxqt_wallet_error lxqt_wallet_open(lxqt_wallet_t *wallet, const char *password, 
         {
             fstat(fd, &st);
 
-            len = st.st_size - (SALT_SIZE + IV_SIZE + MAGIC_STRING_BUFFER_SIZE + BLOCK_SIZE);
+            len = (u_int64_t)(st.st_size - (SALT_SIZE + IV_SIZE + MAGIC_STRING_BUFFER_SIZE + BLOCK_SIZE));
 
-            if (len <= 0)
+            if ((int64_t)len <= 0)
             {
                 /*
                  * empty wallet
@@ -790,7 +790,14 @@ lxqt_wallet_error lxqt_wallet_open(lxqt_wallet_t *wallet, const char *password, 
             else
             {
                 _get_load_information(w, buffer);
-
+                if( w->wallet_data_size > len ){
+                    /*
+                     * Wallet is corrupt somehow,lets clear it.
+                    */
+                    w->wallet_data_size = 0;
+                    w->wallet_data_entry_count = 0;
+                    w->wallet_modified = 1;
+                }
                 e = malloc(len);
 
                 if (e != NULL)
@@ -881,7 +888,6 @@ int lxqt_wallet_read_key_value(lxqt_wallet_t wallet, const char *key, u_int32_t 
 
     if (key == NULL || wallet == NULL || key_value == NULL)
     {
-        ;
     }
     else
     {
@@ -1187,7 +1193,7 @@ lxqt_wallet_error lxqt_wallet_close(lxqt_wallet_t *w)
     int fd;
     char iv[ IV_SIZE ];
     char path[ PATH_MAX ];
-    char path_1[ PATH_MAX ];
+    char path_1[ PATH_MAX+16 ];
     char buffer[ MAGIC_STRING_BUFFER_SIZE + BLOCK_SIZE ];
 
     lxqt_wallet_t wallet;
@@ -1246,8 +1252,8 @@ lxqt_wallet_error lxqt_wallet_close(lxqt_wallet_t *w)
         return _close_exit(lxqt_wallet_gcry_cipher_encrypt_failed, w, handle);
     }
 
-    _wallet_full_path(path, PATH_MAX, wallet->wallet_name, wallet->application_name);
-    snprintf(path_1, PATH_MAX, "%s.tmp", path);
+    _wallet_full_path(path, sizeof (path), wallet->wallet_name, wallet->application_name);
+    snprintf(path_1, sizeof (path_1), "%s.tmp", path);
 
     k = wallet->wallet_data_size;
 
@@ -1344,10 +1350,10 @@ char **lxqt_wallet_wallet_list(const char *application_name, int *size)
             continue;
         }
 
-        len = strlen(entry->d_name) - strlen(WALLET_EXTENSION);
-        if (len > 0)
+        len = (u_int32_t)(strlen(entry->d_name) - strlen(WALLET_EXTENSION));
+        if ((int32_t)len > 0)
         {
-            result_1 = realloc(result, sizeof(char *) * (count + 1));
+            result_1 = realloc(result, sizeof(char *) * ((size_t)count + 1));
             if (result_1 != NULL)
             {
                 e = malloc(len + 1);
@@ -1393,7 +1399,7 @@ void lxqt_wallet_application_wallet_path(char *path, u_int32_t path_buffer_size,
 static char *_wallet_full_path(char *path_buffer, u_int32_t path_buffer_size, const char *wallet_name, const char *application_name)
 {
     char path_1[ PATH_MAX ];
-    lxqt_wallet_application_wallet_path(path_1, PATH_MAX, application_name);
+    lxqt_wallet_application_wallet_path(path_1, sizeof (path_1), application_name);
     snprintf(path_buffer, path_buffer_size, "%s/%s%s", path_1, wallet_name, WALLET_EXTENSION);
     return path_buffer;
 }
