@@ -20,7 +20,7 @@ message(STATUS "Checking for modules 'Qt5Widgets','Qt5Core' and 'Qt5LinguistTool
 
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5Core REQUIRED)
-#find_package(Qt5LinguistTools REQUIRED)
+find_package(Qt5LinguistTools REQUIRED)
 
 message(STATUS "  Found Qt5Widgets, version ${Qt5Widgets_VERSION}")
 message(STATUS "  Found Qt5Core, version ${Qt5Core_VERSION}")
@@ -143,7 +143,7 @@ SET(TRANSLATIONS
    ../translations/lxqt-wallet_pl_PL.ts
 )
 
-#QT5_ADD_TRANSLATION(QM_FILES ${TRANSLATIONS})
+QT5_ADD_TRANSLATION(QM_FILES ${TRANSLATIONS})
 SET(QM_FILES ${QM_FILES} PARENT_SCOPE)
 ADD_CUSTOM_TARGET(translations ALL DEPENDS ${QM_FILES})
 
