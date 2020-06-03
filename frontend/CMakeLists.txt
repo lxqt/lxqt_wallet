@@ -1,6 +1,4 @@
-
-cmake_minimum_required(VERSION 2.6)
-cmake_policy(SET CMP0017 OLD)
+cmake_minimum_required(VERSION 3.1.0)
 
 INCLUDE(FindPkgConfig)
 
@@ -10,7 +8,7 @@ include_directories(${PROJECT_BINARY_DIR})
 
 include_directories(${CMAKE_BINARY_DIR})
 
-if( APPLE )
+if(APPLE)
     file( WRITE ${PROJECT_BINARY_DIR}/osx_keychain.h "#define OSX_KEYCHAIN 1" )
 else()
     file( WRITE ${PROJECT_BINARY_DIR}/osx_keychain.h "#define OSX_KEYCHAIN 0" )
@@ -20,7 +18,7 @@ message(STATUS "Checking for modules 'Qt5Widgets','Qt5Core' and 'Qt5LinguistTool
 
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5Core REQUIRED)
-find_package(Qt5LinguistTools REQUIRED)
+#find_package(Qt5LinguistTools REQUIRED)
 
 message(STATUS "  Found Qt5Widgets, version ${Qt5Widgets_VERSION}")
 message(STATUS "  Found Qt5Core, version ${Qt5Core_VERSION}")
@@ -38,7 +36,7 @@ if(NOSECRETSUPPORT)
     SET(SECRET_SUPPORT "false")
     file(WRITE ${PROJECT_BINARY_DIR}/storage_manager.h "\n#define HAS_SECRET_SUPPORT 0\n")
 else()
-    pkg_check_modules(LIBSECRET libsecret-1)
+    pkg_check_modules(LIBSECRET libsecret-1 QUIET)
     if(LIBSECRET_FOUND)
         add_subdirectory(libsecret)
         SET(SECRET_SUPPORT "true")
@@ -49,14 +47,14 @@ else()
     endif()
 endif()
 
-add_definitions(-std=c++11)
+add_definitions(-std=c++14)
 
 if(NOKDESUPPORT)
     SET(KWALLET_SUPPORT "false")
     file(APPEND  ${PROJECT_BINARY_DIR}/storage_manager.h "\n#define HAS_KWALLET_SUPPORT 0\n")
 else()
     message(STATUS "Checking for modules 'KF5Wallet'")
-    find_package(KF5Wallet)
+    find_package(KF5Wallet QUIET)
     if(KF5Wallet_FOUND )
         message(STATUS "  Found KF5Wallet, version ${KF5Wallet_VERSION}")
         file(APPEND  ${PROJECT_BINARY_DIR}/storage_manager.h "\n#define HAS_KWALLET_SUPPORT 1\n")
@@ -89,7 +87,7 @@ endif()
 
 set(COMMON_UI_FILES  changepassworddialog.ui password_dialog.ui)
 set(COMMON_MOC_FILES task.h changepassworddialog.h password_dialog.h)
-set(COMMON_SRC_FILES changepassworddialog.cpp password_dialog.cpp lxqt_internal_wallet.cpp lxqt_wallet.cpp lxqt_osx_keychain.cpp)
+set(COMMON_SRC_FILES changepassworddialog.cpp password_dialog.cpp lxqt_windows_dpapi.cpp lxqt_internal_wallet.cpp lxqt_wallet.cpp lxqt_osx_keychain.cpp)
 
 Qt5_WRAP_UI(UI ${COMMON_UI_FILES})
 Qt5_WRAP_CPP(MOC ${COMMON_MOC_FILES})
@@ -143,16 +141,16 @@ SET(TRANSLATIONS
    ../translations/lxqt-wallet_pl_PL.ts
 )
 
-QT5_ADD_TRANSLATION(QM_FILES ${TRANSLATIONS})
+#QT5_ADD_TRANSLATION(QM_FILES ${TRANSLATIONS})
 SET(QM_FILES ${QM_FILES} PARENT_SCOPE)
 ADD_CUSTOM_TARGET(translations ALL DEPENDS ${QM_FILES})
 
-install(FILES ${CMAKE_BINARY_DIR}/frontend/lxqt-wallet_de_DE.qm DESTINATION share/lxqt/translations/lxqt-wallet/)
-install(FILES ${CMAKE_BINARY_DIR}/frontend/lxqt-wallet_gr_GR.qm DESTINATION share/lxqt/translations/lxqt-wallet/)
-install(FILES ${CMAKE_BINARY_DIR}/frontend/lxqt-wallet_nl_NL.qm DESTINATION share/lxqt/translations/lxqt-wallet/)
-install(FILES ${CMAKE_BINARY_DIR}/frontend/lxqt-wallet_fr_FR.qm DESTINATION share/lxqt/translations/lxqt-wallet/)
-install(FILES ${CMAKE_BINARY_DIR}/frontend/lxqt-wallet_es_ES.qm DESTINATION share/lxqt/translations/lxqt-wallet/)
-install(FILES ${CMAKE_BINARY_DIR}/frontend/lxqt-wallet_pl_PL.qm DESTINATION share/lxqt/translations/lxqt-wallet/)
+#install(FILES ${CMAKE_BINARY_DIR}/frontend/lxqt-wallet_de_DE.qm DESTINATION share/lxqt/translations/lxqt-wallet/)
+#install(FILES ${CMAKE_BINARY_DIR}/frontend/lxqt-wallet_gr_GR.qm DESTINATION share/lxqt/translations/lxqt-wallet/)
+#install(FILES ${CMAKE_BINARY_DIR}/frontend/lxqt-wallet_nl_NL.qm DESTINATION share/lxqt/translations/lxqt-wallet/)
+#install(FILES ${CMAKE_BINARY_DIR}/frontend/lxqt-wallet_fr_FR.qm DESTINATION share/lxqt/translations/lxqt-wallet/)
+#install(FILES ${CMAKE_BINARY_DIR}/frontend/lxqt-wallet_es_ES.qm DESTINATION share/lxqt/translations/lxqt-wallet/)
+#install(FILES ${CMAKE_BINARY_DIR}/frontend/lxqt-wallet_pl_PL.qm DESTINATION share/lxqt/translations/lxqt-wallet/)
 
 install(TARGETS lxqtwallet RUNTIME LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}")
 

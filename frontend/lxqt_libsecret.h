@@ -90,6 +90,8 @@ public:
 
     int walletSize(void) ;
 
+    void log(std::function<void(QString)>);
+
     LXQt::Wallet::BackEnd backEnd(void);
     QObject *qObject(void);
 private:

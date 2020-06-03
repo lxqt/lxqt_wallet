@@ -203,6 +203,10 @@ static void _update_wallet_keys(const QStringList &e, const QByteArray &walletNa
     }
 }
 
+void LXQt::Wallet::osxKeyChain::log(std::function<void(QString)>)
+{
+}
+
 void LXQt::Wallet::osxKeyChain::deleteKey(const QString &key)
 {
     if (_delete_key(key, m_walletName))

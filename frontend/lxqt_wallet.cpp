@@ -49,6 +49,7 @@
 
 #include "lxqt_osx_keychain.h"
 #include "osx_keychain.h"
+#include "lxqt_windows_dpapi.h"
 
 LXQt::Wallet::Wallet::Wallet()
 {
@@ -58,17 +59,30 @@ LXQt::Wallet::Wallet::~Wallet()
 {
 }
 
-LXQt::Wallet::Wallet *LXQt::Wallet::getWalletBackend(LXQt::Wallet::BackEnd bk)
+std::unique_ptr<LXQt::Wallet::Wallet> LXQt::Wallet::getWalletBackend(LXQt::Wallet::BackEnd bk)
 {
+    if( bk == LXQt::Wallet::BackEnd::windows_dpapi )
+    {
+#ifdef Q_OS_WIN
+	return std::unique_ptr<LXQt::Wallet::Wallet>(new LXQt::Wallet::windows_dpapi());
+#else
+	return nullptr;
+#endif
+    }
+
     if (bk == LXQt::Wallet::BackEnd::internal)
     {
-        return new LXQt::Wallet::internalWallet();
+#ifdef Q_OS_WIN
+	return nullptr;
+#else
+	return std::unique_ptr<LXQt::Wallet::Wallet>(new LXQt::Wallet::internalWallet());
+#endif
     }
 
     if (bk == LXQt::Wallet::BackEnd::kwallet)
     {
 #if HAS_KWALLET_SUPPORT
-        return new LXQt::Wallet::kwallet();
+	return std::unique_ptr<LXQt::Wallet::Wallet>(new LXQt::Wallet::kwallet());
 #else
         return nullptr;
 #endif
@@ -77,15 +91,15 @@ LXQt::Wallet::Wallet *LXQt::Wallet::getWalletBackend(LXQt::Wallet::BackEnd bk)
     if (bk == LXQt::Wallet::BackEnd::libsecret)
     {
 #if HAS_SECRET_SUPPORT
-        return new LXQt::Wallet::libsecret();
+	return std::unique_ptr<LXQt::Wallet::Wallet>(new LXQt::Wallet::libsecret());
 #else
         return nullptr;
 #endif
     }
-    if(bk == LXQt::Wallet::BackEnd::osxkeychain)
+    if (bk == LXQt::Wallet::BackEnd::osxkeychain)
     {
 #if OSX_KEYCHAIN
-        return new LXQt::Wallet::osxKeyChain();
+	return std::unique_ptr<LXQt::Wallet::Wallet>(new LXQt::Wallet::osxKeyChain());
 #endif
     }
     return nullptr;
@@ -93,9 +107,21 @@ LXQt::Wallet::Wallet *LXQt::Wallet::getWalletBackend(LXQt::Wallet::BackEnd bk)
 
 bool LXQt::Wallet::backEndIsSupported(LXQt::Wallet::BackEnd bk)
 {
+    if( bk == LXQt::Wallet::BackEnd::windows_dpapi ){
+#ifdef Q_OS_WIN
+	return true;
+#else
+	return false;
+#endif
+    }
+
     if (bk == LXQt::Wallet::BackEnd::internal)
     {
-        return true;
+#ifdef Q_OS_WIN
+	return false;
+#else
+	return true;
+#endif
     }
 
     if (bk == LXQt::Wallet::BackEnd::kwallet)

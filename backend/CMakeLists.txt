@@ -1,5 +1,4 @@
-cmake_minimum_required(VERSION 2.6)
-cmake_policy(SET CMP0017 OLD)
+cmake_minimum_required(VERSION 3.1.0)
 
 add_definitions(-Wno-unused-result)
 

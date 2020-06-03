@@ -193,6 +193,10 @@ QVector<std::pair<QString, QByteArray>> LXQt::Wallet::libsecret::readAllKeyValue
     return p;
 }
 
+void LXQt::Wallet::libsecret::log(std::function<void(QString)>)
+{
+}
+
 QStringList LXQt::Wallet::libsecret::readAllKeys(void)
 {
     if(m_schema && m_schema_1)

@@ -41,6 +41,7 @@
 #include <QDir>
 
 #include <functional>
+#include <memory>
 
 namespace LXQt
 {
@@ -48,7 +49,7 @@ namespace LXQt
 namespace Wallet
 {
 
-enum class BackEnd { internal, kwallet, libsecret, osxkeychain } ;
+enum class BackEnd { internal, kwallet, libsecret, osxkeychain, windows_dpapi } ;
 
 /*
  * Forward declare the Wallet class
@@ -80,9 +81,8 @@ Q_DECL_EXPORT bool walletExists(LXQt::Wallet::BackEnd,
  * backEndIsSupported() to check if a backed is supported before calling this function.
  *
  * nullptr is returned if there is no support for requested backend.
- * A caller is responsible for the returned object and must delete it when done with it.
  */
-Q_DECL_EXPORT LXQt::Wallet::Wallet *getWalletBackend(LXQt::Wallet::BackEnd);
+Q_DECL_EXPORT std::unique_ptr<LXQt::Wallet::Wallet> getWalletBackend(LXQt::Wallet::BackEnd);
 
 /*
  * Return a list of all wallets.
@@ -284,6 +284,11 @@ public:
      * network wallet name.
      */
     virtual QString networkDefaultWalletName() = 0;
+
+    /*
+     * Pass in callable object will be invoked everytime the backend wants to log something.
+     */
+    virtual void log(std::function<void(QString)>) = 0;
 };
 
 } // namespace lxqt

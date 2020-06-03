@@ -152,10 +152,15 @@ QVector<std::pair<QString, QByteArray>> LXQt::Wallet::kwallet::readAllKeyValues(
 
         m_kwallet->readPassword(e, value);
 
-        p.append( { e, value.toLatin1() });
+	p.append({ e, value.toLatin1() });
     }
 
     return p;
+}
+
+void LXQt::Wallet::kwallet::log(std::function<void()>)
+{
+
 }
 
 QStringList LXQt::Wallet::kwallet::readAllKeys(void)
