@@ -118,7 +118,7 @@ target_link_libraries(lxqtwallet ${Qt5Core_LIBRARIES})
 
 if(WIN32)
     target_link_libraries(lxqtwallet -lcrypt32 -lbcrypt)
-endif
+endif()
 
 if(APPLE)
     find_library( COREFOUNDATION_LIBRARY CoreFoundation REQUIRED )
