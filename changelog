@@ -5,3 +5,5 @@
 
 - version 3.1.0
 	- add OSX keychain support.
+- version 3.2.0.
+	- add a backend for Windows based on Window' Data Protection API.
