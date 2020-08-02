@@ -65,6 +65,25 @@ static const char *lxqt_wallet_gettext(const char *text)
     return text;
 }
 
+static int _print_until(const char *start, char end)
+{
+    const char *e;
+    int s = 0;
+    for (e=start ; *e != end ; e++){
+	s++;
+	putc(*e, stdout);
+    }
+    return s;
+}
+
+static const char *lxqt_wallet_gettext_1(const char *text, const char *text1)
+{
+    int s = _print_until(text, '"');
+    printf("\"%s\"", text1);
+    _print_until(text+s+4, '\0');
+    return "";
+}
+
 static void _help(void)
 {
     const char *help2;
@@ -194,20 +213,20 @@ static int _openWallet(lxqt_wallet_t *wallet)
 
     char wallet_name[ WALLET_NAME_SIZE + 1 ];
 
-    printf(lxqt_wallet_gettext("enter wallet name: "));
+    printf("%s",lxqt_wallet_gettext("enter wallet name: "));
     _getInputFromUser(wallet_name, WALLET_NAME_SIZE, NULL);
 
     if (lxqt_wallet_exists(wallet_name, APPLICATION_NAME) != 0)
     {
-        printf(lxqt_wallet_gettext("wallet \"%s\" does not exist,do you want to create it?(y/n): "), wallet_name);
+        printf("%s",lxqt_wallet_gettext_1("wallet \"%s\" does not exist,do you want to create it?(y/n): ",wallet_name));
         c = getchar();
         _clearKeyBoardBuffer();
         if (c == 'y')
         {
-            printf(lxqt_wallet_gettext("enter wallet password: "));
+            printf("%s",lxqt_wallet_gettext("enter wallet password: "));
             _getPassWordFromUser(password, PASSWORD_SIZE, &password_length);
             puts("");
-            printf(lxqt_wallet_gettext("re enter wallet password: "));
+            printf("%s",lxqt_wallet_gettext("re enter wallet password: "));
             _getPassWordFromUser(password_1, PASSWORD_SIZE, NULL);
             puts("");
             if (StringsAreNotEqual(password, password_1))
@@ -233,7 +252,7 @@ static int _openWallet(lxqt_wallet_t *wallet)
     }
     else
     {
-        printf(lxqt_wallet_gettext("enter wallet password: "));
+        printf("%s",lxqt_wallet_gettext("enter wallet password: "));
         _getPassWordFromUser(password, PASSWORD_SIZE, &password_length);
         puts("");
     }
@@ -307,7 +326,7 @@ static int _addFileToWallet(lxqt_wallet_t wallet, const char *filePath)
 
     if (lxqt_wallet_wallet_has_key(wallet, _file(fileName)))
     {
-        printf(lxqt_wallet_gettext("wallet already has \"%s\" entry\n"), fileName);
+        printf("%s",lxqt_wallet_gettext_1("wallet already has \"%s\" entry\n", fileName));
         return 1;
     }
     else
@@ -372,7 +391,7 @@ static int _getFileFromWallet(lxqt_wallet_t wallet, const char *filePath)
     {
         if (stat(filePath, &st) == 0)
         {
-            printf(lxqt_wallet_gettext("path ./\"%s\" already occupied\n"), fileName);
+            printf("%s",lxqt_wallet_gettext_1("path ./\"%s\" already occupied\n", fileName));
             return 1;
         }
         else
