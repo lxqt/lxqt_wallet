@@ -18,16 +18,19 @@ message(STATUS "Checking for modules 'Qt5Widgets','Qt5Core' and 'Qt5LinguistTool
 
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5Core REQUIRED)
+find_package(Qt5DBus REQUIRED)
 find_package(Qt5LinguistTools REQUIRED)
 
 message(STATUS "  Found Qt5Widgets, version ${Qt5Widgets_VERSION}")
 message(STATUS "  Found Qt5Core, version ${Qt5Core_VERSION}")
+message(STATUS "  Found Qt5DBus, version ${Qt5DBus_VERSION}")
 message(STATUS "  Found Qt5LinguistTools, version ${Qt5LinguistTools_VERSION}")
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 include_directories(${Qt5Widgets_INCLUDE_DIRS})
 include_directories(${Qt5Core_INCLUDE_DIRS}})
+include_directories(${Qt5DBus_INCLUDE_DIRS}})
 
 add_definitions(${Qt5Widgets_DEFINITIONS})
 add_definitions(${Qt5Core_DEFINITIONS})
@@ -71,7 +74,7 @@ if(KWALLET_SUPPORT)
     message(STATUS "-----------------------------------------------------------------------")
 else()
     message(STATUS "\n--------------------------------------------------------------------------")
-    message(STATUS "kwallet support NOT found,will not build kwallet functionality")
+    message(STATUS "kwallet support NOT found, support will be discovered at runtime through dbus")
     message(STATUS "-----------------------------------------------------------------------")
 endif()
 
@@ -103,11 +106,13 @@ if(KWALLET_SUPPORT)
     endif()
     target_link_libraries(lxqtwallet KF5::Wallet)
 else()
+    Qt5_WRAP_CPP(MOC_KWALLET_DBUS lxqt_kwallet-dbus.h)
+    set(KWALLET_DBUS lxqt_kwallet-dbus.cpp)
     if(SECRET_SUPPORT)
-        add_library(lxqtwallet SHARED lxqt_libsecret.cpp ${UI} ${COMMON_SRC_FILES} ${MOC})
+        add_library(lxqtwallet SHARED lxqt_libsecret.cpp ${KWALLET_DBUS} ${UI} ${COMMON_SRC_FILES} ${MOC} ${MOC_KWALLET_DBUS})
         target_link_libraries(lxqtwallet secretlib)
     else()
-        add_library(lxqtwallet SHARED ${UI} ${COMMON_SRC_FILES} ${MOC} ${MOC_KWALLET})
+        add_library(lxqtwallet SHARED ${UI} ${COMMON_SRC_FILES} ${KWALLET_DBUS} ${MOC} ${MOC_KWALLET_DBUS})
     endif()
 endif()
 
@@ -121,8 +126,8 @@ if(WIN32)
 endif()
 
 if(APPLE)
-    find_library( COREFOUNDATION_LIBRARY CoreFoundation REQUIRED )
-    find_library( SECURITY_LIBRARY Security REQUIRED )
+    find_library(COREFOUNDATION_LIBRARY CoreFoundation REQUIRED)
+    find_library(SECURITY_LIBRARY Security REQUIRED)
     target_link_libraries(lxqtwallet ${COREFOUNDATION_LIBRARY} ${SECURITY_LIBRARY})
 endif()
 
@@ -131,7 +136,7 @@ set_target_properties(lxqtwallet PROPERTIES SOVERSION "${LIBRARY_VERSION}")
 
 set_target_properties(lxqtwallet PROPERTIES OUTPUT_NAME lxqt-wallet)
 
-file( WRITE ${PROJECT_BINARY_DIR}/translations_path.h
+file(WRITE ${PROJECT_BINARY_DIR}/translations_path.h
 "
 #define TRANSLATIONS_PATH \"${CMAKE_INSTALL_PREFIX}/share/lxqt/translations/lxqt-wallet/\"
 ")
