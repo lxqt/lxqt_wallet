@@ -123,6 +123,8 @@ target_link_libraries(lxqtwallet ${Qt5Core_LIBRARIES})
 
 if(WIN32)
     target_link_libraries(lxqtwallet -lcrypt32 -lbcrypt)
+else()
+    target_link_libraries(lxqtwallet ${Qt5DBus_LIBRARIES})
 endif()
 
 if(APPLE)
