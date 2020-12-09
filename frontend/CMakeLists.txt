@@ -144,24 +144,32 @@ file(WRITE ${PROJECT_BINARY_DIR}/translations_path.h
 ")
 
 SET(TRANSLATIONS
-   ../translations/lxqt-wallet_nl_NL.ts
-   ../translations/lxqt-wallet_fr_FR.ts
-   ../translations/lxqt-wallet_de_DE.ts
-   ../translations/lxqt-wallet_gr_GR.ts
-   ../translations/lxqt-wallet_es_ES.ts
-   ../translations/lxqt-wallet_pl_PL.ts
-)
+   ../translations/lxqt-wallet_cs.ts
+   ../translations/lxqt-wallet_fr.ts
+   ../translations/lxqt-wallet_de.ts
+   ../translations/lxqt-wallet_el.ts
+   ../translations/lxqt-wallet_es.ts
+   ../translations/lxqt-wallet_it.ts
+   ../translations/lxqt-wallet_nl.ts
+   ../translations/lxqt-wallet_pl.ts
+   ../translations/lxqt-wallet_hr.ts
+   ../translations/lxqt-wallet_ru.ts
+   )
 
 QT5_ADD_TRANSLATION(QM_FILES ${TRANSLATIONS})
 SET(QM_FILES ${QM_FILES} PARENT_SCOPE)
 ADD_CUSTOM_TARGET(translations ALL DEPENDS ${QM_FILES})
 
-install(FILES ${CMAKE_BINARY_DIR}/frontend/lxqt-wallet_de_DE.qm DESTINATION share/lxqt/translations/lxqt-wallet/)
-install(FILES ${CMAKE_BINARY_DIR}/frontend/lxqt-wallet_gr_GR.qm DESTINATION share/lxqt/translations/lxqt-wallet/)
-install(FILES ${CMAKE_BINARY_DIR}/frontend/lxqt-wallet_nl_NL.qm DESTINATION share/lxqt/translations/lxqt-wallet/)
-install(FILES ${CMAKE_BINARY_DIR}/frontend/lxqt-wallet_fr_FR.qm DESTINATION share/lxqt/translations/lxqt-wallet/)
-install(FILES ${CMAKE_BINARY_DIR}/frontend/lxqt-wallet_es_ES.qm DESTINATION share/lxqt/translations/lxqt-wallet/)
-install(FILES ${CMAKE_BINARY_DIR}/frontend/lxqt-wallet_pl_PL.qm DESTINATION share/lxqt/translations/lxqt-wallet/)
+install(FILES ${CMAKE_BINARY_DIR}/frontend/lxqt-wallet_cs.qm DESTINATION share/lxqt/translations/lxqt-wallet/)
+install(FILES ${CMAKE_BINARY_DIR}/frontend/lxqt-wallet_de.qm DESTINATION share/lxqt/translations/lxqt-wallet/)
+install(FILES ${CMAKE_BINARY_DIR}/frontend/lxqt-wallet_el.qm DESTINATION share/lxqt/translations/lxqt-wallet/)
+install(FILES ${CMAKE_BINARY_DIR}/frontend/lxqt-wallet_it.qm DESTINATION share/lxqt/translations/lxqt-wallet/)
+install(FILES ${CMAKE_BINARY_DIR}/frontend/lxqt-wallet_es.qm DESTINATION share/lxqt/translations/lxqt-wallet/)
+install(FILES ${CMAKE_BINARY_DIR}/frontend/lxqt-wallet_fr.qm DESTINATION share/lxqt/translations/lxqt-wallet/)
+install(FILES ${CMAKE_BINARY_DIR}/frontend/lxqt-wallet_nl.qm DESTINATION share/lxqt/translations/lxqt-wallet/)
+install(FILES ${CMAKE_BINARY_DIR}/frontend/lxqt-wallet_pl.qm DESTINATION share/lxqt/translations/lxqt-wallet/)
+install(FILES ${CMAKE_BINARY_DIR}/frontend/lxqt-wallet_hr.qm DESTINATION share/lxqt/translations/lxqt-wallet/)
+install(FILES ${CMAKE_BINARY_DIR}/frontend/lxqt-wallet_ru.qm DESTINATION share/lxqt/translations/lxqt-wallet/)
 
 install(TARGETS lxqtwallet RUNTIME LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}")
 
