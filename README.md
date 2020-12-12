@@ -56,3 +56,12 @@ QVector<std::pair<QString, QByteArray>> keyValues = readAllKeyValues();
 ```
 m_wallet->closeWallet();
 ```
+### Translation
+
+Translations can be done in [LXQt-Weblate](https://translate.lxqt-project.org/projects/lxqt-desktop/lxqt-wallet/)
+
+<a href="https://translate.lxqt-project.org/projects/lxqt-desktop/lxqt-wallet/">
+<img src="https://translate.lxqt-project.org/widgets/lxqt-desktop/-/lxqt-wallet/multi-auto.svg" alt="Translation status" />
+</a>
+
+
