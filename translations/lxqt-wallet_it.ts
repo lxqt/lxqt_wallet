@@ -6,7 +6,7 @@
     <message>
         <location filename="../frontend/changepassworddialog.cpp" line="108"/>
         <source>Create a new wallet</source>
-        <translation>Crea nuova portafoglio</translation>
+        <translation>Crea un nuovo portafoglio</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.cpp" line="110"/>
