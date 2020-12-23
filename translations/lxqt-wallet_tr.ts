@@ -6,33 +6,33 @@
     <message>
         <location filename="../frontend/changepassworddialog.cpp" line="108"/>
         <source>Create a new wallet</source>
-        <translation type="unfinished"></translation>
+        <translation>Yeni bir cüzdan oluştur</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.cpp" line="110"/>
         <source>Create</source>
-        <translation type="unfinished"></translation>
+        <translation>Oluştur</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.cpp" line="138"/>
         <location filename="../frontend/changepassworddialog.cpp" line="280"/>
         <source>Passwords do not match</source>
-        <translation type="unfinished"></translation>
+        <translation>Parola uyuşmuyor</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.cpp" line="221"/>
         <source>Wallet password could not be changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Cüzdan parolası değiştirilemedi</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.cpp" line="232"/>
         <source>Wallet could not be opened with the presented key</source>
-        <translation type="unfinished"></translation>
+        <translation>Cüzdan sunulan anahtarla açılamadı</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.cpp" line="244"/>
         <source>New passwords do not match</source>
-        <translation type="unfinished"></translation>
+        <translation>Yeni parola uyuşmuyor</translation>
     </message>
 </context>
 <context>
@@ -40,7 +40,7 @@
     <message>
         <location filename="../frontend/password_dialog.cpp" line="72"/>
         <source>Wallet could not be opened with the presented key</source>
-        <translation type="unfinished"></translation>
+        <translation>Cüzdan sunulan anahtarla açılamadı</translation>
     </message>
 </context>
 <context>
@@ -48,37 +48,37 @@
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="14"/>
         <source>Change Wallet&apos;s Password</source>
-        <translation type="unfinished"></translation>
+        <translation>Cüzdanın Parolasını Değiştir</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="42"/>
         <source>C&amp;hange</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Değiştir</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="55"/>
         <source>&amp;Ok</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Tamam</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="126"/>
         <source>Enter Current Password Below.</source>
-        <translation type="unfinished"></translation>
+        <translation>Aşağıya Mevcut Şifreyi Girin.</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="145"/>
         <source>Enter New Password Below.</source>
-        <translation type="unfinished"></translation>
+        <translation>Aşağıya Yeni Şifre Girin.</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="164"/>
         <source>Re Enter New Password Below.</source>
-        <translation type="unfinished"></translation>
+        <translation>Aşağıya Yeni Şifreyi Yeniden Girin.</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="183"/>
         <source>&amp;Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;İptal</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="196"/>
@@ -105,17 +105,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../frontend/password_dialog.ui" line="14"/>
         <source>lxqt wallet service</source>
-        <translation type="unfinished"></translation>
+        <translation>lxqt cüzdan hizmeti</translation>
     </message>
     <message>
         <location filename="../frontend/password_dialog.ui" line="42"/>
         <source>The application &apos;%1&apos; has requested to open the wallet &apos;%2&apos;.Enter the password below for this wallet to unlock it</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1&apos; uygulaması &apos;%2&apos; cüzdanını açmak istedi. Kilidi açmak için bu cüzdanın parolasını aşağıya girin</translation>
     </message>
     <message>
         <location filename="../frontend/password_dialog.ui" line="74"/>
         <source>Wallet &apos;%1&apos; does not exist,do you want to create it?</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1&apos; cüzdanı mevcut değil, oluşturmak ister misiniz?</translation>
     </message>
     <message>
         <location filename="../frontend/password_dialog.ui" line="90"/>
@@ -138,17 +138,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../frontend/password_dialog.ui" line="124"/>
         <source>&amp;Unlock</source>
-        <translation type="unfinished"></translation>
+        <translation>Kilidi &amp;Aç</translation>
     </message>
     <message>
         <location filename="../frontend/password_dialog.ui" line="141"/>
         <source>&amp;Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;İptal</translation>
     </message>
     <message>
         <location filename="../frontend/password_dialog.ui" line="167"/>
         <source>&amp;Ok</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Tamam</translation>
     </message>
     <message>
         <location filename="../frontend/password_dialog.ui" line="154"/>
