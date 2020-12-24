@@ -78,7 +78,7 @@
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="183"/>
         <source>&amp;Cancel</source>
-        <translation>&amp;Storno</translation>
+        <translation>&amp;Zrušit</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="196"/>
@@ -160,7 +160,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../frontend/password_dialog.ui" line="141"/>
         <source>&amp;Cancel</source>
-        <translation>&amp;Storno</translation>
+        <translation>&amp;Zrušit</translation>
     </message>
     <message>
         <location filename="../frontend/password_dialog.ui" line="167"/>
