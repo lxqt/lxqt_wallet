@@ -32,7 +32,7 @@
     <message>
         <location filename="../frontend/changepassworddialog.cpp" line="244"/>
         <source>New passwords do not match</source>
-        <translation type="unfinished"></translation>
+        <translation>Az új jelszavak nem egyeznek</translation>
     </message>
 </context>
 <context>
@@ -48,17 +48,17 @@
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="14"/>
         <source>Change Wallet&apos;s Password</source>
-        <translation type="unfinished"></translation>
+        <translation>Pénztárca jelszavának megváltoztatása</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="42"/>
         <source>C&amp;hange</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Változtatás</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="55"/>
         <source>&amp;Ok</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ok</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="126"/>
@@ -78,7 +78,7 @@
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="183"/>
         <source>&amp;Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Mégse</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="196"/>
@@ -105,7 +105,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../frontend/password_dialog.ui" line="14"/>
         <source>lxqt wallet service</source>
-        <translation type="unfinished"></translation>
+        <translation>lxqt pénztárca szolgáltatás</translation>
     </message>
     <message>
         <location filename="../frontend/password_dialog.ui" line="42"/>
@@ -138,22 +138,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../frontend/password_dialog.ui" line="124"/>
         <source>&amp;Unlock</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Feloldás</translation>
     </message>
     <message>
         <location filename="../frontend/password_dialog.ui" line="141"/>
         <source>&amp;Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Mégse</translation>
     </message>
     <message>
         <location filename="../frontend/password_dialog.ui" line="167"/>
         <source>&amp;Ok</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ok</translation>
     </message>
     <message>
         <location filename="../frontend/password_dialog.ui" line="154"/>
         <source>ok</source>
-        <translation type="unfinished"></translation>
+        <translation>ok</translation>
     </message>
 </context>
 </TS>
