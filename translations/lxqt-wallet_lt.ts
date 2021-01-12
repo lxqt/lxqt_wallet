@@ -22,12 +22,12 @@
     <message>
         <location filename="../frontend/changepassworddialog.cpp" line="221"/>
         <source>Wallet password could not be changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Nepavyko pakeisti slaptažodinės slaptažodžio</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.cpp" line="232"/>
         <source>Wallet could not be opened with the presented key</source>
-        <translation type="unfinished"></translation>
+        <translation>Nepavyko atverti slaptažodinės naudojant pateiktą raktą</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.cpp" line="244"/>
@@ -40,7 +40,7 @@
     <message>
         <location filename="../frontend/password_dialog.cpp" line="72"/>
         <source>Wallet could not be opened with the presented key</source>
-        <translation type="unfinished"></translation>
+        <translation>Nepavyko atverti slaptažodinės naudojant pateiktą raktą</translation>
     </message>
 </context>
 <context>
@@ -68,7 +68,7 @@
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="145"/>
         <source>Enter New Password Below.</source>
-        <translation type="unfinished"></translation>
+        <translation>Žemiau įveskite naują slaptažodį.</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="164"/>
@@ -78,7 +78,7 @@
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="183"/>
         <source>&amp;Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Atsisakyti</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="196"/>
@@ -97,7 +97,11 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Enter password information below to create a new wallet &apos;&lt;span style=&quot; font-weight:600;&quot;&gt;%1&lt;/span&gt;&apos; for application &apos;&lt;span style=&quot; font-weight:600;&quot;&gt;%2&lt;/span&gt;&apos;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Žemiau įveskite slaptažodžio informaciją norėdami sukurti naują slaptažodinę, skirtą &apos;&lt;span style=&quot; font-weight:600;&quot;&gt;%1&lt;/span&gt;&apos; programai &apos;&lt;span style=&quot; font-weight:600;&quot;&gt;%2&lt;/span&gt;&apos;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -110,7 +114,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../frontend/password_dialog.ui" line="42"/>
         <source>The application &apos;%1&apos; has requested to open the wallet &apos;%2&apos;.Enter the password below for this wallet to unlock it</source>
-        <translation type="unfinished"></translation>
+        <translation>Programa „%1“ prašo atverti slaptažodinę „%2“. Norėdami atverti slaptažodinę, žemiau įveskite jos slaptažodį</translation>
     </message>
     <message>
         <location filename="../frontend/password_dialog.ui" line="74"/>
@@ -124,7 +128,11 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Wallet &lt;span style=&quot; font-weight:600;&quot;&gt;&apos;%1&apos;&lt;/span&gt; does not exist, do you want to create it?&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Slaptažodinės &lt;span style=&quot; font-weight:600;&quot;&gt;„%1“&lt;/span&gt; nėra, ar norite ją sukurti?&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../frontend/password_dialog.ui" line="107"/>
@@ -138,7 +146,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../frontend/password_dialog.ui" line="124"/>
         <source>&amp;Unlock</source>
-        <translation type="unfinished"></translation>
+        <translation>At&amp;rakinti</translation>
     </message>
     <message>
         <location filename="../frontend/password_dialog.ui" line="141"/>
@@ -148,7 +156,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../frontend/password_dialog.ui" line="167"/>
         <source>&amp;Ok</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Gerai</translation>
     </message>
     <message>
         <location filename="../frontend/password_dialog.ui" line="154"/>
