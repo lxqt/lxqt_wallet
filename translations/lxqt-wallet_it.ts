@@ -40,7 +40,7 @@
     <message>
         <location filename="../frontend/password_dialog.cpp" line="72"/>
         <source>Wallet could not be opened with the presented key</source>
-        <translation>Il portafoglio non si è potuto aprire con questa chiave</translation>
+        <translation>Il portafoglio non può essere aperto con questa chiave</translation>
     </message>
 </context>
 <context>
@@ -63,22 +63,22 @@
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="126"/>
         <source>Enter Current Password Below.</source>
-        <translation>Inserire il password attuale</translation>
+        <translation>Inserire il password attuale.</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="145"/>
         <source>Enter New Password Below.</source>
-        <translation>Inserire la password nuova di sotto.</translation>
+        <translation>Inserire la password nuova qui sotto.</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="164"/>
         <source>Re Enter New Password Below.</source>
-        <translation>Inserire nuovamente la password di sotto.</translation>
+        <translation>Inserire nuovamente la password qui sotto.</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="183"/>
         <source>&amp;Cancel</source>
-        <translation>&amp;Cancella</translation>
+        <translation>&amp;Annulla</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="196"/>
@@ -120,7 +120,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../frontend/password_dialog.ui" line="74"/>
         <source>Wallet &apos;%1&apos; does not exist,do you want to create it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Il portafoglio &apos;%1&apos; non esiste, vuoi crearlo?</translation>
     </message>
     <message>
         <location filename="../frontend/password_dialog.ui" line="90"/>
@@ -143,12 +143,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../frontend/password_dialog.ui" line="124"/>
         <source>&amp;Unlock</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Sblocca</translation>
     </message>
     <message>
         <location filename="../frontend/password_dialog.ui" line="141"/>
         <source>&amp;Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Annulla</translation>
     </message>
     <message>
         <location filename="../frontend/password_dialog.ui" line="167"/>
