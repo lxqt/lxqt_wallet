@@ -63,12 +63,12 @@
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="126"/>
         <source>Enter Current Password Below.</source>
-        <translation>Inserire il password attuale.</translation>
+        <translation>Inserisci la password qui sotto.</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="145"/>
         <source>Enter New Password Below.</source>
-        <translation>Inserire la password nuova qui sotto.</translation>
+        <translation>Inserisci la nuova password qui sotto.</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="164"/>
