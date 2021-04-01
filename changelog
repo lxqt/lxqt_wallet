@@ -1,12 +1,14 @@
 
 - version 1.0.0
-	- initial release
-	- libgcrypt is used for encryption and decryption of the internal wallet
+	- Initial release
+	- Libgcrypt is used for encryption and decryption of the internal wallet
 
 - version 3.1.0
-	- add OSX keychain support.
+	- Add OSX keychain support.
 - version 3.2.0.
-	- add a backend for Windows based on Window' Data Protection API.
-	- modernize public API and add a few methods.
+	- Add a backend for Windows based on Window' Data Protection API.
+	- Modernize public API and add a few methods.
 - version 3.2.1
-	- fix a build issue.
+	- Fix a build issue.
+- version 3.2.2
+	- Use kwallet through dbus if the functionality was not compiled in.
