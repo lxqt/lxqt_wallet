@@ -63,7 +63,7 @@
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="126"/>
         <source>Enter Current Password Below.</source>
-        <translation type="unfinished"></translation>
+        <translation>Žemiau įveskite dabartinį slaptažodį.</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="145"/>
