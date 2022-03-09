@@ -119,12 +119,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../frontend/password_dialog.ui" line="42"/>
         <source>The application &apos;%1&apos; has requested to open the wallet &apos;%2&apos;.Enter the password below for this wallet to unlock it</source>
-        <translation>Het programma &apos;%1&apos; heeft een verzoek ingediend om de sleutelbos &apos;%2&apos; te ontgrendelen. Voer het wachtwoord hiervan in om deze te ontgrendelen.</translation>
+        <translation>Het programma ‘%1’ heeft een verzoek ingediend om de sleutelbos ‘%2’ te ontgrendelen. Voer het wachtwoord ervan in om te ontgrendelen.</translation>
     </message>
     <message>
         <location filename="../frontend/password_dialog.ui" line="74"/>
         <source>Wallet &apos;%1&apos; does not exist,do you want to create it?</source>
-        <translation>De sleutelbos &apos;%1&apos; bestaat niet. Wilt u een nieuwe aanmaken?</translation>
+        <translation>De sleutelbos ‘%1’ bestaat niet. Wilt u een nieuwe aanmaken?</translation>
     </message>
     <message>
         <location filename="../frontend/password_dialog.ui" line="90"/>
