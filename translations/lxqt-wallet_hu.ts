@@ -40,7 +40,7 @@
     <message>
         <location filename="../frontend/password_dialog.cpp" line="72"/>
         <source>Wallet could not be opened with the presented key</source>
-        <translation type="unfinished"></translation>
+        <translation>A megadott kulccsal nem lehet megnyitni a tárcát</translation>
     </message>
 </context>
 <context>
@@ -63,17 +63,17 @@
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="126"/>
         <source>Enter Current Password Below.</source>
-        <translation type="unfinished"></translation>
+        <translation>Adja meg lentebb a jelenlegi jelszót</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="145"/>
         <source>Enter New Password Below.</source>
-        <translation type="unfinished"></translation>
+        <translation>Adja meg lentebb az új jelszót</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="164"/>
         <source>Re Enter New Password Below.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ismételje meg lentebb az új jelszót.</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="183"/>
