@@ -161,7 +161,7 @@ QByteArray LXQt::Wallet::kwallet_dbus::readValue(const QString &key)
     QDBusReply<QString> m = m_dbus.call("readPassword", m_handle, m_folder, key, m_applicationName) ;
 
     if (m.isValid()){
-        return m.value().toLatin1();
+        return m.value().toUtf8();
     }else{
         m_log("LXQt::Wallet::kwallet_dbus: readPassword dbus call failed: " + m.error().message());
         return {};

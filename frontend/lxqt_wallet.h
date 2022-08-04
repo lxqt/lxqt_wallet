@@ -123,7 +123,7 @@ public:
      */
     bool addKey(const QString &key,const QString &value)
     {
-        return this->addKey(key, value.toLatin1());
+	return this->addKey(key, value.toUtf8());
     }
 
     /*
