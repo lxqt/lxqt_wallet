@@ -27,7 +27,7 @@
     <message>
         <location filename="../frontend/changepassworddialog.cpp" line="232"/>
         <source>Wallet could not be opened with the presented key</source>
-        <translation>A pénztárcát nem sikerült megnyitni a megadott kulccsal kulccsal</translation>
+        <translation>A pénztárcát nem sikerült megnyitni a megadott kulccsal</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.cpp" line="244"/>
@@ -63,17 +63,17 @@
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="126"/>
         <source>Enter Current Password Below.</source>
-        <translation>Adja meg lentebb a jelenlegi jelszót</translation>
+        <translation>Adja meg lentebb a jelenlegi jelszót.</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="145"/>
         <source>Enter New Password Below.</source>
-        <translation>Adja meg lentebb az új jelszót</translation>
+        <translation>Adja meg az új jelszót</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="164"/>
         <source>Re Enter New Password Below.</source>
-        <translation>Ismételje meg lentebb az új jelszót.</translation>
+        <translation>Ismételje meg az új jelszót</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="183"/>
@@ -110,12 +110,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../frontend/password_dialog.ui" line="42"/>
         <source>The application &apos;%1&apos; has requested to open the wallet &apos;%2&apos;.Enter the password below for this wallet to unlock it</source>
-        <translation type="unfinished"></translation>
+        <translation>Az &apos;%1&apos; nevű program engedélyt kér, hogy megnyissa a &apos;%2&apos; pénztárcát. Adja meg a jelszót, hogy engedélyezze a pénztárca elérését</translation>
     </message>
     <message>
         <location filename="../frontend/password_dialog.ui" line="74"/>
         <source>Wallet &apos;%1&apos; does not exist,do you want to create it?</source>
-        <translation type="unfinished"></translation>
+        <translation>A &apos;%1&apos; pénztárca nem létezik, szeretné létrehozni?</translation>
     </message>
     <message>
         <location filename="../frontend/password_dialog.ui" line="90"/>
