@@ -1,38 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="ru">
+<TS version="2.1" language="fur">
 <context>
     <name>LXQt::Wallet::changePassWordDialog</name>
     <message>
         <location filename="../frontend/changepassworddialog.cpp" line="108"/>
         <source>Create a new wallet</source>
-        <translation>Создать новое хранилище паролей</translation>
+        <translation>Cree un gnûf tacuin</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.cpp" line="110"/>
         <source>Create</source>
-        <translation>Создать</translation>
+        <translation>Cree</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.cpp" line="138"/>
         <location filename="../frontend/changepassworddialog.cpp" line="280"/>
         <source>Passwords do not match</source>
-        <translation>Пароли не совпадают</translation>
+        <translation>Lis passwords no corispuindin</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.cpp" line="221"/>
         <source>Wallet password could not be changed</source>
-        <translation>Хранилище паролей не может быть изменено</translation>
+        <translation>Nol è stât pussibil cambiâ la password dal tacuin</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.cpp" line="232"/>
         <source>Wallet could not be opened with the presented key</source>
-        <translation>Хранилище паролей не может быть открыто этим ключом</translation>
+        <translation>Nol è stât pussibil vierzi il tacuin cu la clâf indicade</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.cpp" line="244"/>
         <source>New passwords do not match</source>
-        <translation>Новые пароли не совпадают</translation>
+        <translation>Lis gnovis passwords no corispuindin</translation>
     </message>
 </context>
 <context>
@@ -40,7 +40,7 @@
     <message>
         <location filename="../frontend/password_dialog.cpp" line="72"/>
         <source>Wallet could not be opened with the presented key</source>
-        <translation>Хранилище паролей не может быть открыто этим ключом</translation>
+        <translation>Nol è stât pussibil vierzi il tacuin cu la clâf indicade</translation>
     </message>
 </context>
 <context>
@@ -48,37 +48,37 @@
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="14"/>
         <source>Change Wallet&apos;s Password</source>
-        <translation>Изменить пароль хранилища</translation>
+        <translation>Cambie password dal tacuin</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="42"/>
         <source>C&amp;hange</source>
-        <translation>&amp;Изменить</translation>
+        <translation>&amp;Cambie</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="55"/>
         <source>&amp;Ok</source>
-        <translation>&amp;Ok</translation>
+        <translation>&amp;Va ben</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="126"/>
         <source>Enter Current Password Below.</source>
-        <translation>Введить текущий пароль.</translation>
+        <translation>Inserìs la password chi sot.</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="145"/>
         <source>Enter New Password Below.</source>
-        <translation>Введите новый пароль ниже.</translation>
+        <translation>Inserìs la gnove password chi sot.</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="164"/>
         <source>Re Enter New Password Below.</source>
-        <translation>Введите новый пароль ещё раз.</translation>
+        <translation>Torne inserìs la gnove password chi sot.</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="183"/>
         <source>&amp;Cancel</source>
-        <translation>&amp;Отмена</translation>
+        <translation>&amp;Anule</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="196"/>
@@ -92,7 +92,7 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Приложение &apos;&lt;span style=&quot; font-weight:600;&quot;&gt;%1&lt;/span&gt;&apos; сделало запрос на изменение &apos;&lt;span style=&quot; font-weight:600;&quot;&gt;%2&lt;/span&gt;&apos; пароляt&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Une aplicazion &apos;&lt;span style=&quot; font-weight:600;&quot;&gt;%1&lt;/span&gt;&apos; e à fat une richieste di modifiche par une password dal so tacuin &apos;&lt;span style=&quot; font-weight:600;&quot;&gt;%2&lt;/span&gt;&apos; &lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
@@ -106,7 +106,7 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Введите пароль для создания нового хранилища паролей «&lt;span style=&quot; font-weight:600;&quot;&gt;%1&lt;/span&gt;» для следующего приложения «&lt;span style=&quot; font-weight:600;&quot;&gt;%2&lt;/span&gt;»&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Inserìs lis informazions su la password chi sot par creâ un gnûf tacuin &apos;&lt;span style=&quot; font-weight:600;&quot;&gt;%1&lt;/span&gt;&apos; pe aplicazion &apos;&lt;span style=&quot; font-weight:600;&quot;&gt;%2&lt;/span&gt;&apos;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -114,17 +114,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../frontend/password_dialog.ui" line="14"/>
         <source>lxqt wallet service</source>
-        <translation>Служба хранилища паролей lxqt</translation>
+        <translation>Servizi di tacuin di LXQt</translation>
     </message>
     <message>
         <location filename="../frontend/password_dialog.ui" line="42"/>
         <source>The application &apos;%1&apos; has requested to open the wallet &apos;%2&apos;.Enter the password below for this wallet to unlock it</source>
-        <translation>Приложение «%1» просит доступ к хранилищу паролей «%2». Введите пароль, чтобы разблокировать хранилище</translation>
+        <translation>La aplicazion &apos;%1&apos; e à domandât di vierzi il tacuin &apos;%2&apos;. Inserìs la password di chest tacuin chi sot par sblocâlu</translation>
     </message>
     <message>
         <location filename="../frontend/password_dialog.ui" line="74"/>
         <source>Wallet &apos;%1&apos; does not exist,do you want to create it?</source>
-        <translation>Хранилище паролей &apos;%1&apos; не существует. Создать новое?</translation>
+        <translation>Il tacuin &apos;%1&apos; nol esist, desideristu creâlu?</translation>
     </message>
     <message>
         <location filename="../frontend/password_dialog.ui" line="90"/>
@@ -137,7 +137,7 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Хранилище паролей &lt;span style=&quot; font-weight:600;&quot;&gt;&apos;%1&apos;&lt;/span&gt; не существует. Создать новое?&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Il tacuin &lt;span style=&quot; font-weight:600;&quot;&gt;&apos;%1&apos;&lt;/span&gt; no esist, desideristu creâlu?&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../frontend/password_dialog.ui" line="107"/>
@@ -150,27 +150,27 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Приложение &lt;span style=&quot; font-weight:600;&quot;&gt;«%1»&lt;/span&gt; просит доступ к хранилищу паролей&lt;span style=&quot; font-weight:600;&quot;&gt; «%2»&lt;/span&gt;. Введите пароль, чтобы разблокировать хранилище&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Une aplicazion &lt;span style=&quot; font-weight:600;&quot;&gt;&apos;%1&apos;&lt;/span&gt; e à domandât di vierzi un tacuin&lt;span style=&quot; font-weight:600;&quot;&gt; &apos;%2&apos;&lt;/span&gt;. Inserìs la password di chest tacuin chi sot par sblocâlu.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../frontend/password_dialog.ui" line="124"/>
         <source>&amp;Unlock</source>
-        <translation>&amp;Разблокировать</translation>
+        <translation>&amp;Sbloche</translation>
     </message>
     <message>
         <location filename="../frontend/password_dialog.ui" line="141"/>
         <source>&amp;Cancel</source>
-        <translation>&amp;Отмена</translation>
+        <translation>&amp;Anule</translation>
     </message>
     <message>
         <location filename="../frontend/password_dialog.ui" line="167"/>
         <source>&amp;Ok</source>
-        <translation>&amp;Ok</translation>
+        <translation>&amp;Va ben</translation>
     </message>
     <message>
         <location filename="../frontend/password_dialog.ui" line="154"/>
         <source>ok</source>
-        <translation>OK</translation>
+        <translation>va ben</translation>
     </message>
 </context>
 </TS>
