@@ -1,10 +1,8 @@
-cmake_minimum_required(VERSION 3.1.0)
-
-set_property(GLOBAL PROPERTY ALLOW_DUPLICATE_CUSTOM_TARGETS ON)
+cmake_minimum_required(VERSION 3.18.0 FATAL_ERROR)
 
 project(lxqt_wallet)
 
-set(LIBRARY_VERSION "3.2.2")
+set(LIBRARY_VERSION "4.0.0")
 
 add_definitions(-Wextra -Wall -pedantic)
 

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1.0)
+cmake_minimum_required(VERSION 3.18.0 FATAL_ERROR)
 
 INCLUDE(FindPkgConfig)
 
@@ -16,24 +16,23 @@ endif()
 
 message(STATUS "Checking for modules 'Qt5Widgets','Qt5Core' and 'Qt5LinguistTools'")
 
-find_package(Qt5Widgets REQUIRED)
-find_package(Qt5Core REQUIRED)
-find_package(Qt5DBus REQUIRED)
-find_package(Qt5LinguistTools REQUIRED)
+find_package(Qt6Widgets REQUIRED)
+find_package(Qt6Core REQUIRED)
+find_package(Qt6DBus REQUIRED)
+find_package(Qt6LinguistTools REQUIRED)
 
-message(STATUS "  Found Qt5Widgets, version ${Qt5Widgets_VERSION}")
-message(STATUS "  Found Qt5Core, version ${Qt5Core_VERSION}")
-message(STATUS "  Found Qt5DBus, version ${Qt5DBus_VERSION}")
-message(STATUS "  Found Qt5LinguistTools, version ${Qt5LinguistTools_VERSION}")
+message(STATUS "  Found Qt6Widgets, version ${Qt6Widgets_VERSION}")
+message(STATUS "  Found Qt6Core, version ${Qt6Core_VERSION}")
+message(STATUS "  Found Qt6DBus, version ${Qt6DBus_VERSION}")
+message(STATUS "  Found Qt6LinguistTools, version ${Qt6LinguistTools_VERSION}")
 
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
+include_directories(${Qt6Widgets_INCLUDE_DIRS})
+include_directories(${Qt6Core_INCLUDE_DIRS})
+include_directories(${Qt6DBus_INCLUDE_DIRS})
 
-include_directories(${Qt5Widgets_INCLUDE_DIRS})
-include_directories(${Qt5Core_INCLUDE_DIRS}})
-include_directories(${Qt5DBus_INCLUDE_DIRS}})
-
-add_definitions(${Qt5Widgets_DEFINITIONS})
-add_definitions(${Qt5Core_DEFINITIONS})
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 if(NOSECRETSUPPORT)
     SET(SECRET_SUPPORT "false")
@@ -49,8 +48,6 @@ else()
         file(WRITE ${PROJECT_BINARY_DIR}/storage_manager.h "\n#define HAS_SECRET_SUPPORT 0\n")
     endif()
 endif()
-
-add_definitions(-std=c++14)
 
 if(NOKDESUPPORT)
     SET(KWALLET_SUPPORT "false")
@@ -70,7 +67,7 @@ endif()
 
 if(KWALLET_SUPPORT)
     message(STATUS "\n--------------------------------------------------------------------------")
-    message(STATUS "kwallet support found,will build kwallet functionality")
+    message(STATUS "kwallet support found, will build kwallet functionality")
     message(STATUS "-----------------------------------------------------------------------")
 else()
     message(STATUS "\n--------------------------------------------------------------------------")
@@ -80,11 +77,11 @@ endif()
 
 if(SECRET_SUPPORT)
     message(STATUS "\n--------------------------------------------------------------------------")
-    message(STATUS "libsecret support found,will build libsecret functionality")
+    message(STATUS "libsecret support found, will build libsecret functionality")
     message(STATUS "-----------------------------------------------------------------------")
 else()
     message(STATUS "\n--------------------------------------------------------------------------")
-    message(STATUS "libsecret support NOT found,will not build libsecret functionality")
+    message(STATUS "libsecret support NOT found, will not build libsecret functionality")
     message(STATUS "-----------------------------------------------------------------------")
 endif()
 
@@ -92,51 +89,52 @@ set(COMMON_UI_FILES  changepassworddialog.ui password_dialog.ui)
 set(COMMON_MOC_FILES task.h changepassworddialog.h password_dialog.h)
 set(COMMON_SRC_FILES changepassworddialog.cpp password_dialog.cpp lxqt_windows_dpapi.cpp lxqt_internal_wallet.cpp lxqt_wallet.cpp lxqt_osx_keychain.cpp)
 
-Qt5_WRAP_UI(UI ${COMMON_UI_FILES})
-Qt5_WRAP_CPP(MOC ${COMMON_MOC_FILES})
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC ON)
 
 if(KWALLET_SUPPORT)
-    Qt5_WRAP_CPP(MOC_KWALLET lxqt_kwallet.h)
+    set(MOC_KWALLET lxqt_kwallet.h)
     set(KWALLET_COMMON lxqt_kwallet.cpp)
     if(SECRET_SUPPORT)
-        add_library(lxqtwallet SHARED ${KWALLET_COMMON} lxqt_libsecret.cpp ${UI} ${COMMON_SRC_FILES} ${MOC} ${MOC_KWALLET})
-        target_link_libraries(lxqtwallet secretlib)
+	add_library(lxqt-wallet STATIC ${KWALLET_COMMON} lxqt_libsecret.cpp ${COMMON_UI_FILES} ${COMMON_SRC_FILES} ${COMMON_MOC_FILES} ${MOC_KWALLET})
+	target_link_libraries(lxqt-wallet secretlib)
     else()
-        add_library(lxqtwallet SHARED ${KWALLET_COMMON} ${UI} ${COMMON_SRC_FILES} ${MOC} ${MOC_KWALLET})
+	add_library(lxqt-wallet STATIC ${KWALLET_COMMON} ${COMMON_UI_FILES} ${COMMON_SRC_FILES} ${COMMON_MOC_FILES} ${MOC_KWALLET})
     endif()
-    target_link_libraries(lxqtwallet KF5::Wallet)
+    target_link_libraries(lxqt-wallet KF5::Wallet)
 else()
-    Qt5_WRAP_CPP(MOC_KWALLET_DBUS lxqt_kwallet-dbus.h)
+    set(MOC_KWALLET_DBUS lxqt_kwallet-dbus.h)
     set(KWALLET_DBUS lxqt_kwallet-dbus.cpp)
     if(SECRET_SUPPORT)
-        add_library(lxqtwallet SHARED lxqt_libsecret.cpp ${KWALLET_DBUS} ${UI} ${COMMON_SRC_FILES} ${MOC} ${MOC_KWALLET_DBUS})
-        target_link_libraries(lxqtwallet secretlib)
+	add_library(lxqt-wallet STATIC lxqt_libsecret.cpp ${KWALLET_DBUS} ${COMMON_UI_FILES} ${COMMON_SRC_FILES} ${COMMON_MOC_FILES} ${MOC_KWALLET_DBUS})
+	target_link_libraries(lxqt-wallet secretlib)
     else()
-        add_library(lxqtwallet SHARED ${UI} ${COMMON_SRC_FILES} ${KWALLET_DBUS} ${MOC} ${MOC_KWALLET_DBUS})
+	add_library(lxqt-wallet STATIC ${COMMON_UI_FILES} ${COMMON_SRC_FILES} ${KWALLET_DBUS} ${COMMON_MOC_FILES} ${MOC_KWALLET_DBUS})
     endif()
 endif()
 
-target_link_libraries(lxqtwallet lxqtwallet-backend)
+target_link_libraries(lxqt-wallet lxqt-wallet-backend)
 
-target_link_libraries(lxqtwallet ${Qt5Widgets_LIBRARIES})
-target_link_libraries(lxqtwallet ${Qt5Core_LIBRARIES})
+target_link_libraries(lxqt-wallet ${Qt5Widgets_LIBRARIES})
+target_link_libraries(lxqt-wallet ${Qt5Core_LIBRARIES})
 
 if(WIN32)
-    target_link_libraries(lxqtwallet -lcrypt32 -lbcrypt)
+    target_link_libraries(lxqt-wallet -lcrypt32 -lbcrypt)
 else()
-    target_link_libraries(lxqtwallet ${Qt5DBus_LIBRARIES})
+    target_link_libraries(lxqt-wallet ${Qt5DBus_LIBRARIES})
 endif()
 
 if(APPLE)
     find_library(COREFOUNDATION_LIBRARY CoreFoundation REQUIRED)
     find_library(SECURITY_LIBRARY Security REQUIRED)
-    target_link_libraries(lxqtwallet ${COREFOUNDATION_LIBRARY} ${SECURITY_LIBRARY})
+    target_link_libraries(lxqt-wallet ${COREFOUNDATION_LIBRARY} ${SECURITY_LIBRARY})
 endif()
 
-set_target_properties(lxqtwallet PROPERTIES COMPILE_FLAGS "-D_FILE_OFFSET_BITS=64 -Wextra -Wall -s -fPIC -pedantic ")
-set_target_properties(lxqtwallet PROPERTIES SOVERSION "${LIBRARY_VERSION}")
+set_target_properties(lxqt-wallet PROPERTIES COMPILE_FLAGS "-D_FILE_OFFSET_BITS=64 -Wextra -Wall -s -fPIC -pedantic ")
+set_target_properties(lxqt-wallet PROPERTIES SOVERSION "${LIBRARY_VERSION}")
 
-set_target_properties(lxqtwallet PROPERTIES OUTPUT_NAME lxqt-wallet)
+set_target_properties(lxqt-wallet PROPERTIES OUTPUT_NAME lxqt-wallet)
 
 file(WRITE ${PROJECT_BINARY_DIR}/translations_path.h
 "
@@ -163,7 +161,7 @@ SET(TRANSLATIONS
    ../translations/lxqt-wallet_tr.ts
    )
 
-QT5_ADD_TRANSLATION(QM_FILES ${TRANSLATIONS})
+QT6_ADD_TRANSLATION(QM_FILES ${TRANSLATIONS})
 SET(QM_FILES ${QM_FILES} PARENT_SCOPE)
 ADD_CUSTOM_TARGET(translations ALL DEPENDS ${QM_FILES})
 
@@ -186,7 +184,7 @@ install(FILES ${CMAKE_BINARY_DIR}/frontend/lxqt-wallet_ru.qm DESTINATION share/l
 install(FILES ${CMAKE_BINARY_DIR}/frontend/lxqt-wallet_tr.qm DESTINATION share/lxqt/translations/lxqt-wallet/)
 
 
-install(TARGETS lxqtwallet RUNTIME LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}")
+install(TARGETS lxqt-wallet RUNTIME LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}")
 
 install(FILES lxqt_wallet.h DESTINATION "${CMAKE_INSTALL_PREFIX}/include/lxqt")
 

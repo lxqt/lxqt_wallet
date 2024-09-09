@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1.0)
+cmake_minimum_required(VERSION 3.18.0 FATAL_ERROR)
 
 include_directories( ${LIBSECRET_INCLUDE_DIRS} )
 link_directories( ${LIBSECRET_LIBDIR} )

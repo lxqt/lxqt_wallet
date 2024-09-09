@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1.0)
+cmake_minimum_required(VERSION 3.18.0 FATAL_ERROR)
 
 add_definitions(-Wno-unused-result)
 
@@ -18,23 +18,23 @@ else()
     MESSAGE(STATUS "Found gcrypt library: ${GCRYPT_LIBRARY}")
 endif()
 
-add_library(lxqtwallet-backend STATIC lxqtwallet.c)
+add_library(lxqt-wallet-backend STATIC lxqtwallet.c)
 if( CMAKE_COMPILER_IS_GNUCC AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 7.0 )
-        set_target_properties(lxqtwallet-backend PROPERTIES COMPILE_FLAGS "-Wall -s -fPIC -pedantic -Wformat-truncation=0")
+    set_target_properties(lxqt-wallet-backend PROPERTIES COMPILE_FLAGS "-Wall -s -fPIC -pedantic -Wformat-truncation=0")
 else()
-	set_target_properties(lxqtwallet-backend PROPERTIES COMPILE_FLAGS "--Wall -s -fPIC -pedantic")
+    set_target_properties(lxqt-wallet-backend PROPERTIES COMPILE_FLAGS "--Wall -s -fPIC -pedantic")
 endif()
-set_target_properties(lxqtwallet-backend PROPERTIES LINK_FLAGS "-pie")
+set_target_properties(lxqt-wallet-backend PROPERTIES LINK_FLAGS "-pie")
 
-target_link_libraries(lxqtwallet-backend "${GCRYPT_LIBRARY}")
+target_link_libraries(lxqt-wallet-backend "${GCRYPT_LIBRARY}")
 
-install(FILES lxqtwallet.h DESTINATION "${CMAKE_INSTALL_PREFIX}/include/lxqt")
+install(FILES lxqt-wallet.h DESTINATION "${CMAKE_INSTALL_PREFIX}/include/lxqt")
 
 add_executable(lxqt_wallet-cli lxqt_wallet-cli.c lxqtwallet.c)
 if( CMAKE_COMPILER_IS_GNUCC AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 7.0 )
-	set_target_properties(lxqt_wallet-cli PROPERTIES COMPILE_FLAGS "-Wextra -Wall -s -fPIE -pthread  -pedantic -Wformat-truncation=0")
+    set_target_properties(lxqt_wallet-cli PROPERTIES COMPILE_FLAGS "-Wextra -Wall -s -fPIE -pthread  -pedantic -Wformat-truncation=0")
 else()
-	set_target_properties(lxqt_wallet-cli PROPERTIES COMPILE_FLAGS "-Wextra -Wall -s -fPIE -pthread  -pedantic")
+    set_target_properties(lxqt_wallet-cli PROPERTIES COMPILE_FLAGS "-Wextra -Wall -s -fPIE -pthread  -pedantic")
 endif()
 set_target_properties(lxqt_wallet-cli PROPERTIES LINK_FLAGS "-pie")
 TARGET_LINK_LIBRARIES(lxqt_wallet-cli "${GCRYPT_LIBRARY}")
