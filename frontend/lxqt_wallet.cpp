@@ -299,10 +299,10 @@ void LXQt::Wallet::setTranslationLanguage(const QString &language)
         QCoreApplication::installTranslator([&]()
         {
             auto e = new QTranslator();
-	    auto m = e->load(l, TRANSLATIONS_PATH);
-	    if(!m){
-		//???
-	    }
+            auto m = e->load(l, TRANSLATIONS_PATH);
+            if(!m){
+                //???
+            }
             return e;
         }());
     }
