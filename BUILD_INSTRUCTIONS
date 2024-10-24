@@ -6,8 +6,8 @@ g++
 gcc
 cmake
 libsecret-devel( if you want to add libsecret support )
-KF5Wallet-devel( if you want to add KDE/Kwallet support )
-Qt5Widgets-devel, Qt5Core-devel and Qt5LinguistTools
+KF6Wallet-devel( if you want to add KDE/Kwallet support )
+Qt6Widgets-devel, Qt6Core-devel and Qt6LinguistTools
 
 Build instructions are below:
 
