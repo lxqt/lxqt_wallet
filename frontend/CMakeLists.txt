@@ -14,7 +14,7 @@ else()
     file( WRITE ${PROJECT_BINARY_DIR}/osx_keychain.h "#define OSX_KEYCHAIN 0" )
 endif()
 
-message(STATUS "Checking for modules 'Qt5Widgets','Qt5Core' and 'Qt5LinguistTools'")
+message(STATUS "Checking for modules 'Qt6Widgets','Qt6Core' and 'Qt6LinguistTools'")
 
 find_package(Qt6Widgets REQUIRED)
 find_package(Qt6Core REQUIRED)
@@ -197,7 +197,7 @@ includedir=${CMAKE_INSTALL_PREFIX}/include/lxqt
 Name: lxqt_wallet
 Description: lxqt secure storage system
 Version: ${LIBRARY_VERSION}
-Requires: Qt5Core Qt5Widgets
+Requires: Qt6Core Qt6Widgets
 Libs: -L${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR} -llxqt-wallet
 Cflags: -I${CMAKE_INSTALL_PREFIX}/include/lxqt
 \n")
