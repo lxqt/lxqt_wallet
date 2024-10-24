@@ -38,7 +38,7 @@
 #include <QEvent>
 #include <QKeyEvent>
 
-#include "../backend/lxqtwallet.h"
+#include "../backend/lxqt-wallet.h"
 #include "task.h"
 
 #include <functional>

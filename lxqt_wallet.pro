@@ -29,7 +29,7 @@ HEADERS += \
     frontend/lxqt_kwallet.h \
     frontend/lxqt_internal_wallet.h \
     frontend/changepassworddialog.h \
-    backend/lxqtwallet.h \
+    backend/lxqt-wallet.h \
     /home/ink/src/build-lxde-wallet/mainwindow.h \
     frontend/lxqt_secret_service.h \
     frontend/secret_service.h
