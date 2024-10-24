@@ -28,7 +28,7 @@
  * SUCH DAMAGE.
  */
 
-#include "lxqtwallet.h"
+#include "lxqt-wallet.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>

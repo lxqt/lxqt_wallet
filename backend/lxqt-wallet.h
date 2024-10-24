@@ -226,7 +226,7 @@ extern "C" {
 #if 0
 
 
-#include "lxqtwallet.h"
+#include "lxqt-wallet.h"
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>

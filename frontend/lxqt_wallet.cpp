@@ -30,7 +30,7 @@
 
 #include "lxqt_wallet.h"
 #include "lxqt_internal_wallet.h"
-#include "../backend/lxqtwallet.h"
+#include "../backend/lxqt-wallet.h"
 #include "translations_path.h"
 #include "lxqt_kwallet-dbus.h"
 

@@ -42,7 +42,7 @@
 #include <libintl.h>
 #include <locale.h>
 
-#include "lxqtwallet.h"
+#include "lxqt-wallet.h"
 
 #define PASSWORD_SIZE         512
 #define WALLET_NAME_SIZE      512
