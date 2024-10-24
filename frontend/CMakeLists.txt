@@ -53,10 +53,10 @@ if(NOKDESUPPORT)
     SET(KWALLET_SUPPORT "false")
     file(APPEND  ${PROJECT_BINARY_DIR}/storage_manager.h "\n#define HAS_KWALLET_SUPPORT 0\n")
 else()
-    message(STATUS "Checking for modules 'KF5Wallet'")
-    find_package(KF5Wallet QUIET)
-    if(KF5Wallet_FOUND )
-        message(STATUS "  Found KF5Wallet, version ${KF5Wallet_VERSION}")
+    message(STATUS "Checking for modules 'KF6Wallet'")
+    find_package(KF6Wallet QUIET)
+    if(KF6Wallet_FOUND )
+        message(STATUS "  Found KF6Wallet, version ${KF6Wallet_VERSION}")
         file(APPEND  ${PROJECT_BINARY_DIR}/storage_manager.h "\n#define HAS_KWALLET_SUPPORT 1\n")
         SET(KWALLET_SUPPORT "true")
     else()
@@ -97,32 +97,32 @@ if(KWALLET_SUPPORT)
     set(MOC_KWALLET lxqt_kwallet.h)
     set(KWALLET_COMMON lxqt_kwallet.cpp)
     if(SECRET_SUPPORT)
-	add_library(lxqt-wallet STATIC ${KWALLET_COMMON} lxqt_libsecret.cpp ${COMMON_UI_FILES} ${COMMON_SRC_FILES} ${COMMON_MOC_FILES} ${MOC_KWALLET})
+	add_library(lxqt-wallet SHARED ${KWALLET_COMMON} lxqt_libsecret.cpp ${COMMON_UI_FILES} ${COMMON_SRC_FILES} ${COMMON_MOC_FILES} ${MOC_KWALLET})
 	target_link_libraries(lxqt-wallet secretlib)
     else()
-	add_library(lxqt-wallet STATIC ${KWALLET_COMMON} ${COMMON_UI_FILES} ${COMMON_SRC_FILES} ${COMMON_MOC_FILES} ${MOC_KWALLET})
+	add_library(lxqt-wallet SHARED ${KWALLET_COMMON} ${COMMON_UI_FILES} ${COMMON_SRC_FILES} ${COMMON_MOC_FILES} ${MOC_KWALLET})
     endif()
-    target_link_libraries(lxqt-wallet KF5::Wallet)
+    target_link_libraries(lxqt-wallet KF6::Wallet)
 else()
     set(MOC_KWALLET_DBUS lxqt_kwallet-dbus.h)
     set(KWALLET_DBUS lxqt_kwallet-dbus.cpp)
     if(SECRET_SUPPORT)
-	add_library(lxqt-wallet STATIC lxqt_libsecret.cpp ${KWALLET_DBUS} ${COMMON_UI_FILES} ${COMMON_SRC_FILES} ${COMMON_MOC_FILES} ${MOC_KWALLET_DBUS})
+	add_library(lxqt-wallet SHARED lxqt_libsecret.cpp ${KWALLET_DBUS} ${COMMON_UI_FILES} ${COMMON_SRC_FILES} ${COMMON_MOC_FILES} ${MOC_KWALLET_DBUS})
 	target_link_libraries(lxqt-wallet secretlib)
     else()
-	add_library(lxqt-wallet STATIC ${COMMON_UI_FILES} ${COMMON_SRC_FILES} ${KWALLET_DBUS} ${COMMON_MOC_FILES} ${MOC_KWALLET_DBUS})
+	add_library(lxqt-wallet SHARED ${COMMON_UI_FILES} ${COMMON_SRC_FILES} ${KWALLET_DBUS} ${COMMON_MOC_FILES} ${MOC_KWALLET_DBUS})
     endif()
 endif()
 
 target_link_libraries(lxqt-wallet lxqt-wallet-backend)
 
-target_link_libraries(lxqt-wallet ${Qt5Widgets_LIBRARIES})
-target_link_libraries(lxqt-wallet ${Qt5Core_LIBRARIES})
+target_link_libraries(lxqt-wallet ${Qt6Widgets_LIBRARIES})
+target_link_libraries(lxqt-wallet ${Qt6Core_LIBRARIES})
 
 if(WIN32)
     target_link_libraries(lxqt-wallet -lcrypt32 -lbcrypt)
 else()
-    target_link_libraries(lxqt-wallet ${Qt5DBus_LIBRARIES})
+    target_link_libraries(lxqt-wallet ${Qt6DBus_LIBRARIES})
 endif()
 
 if(APPLE)
@@ -151,7 +151,7 @@ SET(TRANSLATIONS
    ../translations/lxqt-wallet_fr.ts
    ../translations/lxqt-wallet_he.ts
    ../translations/lxqt-wallet_hr.ts
-   ../translations/lxqt-wallet_hu.ts  
+   ../translations/lxqt-wallet_hu.ts
    ../translations/lxqt-wallet_it.ts
    ../translations/lxqt-wallet_ja.ts
    ../translations/lxqt-wallet_nl.ts

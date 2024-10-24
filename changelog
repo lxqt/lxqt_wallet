@@ -12,3 +12,6 @@
 	- Fix a build issue.
 - version 3.2.2
 	- Use kwallet through dbus if the functionality was not compiled in.
+- version 4.0.0
+	- Require Qt6 to build.
+	- Set library version to 6.0.0.
