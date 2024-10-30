@@ -196,7 +196,7 @@ includedir=${CMAKE_INSTALL_PREFIX}/include/lxqt
 
 Name: lxqt_wallet
 Description: lxqt secure storage system
-Version: ${LIBRARY_VERSION}
+Version: ${RELEASE_VERSION}
 Requires: Qt6Core Qt6Widgets
 Libs: -L${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR} -llxqt-wallet
 Cflags: -I${CMAKE_INSTALL_PREFIX}/include/lxqt
