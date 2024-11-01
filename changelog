@@ -17,3 +17,5 @@
 	- Set library version to 6.0.0.
 - version 4.0.1
 	- Fix a build issue.
+- version 4.0.2
+	- Default to use xdg paths when they are set.
