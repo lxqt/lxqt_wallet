@@ -48,12 +48,12 @@
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="14"/>
         <source>Change Wallet&apos;s Password</source>
-        <translation type="unfinished"></translation>
+        <translation>Change Wallet&apos;s Password</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="42"/>
         <source>C&amp;hange</source>
-        <translation type="unfinished"></translation>
+        <translation>C&amp;hange</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="55"/>

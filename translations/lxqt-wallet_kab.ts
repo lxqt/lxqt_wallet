@@ -6,7 +6,7 @@
     <message>
         <location filename="../frontend/changepassworddialog.cpp" line="108"/>
         <source>Create a new wallet</source>
-        <translation type="unfinished"></translation>
+        <translation>Rnu taxriḍt tamaynut</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.cpp" line="110"/>
@@ -17,22 +17,22 @@
         <location filename="../frontend/changepassworddialog.cpp" line="138"/>
         <location filename="../frontend/changepassworddialog.cpp" line="280"/>
         <source>Passwords do not match</source>
-        <translation type="unfinished"></translation>
+        <translation>Awalen uffiren ur mwatan ara</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.cpp" line="221"/>
         <source>Wallet password could not be changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Awal uffir n texriḍt ulamek ara yettwabeddel</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.cpp" line="232"/>
         <source>Wallet could not be opened with the presented key</source>
-        <translation type="unfinished"></translation>
+        <translation>Taxriḍt ur tezmir ara ad d-teldi s tsarut i d-yettwamudden</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.cpp" line="244"/>
         <source>New passwords do not match</source>
-        <translation type="unfinished"></translation>
+        <translation>Awalen uffiren imaynuten ur mwatan ara</translation>
     </message>
 </context>
 <context>
@@ -40,7 +40,7 @@
     <message>
         <location filename="../frontend/password_dialog.cpp" line="72"/>
         <source>Wallet could not be opened with the presented key</source>
-        <translation type="unfinished"></translation>
+        <translation>Taxriḍt ur tezmir ara ad d-teldi s tsarut i d-yettwamudden</translation>
     </message>
 </context>
 <context>
@@ -48,12 +48,12 @@
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="14"/>
         <source>Change Wallet&apos;s Password</source>
-        <translation type="unfinished"></translation>
+        <translation>Snifel awal uffir n texriḍt</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="42"/>
         <source>C&amp;hange</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Snifel</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="55"/>
@@ -63,17 +63,17 @@
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="126"/>
         <source>Enter Current Password Below.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sekcem awal uffir amiran ddaw-a.</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="145"/>
         <source>Enter New Password Below.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sekcem awal uffir amaynut ddaw-a.</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="164"/>
         <source>Re Enter New Password Below.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sekcem tikkelt-nniḍen awal uffir amaynut ddaw-a.</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="183"/>
@@ -105,17 +105,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../frontend/password_dialog.ui" line="14"/>
         <source>lxqt wallet service</source>
-        <translation type="unfinished"></translation>
+        <translation>ameẓlu n texriḍt lxqt</translation>
     </message>
     <message>
         <location filename="../frontend/password_dialog.ui" line="42"/>
         <source>The application &apos;%1&apos; has requested to open the wallet &apos;%2&apos;.Enter the password below for this wallet to unlock it</source>
-        <translation type="unfinished"></translation>
+        <translation>Asnas &apos;%1&apos; yessuter ad yeldi taxriḍt &apos;%2&apos;. Sekcem awal uffir ddaw-agi i texriḍt-a iwakken ad t-tekkseḍ asekkeṛ</translation>
     </message>
     <message>
         <location filename="../frontend/password_dialog.ui" line="74"/>
         <source>Wallet &apos;%1&apos; does not exist,do you want to create it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ulac taxriḍt &apos;%1&apos;, tebɣiḍ ad tt-id-tesnulfuḍ?</translation>
     </message>
     <message>
         <location filename="../frontend/password_dialog.ui" line="90"/>
@@ -138,7 +138,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../frontend/password_dialog.ui" line="124"/>
         <source>&amp;Unlock</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Kkes asekkeṛ</translation>
     </message>
     <message>
         <location filename="../frontend/password_dialog.ui" line="141"/>

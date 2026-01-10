@@ -53,12 +53,12 @@
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="42"/>
         <source>C&amp;hange</source>
-        <translation type="unfinished"></translation>
+        <translation>修改(&amp;C)</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="55"/>
         <source>&amp;Ok</source>
-        <translation type="unfinished"></translation>
+        <translation>确定(&amp;O)</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="126"/>
@@ -78,7 +78,7 @@
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="183"/>
         <source>&amp;Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>取消 (&amp;C)</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="196"/>
@@ -88,7 +88,12 @@ p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;An application &apos;&lt;span style=&quot; font-weight:600;&quot;&gt;%1&lt;/span&gt;&apos; has made a request for a password of its wallet &apos;&lt;span style=&quot; font-weight:600;&quot;&gt;%2&lt;/span&gt;&apos; to be changed&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;应用程序 &apos;&lt;span style=&quot; font-weight:600;&quot;&gt;%1&lt;/span&gt;&apos; 已发起对钱包 &apos;&lt;span style=&quot; font-weight:600;&quot;&gt;%2&lt;/span&gt;&apos; 密码修改的请求&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="214"/>
@@ -97,7 +102,11 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Enter password information below to create a new wallet &apos;&lt;span style=&quot; font-weight:600;&quot;&gt;%1&lt;/span&gt;&apos; for application &apos;&lt;span style=&quot; font-weight:600;&quot;&gt;%2&lt;/span&gt;&apos;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;输入下面的密码信息来创建一个新的钱包 &apos;&lt;span style=&quot; font-weight:600;&quot;&gt;%1&lt;/span&gt;&apos; 为应用程序 &apos;&lt;span style=&quot; font-weight:600;&quot;&gt;%2&lt;/span&gt;&apos;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -115,7 +124,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../frontend/password_dialog.ui" line="74"/>
         <source>Wallet &apos;%1&apos; does not exist,do you want to create it?</source>
-        <translation type="unfinished"></translation>
+        <translation>钱包 &apos;%1&apos; 不存在,是否要创建它?</translation>
     </message>
     <message>
         <location filename="../frontend/password_dialog.ui" line="90"/>
@@ -146,22 +155,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../frontend/password_dialog.ui" line="124"/>
         <source>&amp;Unlock</source>
-        <translation type="unfinished"></translation>
+        <translation>解锁(&amp;U)</translation>
     </message>
     <message>
         <location filename="../frontend/password_dialog.ui" line="141"/>
         <source>&amp;Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>取消(&amp;C)</translation>
     </message>
     <message>
         <location filename="../frontend/password_dialog.ui" line="167"/>
         <source>&amp;Ok</source>
-        <translation type="unfinished"></translation>
+        <translation>确定(&amp;O)</translation>
     </message>
     <message>
         <location filename="../frontend/password_dialog.ui" line="154"/>
         <source>ok</source>
-        <translation>好</translation>
+        <translation>确定</translation>
     </message>
 </context>
 </TS>
