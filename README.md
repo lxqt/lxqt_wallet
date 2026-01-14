@@ -26,7 +26,7 @@ An example of how to use the library is below.
 **1. Create an instance of the backend you want to use. A list of supported backends is <a href="https://github.com/mhogomchungu/lxqt_wallet/blob/777d85735a1149c143a4d8933194d24fa5445174/frontend/lxqt_wallet.h#L51">here</a>. Call <a href="https://github.com/mhogomchungu/lxqt_wallet/blob/777d85735a1149c143a4d8933194d24fa5445174/frontend/lxqt_wallet.h#L61">this</a> method first to make sure the backend you want to use was enabled at compile time. User of this API is responsible for the returned object and must delete it when done with it.**
 
 ```
-LXQt::Wallet::Wallet * m_wallet = LXQt::Wallet::getWalletBackend(LXQt::Wallet::BackEnd::internal);
+std::unique_ptr<LXQt::Wallet::Wallet> m_wallet = LXQt::Wallet::getWalletBackend(LXQt::Wallet::BackEnd::internal);
 ```
 **2. Set parent widget. This step is necessary if an internal backend is used. Also call setImage() to set a custom image when when trying to unlock an internal wallet.**
 ```
