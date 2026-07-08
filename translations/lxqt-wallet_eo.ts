@@ -6,23 +6,23 @@
     <message>
         <location filename="../frontend/changepassworddialog.cpp" line="108"/>
         <source>Create a new wallet</source>
-        <translation type="unfinished"></translation>
+        <translation>Krei novan monujon</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.cpp" line="110"/>
         <source>Create</source>
-        <translation type="unfinished"></translation>
+        <translation>Krei</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.cpp" line="138"/>
         <location filename="../frontend/changepassworddialog.cpp" line="280"/>
         <source>Passwords do not match</source>
-        <translation type="unfinished"></translation>
+        <translation>Pasvortoj ne kongruas</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.cpp" line="221"/>
         <source>Wallet password could not be changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Monuja pasvorto ne povus esti ŝangita</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.cpp" line="232"/>

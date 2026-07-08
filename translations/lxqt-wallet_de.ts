@@ -53,12 +53,12 @@
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="42"/>
         <source>C&amp;hange</source>
-        <translation>&amp;ändern</translation>
+        <translation>&amp;Ändern</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="55"/>
         <source>&amp;Ok</source>
-        <translation>&amp;Ok</translation>
+        <translation>&amp;OK</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="126"/>
@@ -165,7 +165,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../frontend/password_dialog.ui" line="167"/>
         <source>&amp;Ok</source>
-        <translation>&amp;Ok</translation>
+        <translation>&amp;OK</translation>
     </message>
     <message>
         <location filename="../frontend/password_dialog.ui" line="154"/>

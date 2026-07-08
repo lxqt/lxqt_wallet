@@ -53,7 +53,7 @@
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="42"/>
         <source>C&amp;hange</source>
-        <translation>修改(&amp;C)</translation>
+        <translation>修改(&amp;H)</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="55"/>
@@ -78,7 +78,7 @@
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="183"/>
         <source>&amp;Cancel</source>
-        <translation>取消 (&amp;C)</translation>
+        <translation>取消(&amp;C)</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="196"/>
