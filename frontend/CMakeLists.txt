@@ -132,6 +132,7 @@ if(APPLE)
 endif()
 
 set_target_properties(lxqt-wallet PROPERTIES COMPILE_FLAGS "-D_FILE_OFFSET_BITS=64 -Wextra -Wall -s -fPIC -pedantic ")
+target_compile_definitions(lxqt-wallet PRIVATE LXQT_WALLET_BUILDING_LIBRARY)
 set_target_properties(lxqt-wallet PROPERTIES SOVERSION "${LIBRARY_VERSION}")
 
 set_target_properties(lxqt-wallet PROPERTIES OUTPUT_NAME lxqt-wallet)
