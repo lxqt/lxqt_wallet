@@ -31,6 +31,13 @@
 #ifndef LXQT_WALLET_INTERFACE_H
 #define LXQT_WALLET_INTERFACE_H
 
+#include <QtGlobal>
+#if defined(LXQT_WALLET_BUILDING_LIBRARY)
+#define LXQT_WALLET_API Q_DECL_EXPORT
+#else
+#define LXQT_WALLET_API Q_DECL_IMPORT
+#endif
+
 #include <QString>
 #include <QStringList>
 #include <QObject>
@@ -59,20 +66,20 @@ class Wallet;
 /*
  * Check if there is a support for a backend and return true if the back end is supported.
  */
-Q_DECL_EXPORT bool backEndIsSupported(LXQt::Wallet::BackEnd);
+LXQT_WALLET_API bool backEndIsSupported(LXQt::Wallet::BackEnd);
 
 /*
  * Delete a wallet.
  * KWallet backend does not use the applicationName argument.
  */
-Q_DECL_EXPORT bool deleteWallet(LXQt::Wallet::BackEnd,
+LXQT_WALLET_API bool deleteWallet(LXQt::Wallet::BackEnd,
                                 const QString &walletName,
                                 const QString &applicationName = QString());
 
 /*
  * Check if a particular wallet exists.
  */
-Q_DECL_EXPORT bool walletExists(LXQt::Wallet::BackEnd,
+LXQT_WALLET_API bool walletExists(LXQt::Wallet::BackEnd,
                                 const QString &walletName,
                                 const QString &applicationName = QString());
 
@@ -82,18 +89,18 @@ Q_DECL_EXPORT bool walletExists(LXQt::Wallet::BackEnd,
  *
  * nullptr is returned if there is no support for requested backend.
  */
-Q_DECL_EXPORT std::unique_ptr<LXQt::Wallet::Wallet> getWalletBackend(LXQt::Wallet::BackEnd);
+LXQT_WALLET_API std::unique_ptr<LXQt::Wallet::Wallet> getWalletBackend(LXQt::Wallet::BackEnd);
 
 /*
  * Return a list of all wallets.
  * Returned value is undefined if the backend is not supported.
  */
-Q_DECL_EXPORT QStringList walletList(LXQt::Wallet::BackEnd);
+LXQT_WALLET_API QStringList walletList(LXQt::Wallet::BackEnd);
 
 /*
  * Get a list of supported languages.
  */
-Q_DECL_EXPORT QStringList translations();
+LXQT_WALLET_API QStringList translations();
 
 /*
  * Set language of texts on GUI elements.
@@ -101,13 +108,13 @@ Q_DECL_EXPORT QStringList translations();
  *
  * Setting a language will make a difference only with an internal backend.
  */
-Q_DECL_EXPORT void setTranslationLanguage(const QString &language);
+LXQT_WALLET_API void setTranslationLanguage(const QString &language);
 
 /*
  * Below class is the interface that implements various backends.
  * See example at the end of this header file to see an example of how to use the interface.
  */
-class Q_DECL_EXPORT Wallet : public QWidget
+class LXQT_WALLET_API Wallet : public QWidget
 {
 public:
     Wallet();
