@@ -58,17 +58,17 @@
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="55"/>
         <source>&amp;Ok</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ok</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="126"/>
         <source>Enter Current Password Below.</source>
-        <translation type="unfinished"></translation>
+        <translation>Enter Current Password Below.</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="145"/>
         <source>Enter New Password Below.</source>
-        <translation type="unfinished"></translation>
+        <translation>Enter New Password Below.</translation>
     </message>
     <message>
         <location filename="../frontend/changepassworddialog.ui" line="164"/>
