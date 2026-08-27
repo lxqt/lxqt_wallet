@@ -19,3 +19,5 @@
 	- Fix a build issue.
 - version 4.0.2
 	- Default to use xdg paths when they are set.
+- version 4.1.0
+	- Make the library linkable when used with hardened compiler.

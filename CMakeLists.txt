@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.18.0 FATAL_ERROR)
 project(lxqt_wallet)
 
 set(LIBRARY_VERSION "6.0.0")
-set(RELEASE_VERSION "4.0.2")
+set(RELEASE_VERSION "4.1.0")
 
 add_definitions(-Wextra -Wall -pedantic)
 

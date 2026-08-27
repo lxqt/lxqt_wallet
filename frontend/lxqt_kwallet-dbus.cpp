@@ -31,8 +31,8 @@
 #include "lxqt_kwallet-dbus.h"
 #include "task.h"
 
-static auto _service   = "org.kde.kwalletd5";
-static auto _path      = "/modules/kwalletd5";
+static auto _service   = "org.kde.kwalletd6";
+static auto _path      = "/modules/kwalletd6";
 static auto _interface = "org.kde.KWallet";
 
 LXQt::Wallet::kwallet_dbus::kwallet_dbus() : m_dbus(_service, _path, _interface)
